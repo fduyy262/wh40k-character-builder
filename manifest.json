@@ -1,0 +1,10 @@
+{
+  "display_name": "WH40K Character Builder",
+  "loading_order": 99,
+  "js": "index.js",
+  "css": "style.css",
+  "author": "OpenAI",
+  "version": "0.2.0",
+  "auto_update": false,
+  "minimum_client_version": "1.12.0"
+}
