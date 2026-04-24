@@ -1,0 +1,116 @@
+/* =================================================================
+   WH40K Imperial Gothic — SillyTavern 全局主题
+   粘贴到:用户设置 → 自定义 CSS (Custom CSS)
+   ================================================================= */
+
+:root {
+  --wh-gold: #c9a24b;
+  --wh-gold-bright: #f0d06a;
+  --wh-gold-dim: #7a6532;
+  --wh-blood: #8b1a1a;
+  --wh-blood-bright: #c0392b;
+  --wh-border: #3a2f1a;
+  --wh-text: #e8dcc0;
+  --wh-text-dim: #a39580;
+}
+
+/* === 消息气泡(整个聊天区域的每一条消息) === */
+.mes {
+  border: 1px solid var(--wh-border) !important;
+  border-left: 2px solid var(--wh-gold-dim) !important;
+  background: linear-gradient(180deg, rgba(20,16,10,.55), rgba(10,8,6,.35)) !important;
+  border-radius: 3px !important;
+  margin: 8px 0 !important;
+}
+
+/* AI 消息(角色回复)——加一点金色氛围 */
+.mes[is_user="false"] {
+  border-left-color: var(--wh-gold) !important;
+  background: linear-gradient(180deg, rgba(30,22,12,.6), rgba(14,10,6,.4)) !important;
+}
+
+/* 用户消息——偏血红 */
+.mes[is_user="true"] {
+  border-left-color: var(--wh-blood) !important;
+  background: linear-gradient(180deg, rgba(30,12,10,.55), rgba(12,6,6,.4)) !important;
+}
+
+/* 消息正文文字 */
+.mes_text {
+  color: var(--wh-text) !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  line-height: 1.75 !important;
+}
+
+/* 消息里的加粗/强调,走金色 */
+.mes_text strong,
+.mes_text b {
+  color: var(--wh-gold-bright) !important;
+}
+
+/* 斜体走暗金 */
+.mes_text em,
+.mes_text i {
+  color: var(--wh-gold) !important;
+  font-style: italic !important;
+}
+
+/* 引用块 —— 像圣典引文 */
+.mes_text blockquote {
+  border-left: 2px solid var(--wh-gold) !important;
+  background: rgba(201,162,75,.06) !important;
+  padding: 10px 14px !important;
+  margin: 10px 0 !important;
+  color: var(--wh-text) !important;
+  font-style: italic !important;
+}
+
+/* 代码块 —— 像数据板 */
+.mes_text code {
+  background: rgba(0,0,0,.5) !important;
+  color: var(--wh-gold-bright) !important;
+  border: 1px solid var(--wh-border) !important;
+  padding: 1px 6px !important;
+  border-radius: 2px !important;
+  font-size: 0.92em !important;
+}
+
+.mes_text pre {
+  background: rgba(0,0,0,.5) !important;
+  border: 1px solid var(--wh-border) !important;
+  border-radius: 2px !important;
+  padding: 10px 12px !important;
+}
+
+/* 角色名字(消息顶部) */
+.ch_name,
+.name_text {
+  color: var(--wh-gold) !important;
+  font-family: Georgia, serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* 输入框 */
+#send_textarea {
+  background: rgba(10,8,6,.8) !important;
+  border: 1px solid var(--wh-border) !important;
+  color: var(--wh-text) !important;
+  font-family: Georgia, serif !important;
+}
+
+#send_textarea:focus {
+  border-color: var(--wh-gold) !important;
+  box-shadow: 0 0 0 1px var(--wh-gold) !important;
+}
+
+/* 发送按钮 */
+#send_but {
+  color: var(--wh-gold) !important;
+}
+
+/* 编辑消息时的按钮 */
+.mes_edit_done,
+.mes_edit_cancel {
+  color: var(--wh-gold) !important;
+}

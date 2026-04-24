@@ -455,6 +455,9 @@ function resetState() {
 function closeBuilder() {
   overlay?.classList.remove('open');
   if (launcher) launcher.textContent = '⚔ 角色创建器';
+  // Restore body scroll
+  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
 }
 
 function openBuilder(forcePage = null) {
@@ -464,6 +467,9 @@ function openBuilder(forcePage = null) {
   render();
   overlay.classList.add('open');
   if (launcher) launcher.textContent = '✕ 关闭创建器';
+  // Lock body scroll so the modal truly feels full-screen
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
 }
 
 function makeLauncher() {
