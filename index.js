@@ -454,6 +454,7 @@ function resetState() {
 
 function closeBuilder() {
   overlay?.classList.remove('open');
+  if (launcher) launcher.textContent = '⚔ 角色创建器';
 }
 
 function openBuilder(forcePage = null) {
@@ -462,6 +463,7 @@ function openBuilder(forcePage = null) {
   if (typeof forcePage === 'number') currentPage = forcePage;
   render();
   overlay.classList.add('open');
+  if (launcher) launcher.textContent = '✕ 关闭创建器';
 }
 
 function makeLauncher() {
@@ -470,22 +472,16 @@ function makeLauncher() {
   launcher.id = 'wh40k-builder-launcher';
   launcher.type = 'button';
   launcher.textContent = '⚔ 角色创建器';
-  launcher.style.cssText = [
-    'position:fixed',
-    'top:64px',
-    'right:12px',
-    'z-index:10000',
-    'padding:10px 14px',
-    'border-radius:999px',
-    'border:1px solid #ffb347',
-    'background:linear-gradient(135deg,#b23a48,#7a1728)',
-    'color:#fff',
-    'font-size:13px',
-    'font-weight:800',
-    'box-shadow:0 6px 20px rgba(0,0,0,.5)',
-    'cursor:pointer',
-  ].join(';');
-  launcher.addEventListener('click', () => openBuilder());
+  // Appearance handled by style.css; only position is forced here to guarantee visibility.
+  launcher.style.cssText = 'position:fixed;top:64px;right:12px;z-index:10000';
+  launcher.addEventListener('click', () => {
+    // Toggle: if modal is open, close it; otherwise open it.
+    if (overlay && overlay.classList.contains('open')) {
+      closeBuilder();
+    } else {
+      openBuilder();
+    }
+  });
   document.body.appendChild(launcher);
   console.log(`[${EXT_ID}] launcher appended to body`);
 }
