@@ -474,6 +474,45 @@
   color: var(--wh-gold-bright);
 }
 
+/* 禁用:不兼容当前其他选择 */
+.wh40k-option.disabled {
+  opacity: .38;
+  cursor: not-allowed;
+  filter: grayscale(.5);
+}
+
+.wh40k-option.disabled:hover {
+  border-color: var(--wh-border-dim);
+  background: rgba(0,0,0,.3);
+}
+
+/* 冲突:已选但现在不合法(红边框,不灰化) */
+.wh40k-option.conflict {
+  opacity: 1 !important;
+  filter: none !important;
+  border-color: var(--wh-blood-bright) !important;
+  background: linear-gradient(180deg, rgba(139,26,26,.25), rgba(70,10,10,.4)) !important;
+  box-shadow: 0 0 0 1px var(--wh-blood-bright) inset, 0 0 12px rgba(192,57,43,.35) !important;
+}
+
+.wh40k-option.conflict .wh40k-option-code {
+  color: #ffb3a0 !important;
+}
+
+/* 禁用原因徽章 */
+.wh40k-option-badge {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  color: var(--wh-blood-bright);
+  letter-spacing: 0.04em;
+  font-style: italic;
+}
+
+.wh40k-option.conflict .wh40k-option-badge {
+  color: #ff9a83;
+}
+
 /* === Name input === */
 .wh40k-name-box {
   margin-top: 12px;

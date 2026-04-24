@@ -380,6 +380,77 @@ function trySendMessage(text) {
   return false;
 }
 
+// ================= 硬约束:选项兼容性判断 =================
+// 规则:
+// - X0 (随机/自定义) 永远允许,因为最终由 AI 决定
+// - 如果其他字段尚未明确选择(仍是 X0),也不算冲突
+// - E17-E20 阿斯塔特: 需 G1 男 + C1 正常人类
+// - E3 修女会: 需 G2 女 + 种族 ∈ {C1, C3, C4, C6}
+// - E7 机械神甫: 非 C4
+// - E10 流浪骑士: 非 C2/C6
+// - C2 莱特林 禁: E3 / E10 / E17-E20
+// - C4 不可接触者 禁: E7 / E17-E20
+// - C5 领航者 禁: E1/E2/E3/E4/E5/E6/E7/E8/E17-E20/E21/E22/E25
+// - C6 猫人 禁: E10 / E17-E20
+
+function isRandomCode(code) {
+  return /^[A-Z]0$/.test(code);  // A0, B0, ... E0 (非 E10/E20 等)
+}
+
+function isOptionAllowed(field, code, s = state) {
+  // "随机/自定义" 永远允许
+  if (isRandomCode(code)) return { ok: true };
+
+  // 读取其他字段的"明确选择"(非随机)
+  const pick = (f) => {
+    const v = s[f];
+    return v && !isRandomCode(v) ? v : null;
+  };
+  const g = pick('G');
+  const c = pick('C');
+  const e = pick('E');
+
+  const ASTARTES = ['E17', 'E18', 'E19', 'E20'];
+  const LETIN_BAN = ['E3', 'E10', ...ASTARTES];
+  const CAT_BAN = ['E10', ...ASTARTES];
+  const UNTOUCHABLE_BAN = ['E7', ...ASTARTES];
+  const NAVIGATOR_BAN = ['E1','E2','E3','E4','E5','E6','E7','E8',...ASTARTES,'E21','E22','E25'];
+  const SISTER_RACES = ['C1','C3','C4','C6'];
+
+  if (field === 'E') {
+    if (ASTARTES.includes(code)) {
+      if (g && g !== 'G1') return { ok: false, reason: '仅限男性' };
+      if (c && c !== 'C1') return { ok: false, reason: '仅限正常人类' };
+    }
+    if (code === 'E3') {
+      if (g && g !== 'G2') return { ok: false, reason: '仅限女性' };
+      if (c && !SISTER_RACES.includes(c)) return { ok: false, reason: '当前种族不可' };
+    }
+    if (code === 'E10' && (c === 'C2' || c === 'C6')) return { ok: false, reason: '当前种族不可' };
+    if (code === 'E7' && c === 'C4') return { ok: false, reason: '不可接触者不适合' };
+    if (c === 'C2' && LETIN_BAN.includes(code)) return { ok: false, reason: '莱特林不可担任' };
+    if (c === 'C6' && CAT_BAN.includes(code)) return { ok: false, reason: '猫人不可担任' };
+    if (c === 'C4' && UNTOUCHABLE_BAN.includes(code)) return { ok: false, reason: '不可接触者不适合' };
+    if (c === 'C5' && NAVIGATOR_BAN.includes(code)) return { ok: false, reason: '领航者不适合' };
+  }
+
+  if (field === 'C') {
+    if (ASTARTES.includes(e) && code !== 'C1') return { ok: false, reason: '阿斯塔特仅限 C1' };
+    if (e === 'E3' && !SISTER_RACES.includes(code)) return { ok: false, reason: '修女会种族受限' };
+    if (code === 'C2' && LETIN_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
+    if (code === 'C6' && CAT_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
+    if (code === 'C4' && UNTOUCHABLE_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
+    if (code === 'C5' && NAVIGATOR_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
+  }
+
+  if (field === 'G') {
+    if (ASTARTES.includes(e) && code !== 'G1') return { ok: false, reason: '阿斯塔特仅限男性' };
+    if (e === 'E3' && code !== 'G2') return { ok: false, reason: '修女会仅限女性' };
+  }
+
+  return { ok: true };
+}
+
 function buildPayload() {
   const codes = PANEL_ORDER.map((field) => state[field]).join(' ');
   if (state.B === 'B1' && state.NAME.trim()) {
@@ -675,11 +746,24 @@ function makeOptionButton(field, code, label) {
   btn.className = 'wh40k-option';
   btn.dataset.field = field;
   btn.dataset.code = code;
-  btn.innerHTML = `<span class="wh40k-option-code">${code}</span><span class="wh40k-option-label">${label}</span>`;
 
-  if (state[field] === code) btn.classList.add('active');
+  const check = isOptionAllowed(field, code);
+  const isActive = state[field] === code;
+  const badge = !check.ok ? `<span class="wh40k-option-badge">⊘ ${check.reason}</span>` : '';
+  btn.innerHTML = `<span class="wh40k-option-code">${code}</span><span class="wh40k-option-label">${label}</span>${badge}`;
+
+  if (isActive) btn.classList.add('active');
+  if (!check.ok) {
+    btn.classList.add('disabled');
+    btn.title = check.reason;
+    if (isActive) btn.classList.add('conflict');
+  }
 
   btn.addEventListener('click', () => {
+    // 禁用且未选中 → 拒绝选,告知原因
+    if (!check.ok && !isActive) {
+      return;
+    }
     state[field] = code;
     saveDraftState();
     render();
