@@ -286,7 +286,15 @@ function getOptionLabel(field, code) {
 }
 
 function queryInputBox() {
-  return document.querySelector('#send_textarea, textarea');
+  // SillyTavern 聊天输入框的稳定 ID
+  const byId = document.getElementById('send_textarea');
+  if (byId) return byId;
+  // 兜底 1:form_sheld 容器里的 textarea
+  const inForm = document.querySelector('#form_sheld textarea');
+  if (inForm) return inForm;
+  // 兜底 2:placeholder 含"消息"/"message"的 textarea(避免误选角色卡编辑器)
+  return document.querySelector('textarea[placeholder*="消息"]')
+      || document.querySelector('textarea[placeholder*="message" i]');
 }
 
 function querySendButton() {
@@ -298,14 +306,63 @@ function querySendButton() {
 
 function setInputValue(text) {
   const input = queryInputBox();
-  if (!input) return false;
+  if (!input) {
+    console.error(`[${EXT_ID}] 找不到 SillyTavern 输入框(#send_textarea)`);
+    return false;
+  }
+  console.log(`[${EXT_ID}] 找到输入框:`, input.id || input.tagName);
 
-  input.focus();
-  const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value')?.set;
-  setter?.call(input, text);
-  input.dispatchEvent(new Event('input', { bubbles: true }));
-  input.dispatchEvent(new Event('change', { bubbles: true }));
-  return true;
+  try { input.focus(); } catch (_) {}
+
+  // 方法 1:原生 value setter(兼容 React 受控)
+  try {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value')?.set;
+    if (setter) setter.call(input, text);
+  } catch (e) {
+    console.warn(`[${EXT_ID}] native setter 失败:`, e);
+  }
+
+  // 方法 2:直接赋值(兜底)
+  try { input.value = text; } catch (_) {}
+
+  // 方法 3:jQuery 赋值 + 触发(SillyTavern 的监听器依赖这个!)
+  if (typeof jQuery === 'function') {
+    try {
+      jQuery(input).val(text).trigger('input').trigger('change').trigger('keyup');
+    } catch (e) {
+      console.warn(`[${EXT_ID}] jQuery 写入/触发失败:`, e);
+    }
+  }
+
+  // 方法 4:派发原生事件(某些监听器用的)
+  try {
+    input.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+    input.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+  } catch (_) {}
+
+  const ok = input.value === text;
+  console.log(`[${EXT_ID}] 写入${ok ? '成功' : '失败'}: 期望${text.length}字符,实际${input.value.length}字符`);
+  return ok;
+}
+
+async function copyToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (_) { /* fall through */ }
+  }
+  // Legacy fallback
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (_) {}
+  document.body.removeChild(ta);
+  return ok;
 }
 
 function trySendMessage(text) {
@@ -706,13 +763,17 @@ function renderPageContent() {
     finalCard.className = 'wh40k-final-card';
     finalCard.innerHTML = `
       <div class="wh40k-final-title">最终确认</div>
-      <div class="wh40k-final-text">确认后会把当前模板写入输入框，并尝试自动发送。若自动发送失败，模板仍会留在输入框中供你手动发送。</div>
+      <div class="wh40k-final-text">将发送以下模板。若自动写入失败,会复制到剪贴板供你粘贴。</div>
+      <pre class="wh40k-payload-preview wh40k-final-preview"></pre>
       <div class="wh40k-final-actions">
         <button type="button" class="wh40k-btn" data-action="fill-only">只写入输入框</button>
+        <button type="button" class="wh40k-btn" data-action="copy-payload">复制模板</button>
         <button type="button" class="wh40k-btn primary" data-action="confirm-send">确认并发送</button>
       </div>
     `;
+    finalCard.querySelector('.wh40k-final-preview').textContent = buildPayload();
     finalCard.querySelector('[data-action="fill-only"]').addEventListener('click', fillOnly);
+    finalCard.querySelector('[data-action="copy-payload"]').addEventListener('click', copyPayloadOnly);
     finalCard.querySelector('[data-action="confirm-send"]').addEventListener('click', confirmAndSend);
     content.appendChild(finalCard);
   }
@@ -770,20 +831,41 @@ function goNext() {
   render();
 }
 
-function fillOnly() {
+async function fillOnly() {
   const result = canProceedFromPage(1);
   if (!result.ok) {
     alert(result.message);
     return;
   }
 
-  const ok = setInputValue(buildPayload());
+  const payload = buildPayload();
+  closeBuilder();  // 先关 modal,让输入框完全暴露给 focus
+  await new Promise((r) => setTimeout(r, 80));
+
+  const ok = setInputValue(payload);
   if (!ok) {
-    alert('没有找到输入框。你可能需要按当前客户端结构微调选择器。');
+    const copied = await copyToClipboard(payload);
+    if (copied) {
+      alert('未能自动写入输入框。模板已复制到剪贴板,请手动粘贴到聊天输入框。');
+    } else {
+      alert('未能写入输入框,且剪贴板不可用。请手动复制以下内容:\n\n' + payload);
+    }
+  }
+}
+
+async function copyPayloadOnly() {
+  const result = canProceedFromPage(1);
+  if (!result.ok) {
+    alert(result.message);
     return;
   }
-
-  closeBuilder();
+  const payload = buildPayload();
+  const ok = await copyToClipboard(payload);
+  if (ok) {
+    alert('模板已复制到剪贴板!关闭此窗口,长按聊天输入框粘贴即可。');
+  } else {
+    alert('剪贴板不可用,请手动复制以下内容:\n\n' + payload);
+  }
 }
 
 async function confirmAndSend() {
@@ -793,15 +875,36 @@ async function confirmAndSend() {
     return;
   }
 
-  const sent = trySendMessage(buildPayload());
-  if (!sent) {
-    alert('未能自动发送。模板可能已写入输入框，请手动检查并发送。');
+  const payload = buildPayload();
+  closeBuilder();  // 先关 modal
+  await new Promise((r) => setTimeout(r, 80));
+
+  const filled = setInputValue(payload);
+  if (!filled) {
+    const copied = await copyToClipboard(payload);
+    if (copied) {
+      alert('未能自动写入输入框。模板已复制到剪贴板,请手动粘贴并发送。');
+    } else {
+      alert('未能写入输入框。请手动复制以下内容:\n\n' + payload);
+    }
     return;
   }
 
-  await markBuilderShown();
-  await clearDraftState();
-  closeBuilder();
+  if (!AUTO_SEND_AFTER_FILL) {
+    await markBuilderShown();
+    await clearDraftState();
+    return;
+  }
+
+  // 尝试点发送按钮
+  const sendBtn = querySendButton();
+  if (sendBtn) {
+    sendBtn.click();
+    await markBuilderShown();
+    await clearDraftState();
+  } else {
+    alert('模板已写入输入框,但未找到发送按钮。请手动点击发送。');
+  }
 }
 
 async function maybeAutoOpen() {
