@@ -107,6 +107,17 @@ const OPTIONS = {
     ['E26', '档案员 / 抄写员 / 行政书吏'],
     ['E27', '机械神教探索队随员'],
     ['E28', '黑市情报贩子 / 走私中间人'],
+    ['E29', '审讯者 / 审判官学徒(审判庭)'],
+    ['E30', '审判庭神秘学者 / 占视者 (Savant)'],
+    ['E31', '受批准灵能者(审判庭编制)'],
+    ['E32', '星语者 / 灵魂绑定通讯师 (Astropath)'],
+    ['E33', '审判庭圣剑修士 / 执行修士 (Crusader)'],
+    ['E34', '死亡邪教刺客(审判庭征召)'],
+    ['E35', '斯凯塔里流浪者(机械神教武装侍僧)'],
+    ['E36', '生物学僧 / 遗传学探索者 (Genetor)'],
+    ['E37', '电流神父 (Corpuscarii 教派)'],
+    ['E38', '高阶考古学僧 (Explorator)'],
+    ['E39', '随军技僧 / 工程师 (Enginseer)'],
   ],
   F: [
     ['F0', '随机 / 自定义'],
@@ -397,6 +408,39 @@ function isRandomCode(code) {
   return /^[A-Z]0$/.test(code);  // A0, B0, ... E0 (非 E10/E20 等)
 }
 
+// ========== 立场 ⇄ 职业 体系绑定 ==========
+// iq  = 审判庭编制(D5-D8 专属)
+// mech = 机械神教编制(D9-D11 专属)
+// common = 通用职业(任意普通立场可选,也可做审判庭 retinue)
+const PROFESSION_TAG = {
+  // 审判庭专属
+  E2: 'iq',   // 审判庭侍从
+  E29: 'iq',  // 审讯者 / 审判官学徒
+  E30: 'iq',  // 审判庭神秘学者 / Savant
+  E31: 'iq',  // 审判庭受批准灵能者
+  E32: 'iq',  // 星语者 Astropath
+  E33: 'iq',  // 审判庭圣剑修士 Crusader
+  E34: 'iq',  // 死亡邪教刺客
+  // 机械神教专属
+  E7: 'mech', // 机械神教初级神甫
+  E27: 'mech',// 机械神教探索队随员
+  E35: 'mech',// 斯凯塔里流浪者
+  E36: 'mech',// 生物学僧 Genetor
+  E37: 'mech',// 电流神父
+  E38: 'mech',// 高阶考古学僧 Explorator
+  E39: 'mech',// 随军技僧 Enginseer
+};
+
+function professionTag(code) {
+  return PROFESSION_TAG[code] || 'common';
+}
+
+function stanceTag(code) {
+  if (['D5','D6','D7','D8'].includes(code)) return 'iq';
+  if (['D9','D10','D11'].includes(code)) return 'mech';
+  return 'common';
+}
+
 function isOptionAllowed(field, code, s = state) {
   // "随机/自定义" 永远允许
   if (isRandomCode(code)) return { ok: true };
@@ -409,6 +453,7 @@ function isOptionAllowed(field, code, s = state) {
   const g = pick('G');
   const c = pick('C');
   const e = pick('E');
+  const d = pick('D');
 
   const ASTARTES = ['E17', 'E18', 'E19', 'E20'];
   const LETIN_BAN = ['E3', 'E10', ...ASTARTES];
@@ -432,6 +477,20 @@ function isOptionAllowed(field, code, s = state) {
     if (c === 'C6' && CAT_BAN.includes(code)) return { ok: false, reason: '猫人不可担任' };
     if (c === 'C4' && UNTOUCHABLE_BAN.includes(code)) return { ok: false, reason: '不可接触者不适合' };
     if (c === 'C5' && NAVIGATOR_BAN.includes(code)) return { ok: false, reason: '领航者不适合' };
+
+    // === 立场 ⇄ 职业 绑定 ===
+    const eTag = professionTag(code);
+    const dTag = d ? stanceTag(d) : null;
+    if (eTag === 'iq' && dTag && dTag !== 'iq') {
+      return { ok: false, reason: '仅限审判庭立场' };
+    }
+    if (eTag === 'mech' && dTag && dTag !== 'mech') {
+      return { ok: false, reason: '仅限机械神教立场' };
+    }
+    // 机械神教严格:选了机械神教立场,职业必须是 mech
+    if (dTag === 'mech' && eTag !== 'mech') {
+      return { ok: false, reason: '机械神教立场仅限神教职业' };
+    }
   }
 
   if (field === 'C') {
@@ -446,6 +505,22 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'G') {
     if (ASTARTES.includes(e) && code !== 'G1') return { ok: false, reason: '阿斯塔特仅限男性' };
     if (e === 'E3' && code !== 'G2') return { ok: false, reason: '修女会仅限女性' };
+  }
+
+  // === 立场(D)页:根据当前职业反向约束 ===
+  if (field === 'D') {
+    const dTag = stanceTag(code);
+    const eTag = e ? professionTag(e) : null;
+    if (eTag === 'iq' && dTag !== 'iq') {
+      return { ok: false, reason: '审判庭职业仅配审判庭立场' };
+    }
+    if (eTag === 'mech' && dTag !== 'mech') {
+      return { ok: false, reason: '机械神教职业仅配神教立场' };
+    }
+    // 选了普通职业,不能选机械神教立场(神教严格)
+    if (eTag === 'common' && dTag === 'mech') {
+      return { ok: false, reason: '机械神教立场不容普通职业' };
+    }
   }
 
   return { ok: true };
