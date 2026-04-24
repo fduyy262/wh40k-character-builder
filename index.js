@@ -245,7 +245,19 @@ let overlay = null;
 let launcher = null;
 
 function getCtx() {
+  if (typeof SillyTavern === 'undefined' || typeof SillyTavern.getContext !== 'function') {
+    throw new Error('SillyTavern global not ready');
+  }
   return SillyTavern.getContext();
+}
+
+function isCtxReady() {
+  try {
+    getCtx();
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
 function getCharacterName() {
@@ -255,6 +267,7 @@ function getCharacterName() {
 }
 
 function shouldEnableForCurrentChat() {
+  if (!isCtxReady()) return false;
   const ctx = getCtx();
   if (ctx.groupId) return false;
   if (ctx.characterId == null) return false;
@@ -456,9 +469,25 @@ function makeLauncher() {
   launcher = document.createElement('button');
   launcher.id = 'wh40k-builder-launcher';
   launcher.type = 'button';
-  launcher.textContent = '角色创建器';
+  launcher.textContent = '⚔ 角色创建器';
+  launcher.style.cssText = [
+    'position:fixed',
+    'top:64px',
+    'right:12px',
+    'z-index:10000',
+    'padding:10px 14px',
+    'border-radius:999px',
+    'border:1px solid #ffb347',
+    'background:linear-gradient(135deg,#b23a48,#7a1728)',
+    'color:#fff',
+    'font-size:13px',
+    'font-weight:800',
+    'box-shadow:0 6px 20px rgba(0,0,0,.5)',
+    'cursor:pointer',
+  ].join(';');
   launcher.addEventListener('click', () => openBuilder());
   document.body.appendChild(launcher);
+  console.log(`[${EXT_ID}] launcher appended to body`);
 }
 
 function createOverlay() {
@@ -774,22 +803,30 @@ async function confirmAndSend() {
 }
 
 async function maybeAutoOpen() {
+  if (!isCtxReady()) {
+    console.warn(`[${EXT_ID}] maybeAutoOpen: ctx not ready`);
+    return;
+  }
+  const ctx = getCtx();
+  console.log(`[${EXT_ID}] maybeAutoOpen: groupId=${ctx.groupId} charId=${ctx.characterId} chatLen=${ctx.chat?.length}`);
+
   if (!shouldEnableForCurrentChat()) {
     if (launcher) launcher.style.display = 'none';
+    console.log(`[${EXT_ID}] not enabled for current chat (group or no character selected)`);
     return;
   }
 
   if (launcher) launcher.style.display = '';
 
-  const ctx = getCtx();
   const chat = Array.isArray(ctx.chat) ? ctx.chat : [];
   const hasAnyUserMessage = chat.some((message) => message?.is_user === true);
   const shown = !!ctx.chatMetadata?.[getMetaKey('shown')];
 
-  // Character chats often start with only the character greeting (#0),
-  // so waiting for a truly empty chat is too strict.
   if (AUTO_OPEN_FOR_EMPTY_CHAT && !hasAnyUserMessage && !shown) {
+    console.log(`[${EXT_ID}] auto-opening builder`);
     openBuilder(0);
+  } else {
+    console.log(`[${EXT_ID}] not auto-opening (hasUserMsg=${hasAnyUserMessage} shown=${shown})`);
   }
 }
 
@@ -806,42 +843,78 @@ let initialized = false;
 
 function init() {
   if (initialized) {
-    maybeAutoOpen();
+    console.log(`[${EXT_ID}] init re-entered, running maybeAutoOpen`);
+    try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] maybeAutoOpen error`, e); }
+    return;
+  }
+
+  if (!isCtxReady()) {
+    console.warn(`[${EXT_ID}] SillyTavern global not ready, will retry init in 400ms`);
+    setTimeout(init, 400);
     return;
   }
 
   initialized = true;
-  makeLauncher();
-  createOverlay();
-  maybeAutoOpen();
+  console.log(`[${EXT_ID}] init running`);
 
-  const { eventSource, event_types } = getCtx();
+  try {
+    makeLauncher();
+    createOverlay();
+    console.log(`[${EXT_ID}] launcher + overlay DOM inserted`);
+  } catch (e) {
+    console.error(`[${EXT_ID}] failed to build DOM`, e);
+    return;
+  }
 
-  eventSource.on(event_types.CHAT_CHANGED, () => {
-    maybeAutoOpen();
-  });
+  try {
+    const { eventSource, event_types } = getCtx();
+    eventSource.on(event_types.CHAT_CHANGED, () => {
+      try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] CHAT_CHANGED handler error`, e); }
+    });
+    eventSource.on(event_types.CHAT_CREATED, () => {
+      state = { ...DEFAULT_STATE };
+      currentPage = 0;
+      try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] CHAT_CREATED handler error`, e); }
+    });
+  } catch (e) {
+    console.error(`[${EXT_ID}] event binding failed`, e);
+  }
 
-  eventSource.on(event_types.CHAT_CREATED, () => {
-    state = { ...DEFAULT_STATE };
-    currentPage = 0;
-    maybeAutoOpen();
-  });
-  
-  // Some installs happen after APP_READY has already fired.
-  // Re-check once more after the current tick so the launcher appears without a full restart.
-  setTimeout(() => maybeAutoOpen(), 250);
+  try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] initial maybeAutoOpen error`, e); }
+  // Extra retries in case characterId / chat data isn't populated yet on first pass.
+  setTimeout(() => { try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] delayed maybeAutoOpen error`, e); } }, 600);
+  setTimeout(() => { try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] delayed maybeAutoOpen error`, e); } }, 2000);
+
+  console.log(`[${EXT_ID}] init complete`);
 }
 
 function boot() {
-  try {
-    const { eventSource, event_types } = getCtx();
-    eventSource.on(event_types.APP_READY, () => setTimeout(init, 0));
-    // Fallback: if the extension is enabled/installed after the app is already ready,
-    // initialize immediately.
-    setTimeout(init, 500);
-  } catch (error) {
-    console.error(`${EXT_ID}: boot failed`, error);
+  console.log(`[${EXT_ID}] boot() called, ctxReady=${isCtxReady()}`);
+
+  // Try to bind APP_READY if the SillyTavern global is already up.
+  if (isCtxReady()) {
+    try {
+      const { eventSource, event_types } = getCtx();
+      eventSource.on(event_types.APP_READY, () => {
+        console.log(`[${EXT_ID}] APP_READY fired`);
+        setTimeout(init, 0);
+      });
+    } catch (e) {
+      console.warn(`[${EXT_ID}] couldn't bind APP_READY`, e);
+    }
   }
+
+  // Multiple timed fallbacks so we don't depend on APP_READY firing at the right moment.
+  setTimeout(init, 300);
+  setTimeout(init, 1500);
+  setTimeout(init, 4000);
 }
 
-boot();
+// Wait for DOM + jQuery (SillyTavern ships jQuery globally). Fall back to plain DOMContentLoaded.
+if (typeof jQuery === 'function') {
+  jQuery(function () { boot(); });
+} else if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
