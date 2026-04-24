@@ -782,10 +782,13 @@ async function maybeAutoOpen() {
   if (launcher) launcher.style.display = '';
 
   const ctx = getCtx();
-  const isEmptyChat = Array.isArray(ctx.chat) && ctx.chat.length === 0;
+  const chat = Array.isArray(ctx.chat) ? ctx.chat : [];
+  const hasAnyUserMessage = chat.some((message) => message?.is_user === true);
   const shown = !!ctx.chatMetadata?.[getMetaKey('shown')];
 
-  if (AUTO_OPEN_FOR_EMPTY_CHAT && isEmptyChat && !shown) {
+  // Character chats often start with only the character greeting (#0),
+  // so waiting for a truly empty chat is too strict.
+  if (AUTO_OPEN_FOR_EMPTY_CHAT && !hasAnyUserMessage && !shown) {
     openBuilder(0);
   }
 }
@@ -799,9 +802,15 @@ function escapeHtml(text = '') {
     .replaceAll("'", '&#039;');
 }
 
-function init() {
-  if (!shouldEnableForCurrentChat()) return;
+let initialized = false;
 
+function init() {
+  if (initialized) {
+    maybeAutoOpen();
+    return;
+  }
+
+  initialized = true;
   makeLauncher();
   createOverlay();
   maybeAutoOpen();
@@ -817,9 +826,22 @@ function init() {
     currentPage = 0;
     maybeAutoOpen();
   });
+  
+  // Some installs happen after APP_READY has already fired.
+  // Re-check once more after the current tick so the launcher appears without a full restart.
+  setTimeout(() => maybeAutoOpen(), 250);
 }
 
-(function boot() {
-  const { eventSource, event_types } = getCtx();
-  eventSource.on(event_types.APP_READY, init);
-})();
+function boot() {
+  try {
+    const { eventSource, event_types } = getCtx();
+    eventSource.on(event_types.APP_READY, () => setTimeout(init, 0));
+    // Fallback: if the extension is enabled/installed after the app is already ready,
+    // initialize immediately.
+    setTimeout(init, 500);
+  } catch (error) {
+    console.error(`${EXT_ID}: boot failed`, error);
+  }
+}
+
+boot();
