@@ -108,16 +108,16 @@ const OPTIONS = {
     ['E27', '机械神教探索队随员'],
     ['E28', '黑市情报贩子 / 走私中间人'],
     ['E29', '审讯者 / 审判官学徒(审判庭)'],
-    ['E30', '审判庭神秘学者 / 占视者 (Savant)'],
+    ['E30', '审判庭神秘学者'],
     ['E31', '受批准灵能者(审判庭编制)'],
-    ['E32', '星语者 / 灵魂绑定通讯师 (Astropath)'],
-    ['E33', '审判庭圣剑修士 / 执行修士 (Crusader)'],
-    ['E34', '死亡邪教刺客(审判庭征召)'],
-    ['E35', '斯凯塔里流浪者(机械神教武装侍僧)'],
-    ['E36', '生物学僧 / 遗传学探索者 (Genetor)'],
-    ['E37', '电流神父 (Corpuscarii 教派)'],
-    ['E38', '高阶考古学僧 (Explorator)'],
-    ['E39', '随军技僧 / 工程师 (Enginseer)'],
+    ['E32', '星语者(审判庭编制)'],
+    ['E33', '审判庭圣剑修士'],
+    ['E34', '拜死教刺客(审判庭征召)'],
+    ['E35', '武装侍僧'],
+    ['E36', '遗传学探索者'],
+    ['E37', '电流神父'],
+    ['E38', '高阶考古学僧'],
+    ['E39', '随军技僧'],
   ],
   F: [
     ['F0', '随机 / 自定义'],
@@ -487,9 +487,22 @@ function isOptionAllowed(field, code, s = state) {
     if (eTag === 'mech' && dTag && dTag !== 'mech') {
       return { ok: false, reason: '仅限机械神教立场' };
     }
-    // 机械神教严格:选了机械神教立场,职业必须是 mech
     if (dTag === 'mech' && eTag !== 'mech') {
       return { ok: false, reason: '机械神教立场仅限神教职业' };
+    }
+
+    // === H12 机械神教培育人 三角绑定 ===
+    const h = pick('H');
+    if (h === 'H12' && eTag !== 'mech') {
+      return { ok: false, reason: '机械神教培育人需神教职业' };
+    }
+    if (h && h !== 'H12' && eTag === 'mech') {
+      return { ok: false, reason: '神教职业需 H12 背景' };
+    }
+
+    // === H13 穿越者不能成为阿斯塔特 ===
+    if (h === 'H13' && ASTARTES.includes(code)) {
+      return { ok: false, reason: '穿越者无法成为阿斯塔特' };
     }
   }
 
@@ -511,15 +524,41 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'D') {
     const dTag = stanceTag(code);
     const eTag = e ? professionTag(e) : null;
+    const h = pick('H');
     if (eTag === 'iq' && dTag !== 'iq') {
       return { ok: false, reason: '审判庭职业仅配审判庭立场' };
     }
     if (eTag === 'mech' && dTag !== 'mech') {
       return { ok: false, reason: '机械神教职业仅配神教立场' };
     }
-    // 选了普通职业,不能选机械神教立场(神教严格)
     if (eTag === 'common' && dTag === 'mech') {
       return { ok: false, reason: '机械神教立场不容普通职业' };
+    }
+    // H12 绑定
+    if (h === 'H12' && dTag !== 'mech') {
+      return { ok: false, reason: '机械神教培育人需神教立场' };
+    }
+    if (h && h !== 'H12' && dTag === 'mech') {
+      return { ok: false, reason: '神教立场需 H12 背景' };
+    }
+  }
+
+  // === 背景(H)页:根据当前立场/职业反向约束 ===
+  if (field === 'H') {
+    const dTag = d ? stanceTag(d) : null;
+    const eTag = e ? professionTag(e) : null;
+    if (code === 'H12') {
+      // 只有机械神教立场 / 神教职业 才能选 H12
+      if (dTag && dTag !== 'mech') return { ok: false, reason: 'H12 需机械神教立场' };
+      if (eTag && eTag !== 'mech') return { ok: false, reason: 'H12 需神教职业' };
+    } else {
+      // 非 H12 背景不能配神教立场/职业
+      if (dTag === 'mech') return { ok: false, reason: '神教立场必选 H12' };
+      if (eTag === 'mech') return { ok: false, reason: '神教职业必选 H12' };
+    }
+    // H13 穿越者:当前职业是阿斯塔特则不可选
+    if (code === 'H13' && ASTARTES.includes(e)) {
+      return { ok: false, reason: '阿斯塔特无法是穿越者' };
     }
   }
 
