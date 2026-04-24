@@ -10,8 +10,8 @@
 
   /* 深蓝灰墨水 */
   --wh-ink: #1e2230;
-  --wh-ink-soft: #3a3f52;
-  --wh-ink-mute: #6a6e7a;
+  --wh-ink-soft: #2a2f3e;
+  --wh-ink-mute: #4a4e5c;
 
   /* 金铜 */
   --wh-bronze: #8a6a38;
@@ -159,10 +159,11 @@
 }
 
 .wh40k-builder-subtitle {
-  font-size: 12px;
-  color: var(--wh-ink-soft);
+  font-size: 13px;
+  color: var(--wh-ink);
   font-style: italic;
   letter-spacing: 0.02em;
+  font-weight: 500;
 }
 
 .wh40k-icon-btn {
@@ -195,9 +196,9 @@
 }
 
 .wh40k-step {
-  border: 1px solid var(--wh-bronze-dim);
+  border: 1px solid var(--wh-bronze);
   background: var(--wh-parch-light);
-  color: var(--wh-ink-soft);
+  color: var(--wh-ink);
   border-radius: 2px;
   padding: 10px;
   cursor: pointer;
@@ -208,6 +209,7 @@
   text-align: left;
   transition: all .15s;
   font-family: inherit;
+  font-weight: 600;
 }
 
 .wh40k-step span {
@@ -217,17 +219,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid currentColor;
-  font-size: 12px;
+  border: 1px solid var(--wh-bronze);
+  font-size: 13px;
   font-weight: 700;
   font-family: "Georgia", serif;
-  background: var(--wh-parch);
+  background: var(--wh-parch-dark);
+  color: var(--wh-ink);
 }
 
 .wh40k-step small {
   font-size: 12px;
   letter-spacing: 0.04em;
   font-family: "Georgia", serif;
+  font-weight: 600;
 }
 
 .wh40k-step.active {
@@ -303,7 +307,7 @@
 
 .wh40k-side-desc {
   font-size: 13px;
-  color: var(--wh-ink-soft);
+  color: var(--wh-ink);
   line-height: 1.55;
   font-style: italic;
 }
@@ -396,7 +400,7 @@
 
 .wh40k-page-desc {
   font-size: 14px;
-  color: var(--wh-ink-soft);
+  color: var(--wh-ink);
   font-style: italic;
   line-height: 1.5;
 }
@@ -652,10 +656,11 @@
 
 .wh40k-warning-box {
   font-size: 12px;
-  color: var(--wh-speaker);
+  color: var(--wh-speaker-dim);
   line-height: 1.5;
   flex: 1;
   font-style: italic;
+  font-weight: 600;
 }
 
 .wh40k-actions {
@@ -793,4 +798,229 @@
   .wh40k-splash::after {
     font-size: 140px;
   }
+}
+/* =================================================================
+   WH40K Imperial Gothic — Rogue Trader Inspired Theme
+   粘贴到:用户设置 → 自定义 CSS (Custom CSS)
+   ================================================================= */
+
+:root {
+  --wh-parch: #e4d6b3;
+  --wh-parch-light: #f0e3c3;
+  --wh-parch-dark: #c2a87a;
+  --wh-ink: #1e2230;
+  --wh-ink-soft: #3a3f52;
+  --wh-bronze: #8a6a38;
+  --wh-bronze-bright: #c9a24b;
+  --wh-bronze-dim: #5e4a28;
+  --wh-speaker: #8b2040;
+  --wh-speaker-bright: #a93255;
+  --wh-moss: #2d3a2a;
+  --wh-moss-light: #3d4c38;
+  --wh-moss-dark: #1a2218;
+  --wh-moss-gold: #c9a465;
+}
+
+/* === 通用消息基础重置 === */
+.mes {
+  border: 0 !important;
+  border-radius: 2px !important;
+  margin: 10px 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  position: relative !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,.45) !important;
+}
+
+/* =================================================================
+   AI 消息 —— 羊皮纸文书(Rogue Trader NPC 对话风)
+   ================================================================= */
+.mes[is_user="false"] {
+  background:
+    radial-gradient(ellipse at 50% 30%, var(--wh-parch-light) 0%, var(--wh-parch) 55%, var(--wh-parch-dark) 100%) !important;
+  color: var(--wh-ink) !important;
+  border: 1px solid var(--wh-bronze) !important;
+  box-shadow: 0 3px 12px rgba(0,0,0,.5), inset 0 0 40px rgba(120,90,40,.12) !important;
+}
+
+/* AI 消息顶部金铜装饰条 */
+.mes[is_user="false"]::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(180deg, #e4c278 0%, #8a6a38 45%, #5e4a28 100%);
+  border-bottom: 1px solid #3a2e18;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* AI 消息底部金铜装饰条 */
+.mes[is_user="false"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(0deg, #e4c278 0%, #8a6a38 45%, #5e4a28 100%);
+  border-top: 1px solid #3a2e18;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* AI 消息正文 */
+.mes[is_user="false"] .mes_text {
+  color: var(--wh-ink) !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  line-height: 1.8 !important;
+  padding: 18px 20px 16px !important;
+  text-shadow: 0 1px 0 rgba(255,245,215,.3) !important;
+}
+
+/* AI 说话人名字 —— 紫红朱砂 */
+.mes[is_user="false"] .ch_name,
+.mes[is_user="false"] .name_text {
+  color: var(--wh-speaker) !important;
+  font-family: Georgia, serif !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.05em !important;
+  text-shadow: 0 1px 0 rgba(255,245,215,.4) !important;
+}
+
+/* AI 消息中的加粗 —— 紫红 */
+.mes[is_user="false"] .mes_text strong,
+.mes[is_user="false"] .mes_text b {
+  color: var(--wh-speaker) !important;
+  font-weight: 700 !important;
+}
+
+/* 斜体 —— 深铜色,像注释 */
+.mes[is_user="false"] .mes_text em,
+.mes[is_user="false"] .mes_text i {
+  color: var(--wh-bronze-dim) !important;
+  font-style: italic !important;
+}
+
+/* 引用块 —— 像圣典引文 */
+.mes[is_user="false"] .mes_text blockquote {
+  border-left: 3px double var(--wh-speaker) !important;
+  background: rgba(139,32,64,.05) !important;
+  padding: 10px 14px !important;
+  margin: 10px 0 !important;
+  color: var(--wh-ink) !important;
+  font-style: italic !important;
+}
+
+/* 代码块 */
+.mes[is_user="false"] .mes_text code {
+  background: rgba(45,58,42,.9) !important;
+  color: var(--wh-moss-gold) !important;
+  border: 1px solid var(--wh-bronze-dim) !important;
+  padding: 1px 6px !important;
+  border-radius: 2px !important;
+  font-size: 0.9em !important;
+}
+
+.mes[is_user="false"] .mes_text pre {
+  background: linear-gradient(180deg, var(--wh-moss), var(--wh-moss-dark)) !important;
+  border: 1px solid var(--wh-bronze) !important;
+  border-radius: 2px !important;
+  padding: 12px 14px !important;
+  color: var(--wh-moss-gold) !important;
+}
+
+/* =================================================================
+   用户消息 —— 墨绿对话选项(Rogue Trader 玩家选项风)
+   ================================================================= */
+.mes[is_user="true"] {
+  background: linear-gradient(180deg, var(--wh-moss-light) 0%, var(--wh-moss-dark) 100%) !important;
+  color: var(--wh-moss-gold) !important;
+  border: 1px solid var(--wh-bronze-bright) !important;
+  box-shadow: 0 3px 12px rgba(0,0,0,.55), inset 0 0 0 1px rgba(201,162,75,.2) !important;
+}
+
+/* 用户消息正文 */
+.mes[is_user="true"] .mes_text {
+  color: var(--wh-moss-gold) !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  line-height: 1.75 !important;
+  padding: 14px 18px !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.7) !important;
+}
+
+/* 用户名字 —— 亮金 */
+.mes[is_user="true"] .ch_name,
+.mes[is_user="true"] .name_text {
+  color: var(--wh-bronze-bright) !important;
+  font-family: Georgia, serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.8) !important;
+}
+
+/* 加粗 —— 更亮金 */
+.mes[is_user="true"] .mes_text strong,
+.mes[is_user="true"] .mes_text b {
+  color: #f0d06a !important;
+  font-weight: 700 !important;
+}
+
+/* 斜体 —— 淡金带 italic */
+.mes[is_user="true"] .mes_text em,
+.mes[is_user="true"] .mes_text i {
+  color: var(--wh-bronze-bright) !important;
+  font-style: italic !important;
+}
+
+/* 用户消息里的代码 —— 反过来用羊皮纸 */
+.mes[is_user="true"] .mes_text code {
+  background: var(--wh-parch) !important;
+  color: var(--wh-ink) !important;
+  border: 1px solid var(--wh-bronze-bright) !important;
+  padding: 1px 6px !important;
+  border-radius: 2px !important;
+}
+
+/* =================================================================
+   输入框 —— 墨绿+金边(RT 选项输入区)
+   ================================================================= */
+#send_textarea {
+  background: linear-gradient(180deg, var(--wh-moss) 0%, var(--wh-moss-dark) 100%) !important;
+  border: 1px solid var(--wh-bronze-bright) !important;
+  color: var(--wh-moss-gold) !important;
+  font-family: Georgia, serif !important;
+  border-radius: 2px !important;
+}
+
+#send_textarea::placeholder {
+  color: rgba(201,164,101,.55) !important;
+  font-style: italic !important;
+}
+
+#send_textarea:focus {
+  border-color: #f0d06a !important;
+  box-shadow: 0 0 0 1px #f0d06a, 0 0 10px rgba(201,162,75,.3) !important;
+}
+
+/* 发送按钮 */
+#send_but,
+#send_but i {
+  color: var(--wh-bronze-bright) !important;
+}
+
+#send_but:hover {
+  color: #f0d06a !important;
+}
+
+/* 编辑消息按钮 */
+.mes_edit_done,
+.mes_edit_cancel,
+.mes_edit_delete {
+  color: var(--wh-speaker) !important;
+}
+
+/* 用户消息上的编辑按钮 —— 改金色 */
+.mes[is_user="true"] .mes_edit_done,
+.mes[is_user="true"] .mes_edit_cancel,
+.mes[is_user="true"] .mes_edit_delete {
+  color: var(--wh-bronze-bright) !important;
 }
