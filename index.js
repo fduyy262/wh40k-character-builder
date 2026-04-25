@@ -235,19 +235,19 @@ const DEFAULT_STATE = {
 };
 
 const PAGE_TITLES = {
-  0: '开始游戏',
+  0: '初始化',
   1: '基础信息',
-  2: '身份与立场',
+  2: '身份立场',
   3: '剧情燃料',
-  4: '命运牵引',
+  4: '命运档案',
 };
 
 const PAGE_DESCRIPTIONS = {
-  0: '点击进入角色创建。你将依次完成基础信息、社会身份、剧情燃料与命运牵引。',
-  1: '填写名字、种族、年龄、性别与外貌。',
-  2: '选择星球、阵营、职业与人物背景。',
-  3: '选择初始资源、初始秘密与初始羁绊。',
-  4: '最后选择主线卷入等级，并确认发送角色模板。',
+  0: '点击进入终端,开始您的公民登记。您将依次完成基础信息、身份立场、剧情燃料与命运档案四项提交。',
+  1: '// SECTION.01 — 提交姓名、血统、年龄、性别与生理特征。',
+  2: '// SECTION.02 — 指定出生星界、阵营宣誓、职业配给与身世档案。',
+  3: '// SECTION.03 — 声明初始资源、初始秘密与初始羁绊。',
+  4: '// SECTION.04 — 选择主线卷入等级。该字段非本终端标准模组,来源未知。',
 };
 
 let state = { ...DEFAULT_STATE };
@@ -696,7 +696,7 @@ function resetState() {
 
 function closeBuilder() {
   overlay?.classList.remove('open');
-  if (launcher) launcher.textContent = '⚔ 角色创建器';
+  if (launcher) launcher.textContent = '[⚔ 角色创建器]';
   // Restore body scroll
   document.documentElement.style.overflow = '';
   document.body.style.overflow = '';
@@ -708,10 +708,101 @@ function openBuilder(forcePage = null) {
   if (typeof forcePage === 'number') currentPage = forcePage;
   render();
   overlay.classList.add('open');
-  if (launcher) launcher.textContent = '✕ 关闭创建器';
+  if (launcher) launcher.textContent = '[✕ 关闭终端]';
   // Lock body scroll so the modal truly feels full-screen
   document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
+}
+
+function injectChatStyles() {
+  if (document.getElementById('wh40k-chat-injected-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'wh40k-chat-injected-styles';
+  style.textContent = `
+    /* === WH40K 用户消息:终端命令行样式 === */
+    .mes[is_user="true"] .mes_block,
+    .mes.is_user .mes_block,
+    .last_mes[is_user="true"] .mes_block {
+      background: linear-gradient(180deg, #0f1a0c 0%, #06120a 100%) !important;
+      border: 1px solid #4a5f42 !important;
+      border-left: 3px solid #7ae07a !important;
+      border-radius: 2px !important;
+      box-shadow: 0 3px 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(122,224,122,.08) !important;
+    }
+    .mes[is_user="true"] .mes_text,
+    .mes.is_user .mes_text {
+      color: #c8e8c0 !important;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace !important;
+      line-height: 1.7 !important;
+      padding: 12px 14px !important;
+      text-shadow: 0 0 4px rgba(122,224,122,.18) !important;
+      position: relative !important;
+    }
+    .mes[is_user="true"] .mes_text::before,
+    .mes.is_user .mes_text::before {
+      content: "> ";
+      color: #7ae07a;
+      font-weight: 700;
+      text-shadow: 0 0 6px rgba(122,224,122,.6);
+    }
+    .mes[is_user="true"] .ch_name,
+    .mes[is_user="true"] .name_text,
+    .mes.is_user .ch_name,
+    .mes.is_user .name_text {
+      color: #7ae07a !important;
+      font-family: ui-monospace, Menlo, Consolas, monospace !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.12em !important;
+      text-shadow: 0 0 4px rgba(122,224,122,.4) !important;
+    }
+    .mes[is_user="true"] .mes_text strong,
+    .mes.is_user .mes_text strong,
+    .mes[is_user="true"] .mes_text b,
+    .mes.is_user .mes_text b {
+      color: #b8ffb8 !important;
+      font-weight: 700 !important;
+    }
+    .mes[is_user="true"] .mes_text em,
+    .mes.is_user .mes_text em,
+    .mes[is_user="true"] .mes_text i,
+    .mes.is_user .mes_text i {
+      color: #88c888 !important;
+      font-style: italic !important;
+    }
+    .mes[is_user="true"] .mes_text code,
+    .mes.is_user .mes_text code {
+      background: rgba(0,0,0,.5) !important;
+      color: #ffb84d !important;
+      border: 1px solid #5e4a28 !important;
+      padding: 1px 6px !important;
+      border-radius: 2px !important;
+    }
+
+    /* === 输入框:绿色终端命令行 === */
+    #send_textarea {
+      background: linear-gradient(180deg, #0f1a0c 0%, #06120a 100%) !important;
+      border: 1px solid #4a5f42 !important;
+      border-left: 3px solid #7ae07a !important;
+      color: #c8e8c0 !important;
+      font-family: ui-monospace, Menlo, Consolas, monospace !important;
+      border-radius: 2px !important;
+      text-shadow: 0 0 4px rgba(122,224,122,.18) !important;
+    }
+    #send_textarea::placeholder {
+      color: rgba(122,224,122,.45) !important;
+      font-style: italic !important;
+    }
+    #send_textarea:focus {
+      border-color: #7ae07a !important;
+      box-shadow: 0 0 0 1px #7ae07a, 0 0 10px rgba(122,224,122,.25) !important;
+    }
+    #send_but, #send_but i {
+      color: #7ae07a !important;
+    }
+    #send_but:hover { color: #b8ffb8 !important; }
+  `;
+  document.head.appendChild(style);
+  console.log(`[${EXT_ID}] chat styles injected`);
 }
 
 function makeLauncher() {
@@ -719,7 +810,7 @@ function makeLauncher() {
   launcher = document.createElement('button');
   launcher.id = 'wh40k-builder-launcher';
   launcher.type = 'button';
-  launcher.textContent = '⚔ 角色创建器';
+  launcher.textContent = '[⚔ 角色创建器]';
   // Appearance handled by style.css; only position is forced here to guarantee visibility.
   launcher.style.cssText = 'position:fixed;top:64px;right:12px;z-index:10000';
   launcher.addEventListener('click', () => {
@@ -741,10 +832,10 @@ function createOverlay() {
     <div class="wh40k-builder-modal">
       <div class="wh40k-builder-header">
         <div>
-          <div class="wh40k-builder-title">战锤40K · 第0轮角色创建器</div>
-          <div class="wh40k-builder-subtitle">五页式角色创建流程：基础信息 → 身份与立场 → 剧情燃料 → 命运牵引。</div>
+          <div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div>
+          <div class="wh40k-builder-subtitle">ADEPTVS ADMINISTRATVM / CITIZEN_REGISTRY_v4.0.7.1</div>
         </div>
-        <button type="button" class="wh40k-icon-btn" data-action="close" aria-label="关闭">×</button>
+        <button type="button" class="wh40k-icon-btn" data-action="close" aria-label="关闭">[X]</button>
       </div>
       <div class="wh40k-builder-progress"></div>
       <div class="wh40k-builder-main">
@@ -754,9 +845,9 @@ function createOverlay() {
       <div class="wh40k-builder-footer">
         <div class="wh40k-warning-box"></div>
         <div class="wh40k-actions">
-          <button type="button" class="wh40k-btn" data-action="reset">重置</button>
-          <button type="button" class="wh40k-btn" data-action="back">上一步</button>
-          <button type="button" class="wh40k-btn primary" data-action="next">下一步</button>
+          <button type="button" class="wh40k-btn" data-action="reset">[ RESET ]</button>
+          <button type="button" class="wh40k-btn" data-action="back">&lt; PREV</button>
+          <button type="button" class="wh40k-btn primary" data-action="next">NEXT &gt;</button>
         </div>
       </div>
     </div>
@@ -821,11 +912,11 @@ function renderSidebar() {
       <div class="wh40k-summary-list"></div>
     </div>
     <div class="wh40k-side-card">
-      <div class="wh40k-side-title">模板预览</div>
+      <div class="wh40k-side-title">模板预览 / DATA_STREAM</div>
       <pre class="wh40k-payload-preview"></pre>
     </div>
     <div class="wh40k-side-card">
-      <div class="wh40k-side-title">兼容性提示</div>
+      <div class="wh40k-side-title">兼容性提示 / SYS_CHECK</div>
       <ul class="wh40k-warning-list"></ul>
     </div>
   `;
@@ -937,10 +1028,10 @@ function renderPageContent() {
     const splash = document.createElement('div');
     splash.className = 'wh40k-splash';
     splash.innerHTML = `
-      <div class="wh40k-splash-quote">祂注视着你……</div>
-      <div class="wh40k-splash-line">「做出你的选择。」</div>
-      <div class="wh40k-splash-text">这一界面不会立刻发言。你将在最后一页确认后，才会一次性发送角色模板。</div>
-      <button type="button" class="wh40k-btn primary wh40k-start-btn">开始创建角色</button>
+      <div class="wh40k-splash-quote">AWAITING INPUT</div>
+      <div class="wh40k-splash-line">请公民接入终端 · 开始登记</div>
+      <div class="wh40k-splash-text">此终端不会即时提交。您将在第 5 节完成全部登记后,一次性提交档案。填写期间,字段可随时修改或重置。</div>
+      <button type="button" class="wh40k-btn primary wh40k-start-btn">[ BEGIN REGISTRATION ]</button>
     `;
     splash.querySelector('.wh40k-start-btn').addEventListener('click', () => {
       currentPage = 1;
@@ -960,13 +1051,13 @@ function renderPageContent() {
     const finalCard = document.createElement('section');
     finalCard.className = 'wh40k-final-card';
     finalCard.innerHTML = `
-      <div class="wh40k-final-title">最终确认</div>
-      <div class="wh40k-final-text">将发送以下模板。若自动写入失败,会复制到剪贴板供你粘贴。</div>
+      <div class="wh40k-final-title">最终提交 / FINAL_SUBMIT</div>
+      <div class="wh40k-final-text">&gt; 以下为即将上传至大行政官案头的档案数据流。若自动传输失败,将改写至剪贴板供您手动粘贴。</div>
       <pre class="wh40k-payload-preview wh40k-final-preview"></pre>
       <div class="wh40k-final-actions">
-        <button type="button" class="wh40k-btn" data-action="fill-only">只写入输入框</button>
-        <button type="button" class="wh40k-btn" data-action="copy-payload">复制模板</button>
-        <button type="button" class="wh40k-btn primary" data-action="confirm-send">确认并发送</button>
+        <button type="button" class="wh40k-btn" data-action="fill-only">[ WRITE ONLY ]</button>
+        <button type="button" class="wh40k-btn" data-action="copy-payload">[ COPY ]</button>
+        <button type="button" class="wh40k-btn primary" data-action="confirm-send">★ SUBMIT ★</button>
       </div>
     `;
     finalCard.querySelector('.wh40k-final-preview').textContent = buildPayload();
@@ -997,7 +1088,7 @@ function renderFooterButtons() {
     next.style.display = 'none';
   } else {
     next.style.display = '';
-    next.textContent = currentPage === 0 ? '进入下一页' : '下一步';
+    next.textContent = currentPage === 0 ? 'BEGIN >' : 'NEXT >';
   }
 }
 
@@ -1163,6 +1254,7 @@ function init() {
   try {
     makeLauncher();
     createOverlay();
+    injectChatStyles();
     console.log(`[${EXT_ID}] launcher + overlay DOM inserted`);
   } catch (e) {
     console.error(`[${EXT_ID}] failed to build DOM`, e);

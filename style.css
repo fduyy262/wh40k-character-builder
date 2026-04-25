@@ -1,38 +1,32 @@
-/* WH40K Character Builder — Rogue Trader Inspired Theme */
+/* WH40K Character Builder — Cogitator Terminal Theme */
 
 :root {
-  /* 羊皮纸 */
-  --wh-parch: #e4d6b3;
-  --wh-parch-light: #f0e3c3;
-  --wh-parch-mid: #d8c8a0;
-  --wh-parch-dark: #c2a87a;
-  --wh-parch-edge: #a89072;
+  /* CRT / 终端 */
+  --wh-bg-0: #100a04;
+  --wh-bg-1: #1a0f05;
+  --wh-bg-2: #241708;
+  --wh-bg-deep: #0a0604;
 
-  /* 深蓝灰墨水 */
-  --wh-ink: #1e2230;
-  --wh-ink-soft: #2a2f3e;
-  --wh-ink-mute: #4a4e5c;
+  /* 琥珀磷光 */
+  --wh-amber: #ffb84d;
+  --wh-amber-bright: #ffd280;
+  --wh-amber-dim: #cc7a1a;
+  --wh-amber-deep: #8a6a38;
+  --wh-amber-soft: #e0cf9a;
 
-  /* 金铜 */
-  --wh-bronze: #8a6a38;
-  --wh-bronze-bright: #c9a24b;
+  /* 金铜边 */
+  --wh-bronze: #c9a24b;
   --wh-bronze-dim: #5e4a28;
+  --wh-bronze-deep: #3a2e18;
 
-  /* 紫红朱砂(说话人 / 标题) */
-  --wh-speaker: #8b2040;
-  --wh-speaker-bright: #a93255;
-  --wh-speaker-dim: #5a1628;
+  /* 状态色 */
+  --wh-ok: #7ae07a;
+  --wh-warn: #ffcc40;
+  --wh-err: #c92030;
+  --wh-err-soft: #d94a2e;
 
-  /* 墨绿(按钮 / 选项) */
-  --wh-moss: #2d3a2a;
-  --wh-moss-light: #3d4c38;
-  --wh-moss-dark: #1a2218;
-  --wh-moss-border: #4a5f42;
-  --wh-moss-gold: #c9a465;
-
-  /* 冲突红 */
-  --wh-blood: #8b1a1a;
-  --wh-blood-bright: #c0392b;
+  --wh-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  --wh-serif: "Georgia", "Times New Roman", serif;
 }
 
 /* === Launcher === */
@@ -41,24 +35,25 @@
   top: 64px;
   right: 12px;
   z-index: 10000;
-  padding: 10px 18px;
+  padding: 9px 16px;
   border-radius: 2px;
-  border: 1px solid var(--wh-bronze-bright);
-  background: linear-gradient(180deg, var(--wh-moss-light) 0%, var(--wh-moss-dark) 100%);
-  color: var(--wh-moss-gold);
-  font-family: "Georgia", "Times New Roman", serif;
+  border: 1px solid var(--wh-bronze);
+  background: linear-gradient(180deg, var(--wh-bg-2) 0%, var(--wh-bg-0) 100%);
+  color: var(--wh-amber);
+  font-family: var(--wh-serif);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  text-shadow: 0 1px 2px rgba(0,0,0,.8);
-  box-shadow: 0 4px 14px rgba(0,0,0,.5), inset 0 0 0 1px rgba(201,162,75,.3);
+  text-shadow: 0 0 6px rgba(255,184,77,.4), 0 1px 2px rgba(0,0,0,.8);
+  box-shadow: 0 4px 14px rgba(0,0,0,.6), inset 0 0 0 1px rgba(201,162,75,.25);
   cursor: pointer;
   transition: all .2s;
 }
 
 #wh40k-builder-launcher:hover {
-  background: linear-gradient(180deg, var(--wh-moss) 0%, #0e1208 100%);
-  box-shadow: 0 4px 20px rgba(201,162,75,.4), inset 0 0 0 1px var(--wh-bronze-bright);
+  border-color: var(--wh-amber);
+  color: var(--wh-amber-bright);
+  box-shadow: 0 4px 20px rgba(255,184,77,.3), inset 0 0 0 1px var(--wh-amber);
 }
 
 /* === Overlay === */
@@ -69,7 +64,7 @@
   height: 100vh;
   height: 100dvh;
   z-index: 999999;
-  background: radial-gradient(ellipse at center, rgba(30,20,10,.88) 0%, rgba(5,3,2,.97) 70%);
+  background: radial-gradient(ellipse at center, rgba(20,12,4,.92) 0%, rgba(0,0,0,.98) 70%);
   display: none;
   align-items: stretch;
   justify-content: stretch;
@@ -79,57 +74,53 @@
 
 #wh40k-builder-overlay.open { display: flex; }
 
-/* === Modal:羊皮纸卷宗 === */
+/* === Modal === */
 .wh40k-builder-modal {
   width: 100%;
   height: 100%;
   max-width: 1280px;
   max-height: 980px;
   margin: auto;
-  background:
-    radial-gradient(ellipse at 50% 30%, var(--wh-parch-light) 0%, var(--wh-parch) 50%, var(--wh-parch-dark) 100%);
-  color: var(--wh-ink);
-  border: 1px solid var(--wh-bronze);
+  background: linear-gradient(180deg, var(--wh-bg-1) 0%, var(--wh-bg-0) 50%, var(--wh-bg-1) 100%);
+  color: var(--wh-amber-soft);
+  border: 1px solid var(--wh-bronze-dim);
   box-shadow:
-    0 0 24px rgba(0,0,0,.7),
-    0 0 0 1px var(--wh-bronze-bright),
-    inset 0 0 80px rgba(90,70,30,.18);
+    0 0 24px rgba(0,0,0,.8),
+    0 0 0 1px var(--wh-bronze-deep),
+    inset 0 0 80px rgba(255,170,51,.04);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   position: relative;
 }
 
-/* 顶部金铜装饰条 */
+/* 顶部/底部金铜条 */
 .wh40k-builder-modal::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0; right: 0;
-  height: 8px;
-  background: linear-gradient(180deg, #e4c278 0%, #8a6a38 45%, #5e4a28 100%);
-  border-bottom: 1px solid #3a2e18;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(180deg, #e4c278 0%, #8a6a38 50%, #3a2e18 100%);
+  border-bottom: 1px solid #2a1f10;
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
 }
 
-/* 底部金铜装饰条 */
 .wh40k-builder-modal::after {
   content: "";
   position: absolute;
-  bottom: 0;
-  left: 0; right: 0;
-  height: 8px;
-  background: linear-gradient(0deg, #e4c278 0%, #8a6a38 45%, #5e4a28 100%);
-  border-top: 1px solid #3a2e18;
+  bottom: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(0deg, #e4c278 0%, #8a6a38 50%, #3a2e18 100%);
+  border-top: 1px solid #2a1f10;
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
 }
 
 /* === Header === */
 .wh40k-builder-header {
-  padding: 24px 26px 16px;
-  border-bottom: 3px double var(--wh-bronze);
+  padding: 22px 22px 14px;
+  border-bottom: 1px dashed var(--wh-bronze-dim);
   background: transparent;
   display: flex;
   align-items: flex-start;
@@ -139,220 +130,281 @@
 }
 
 .wh40k-builder-title {
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 22px;
+  font-family: var(--wh-serif);
+  font-size: 20px;
   font-weight: 800;
   margin-bottom: 6px;
-  color: var(--wh-speaker);
-  letter-spacing: 0.06em;
-  text-shadow: 0 1px 0 rgba(255,245,215,.4);
+  color: var(--wh-amber);
+  letter-spacing: 0.14em;
+  text-shadow: 0 0 10px rgba(255,184,77,.35);
 }
 
 .wh40k-builder-title::before {
-  content: "☩ ";
-  color: var(--wh-bronze);
+  content: ">>> ";
+  color: var(--wh-amber-dim);
+  font-family: var(--wh-mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .wh40k-builder-title::after {
-  content: " ☩";
-  color: var(--wh-bronze);
+  content: " <<<";
+  color: var(--wh-amber-dim);
+  font-family: var(--wh-mono);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .wh40k-builder-subtitle {
-  font-size: 13px;
-  color: var(--wh-ink);
-  font-style: italic;
-  letter-spacing: 0.02em;
-  font-weight: 500;
+  font-size: 11px;
+  color: var(--wh-amber-dim);
+  letter-spacing: 0.08em;
+  font-family: var(--wh-mono);
 }
 
 .wh40k-icon-btn {
   border: 1px solid var(--wh-bronze);
-  background: var(--wh-parch-light);
-  color: var(--wh-speaker);
+  background: var(--wh-bg-deep);
+  color: var(--wh-amber);
   border-radius: 2px;
-  padding: 6px 12px;
+  padding: 7px 12px;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 13px;
   line-height: 1;
   font-weight: 700;
+  font-family: var(--wh-mono);
+  letter-spacing: 0.1em;
   transition: all .15s;
 }
 
 .wh40k-icon-btn:hover {
-  background: var(--wh-speaker);
-  color: var(--wh-parch-light);
-  border-color: var(--wh-speaker-dim);
+  background: var(--wh-err);
+  color: #fff;
+  border-color: var(--wh-err-soft);
+  text-shadow: 0 0 6px rgba(255,100,80,.6);
 }
 
-/* === Progress === */
+/* === Progress TABS === */
 .wh40k-builder-progress {
-  padding: 14px 22px;
+  padding: 12px 18px;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-  border-bottom: 1px solid var(--wh-bronze);
-  background: rgba(130,100,50,.07);
+  gap: 8px;
+  border-bottom: 1px solid var(--wh-bronze-dim);
+  background: rgba(255,170,51,.015);
 }
 
 .wh40k-step {
-  border: 1px solid var(--wh-bronze);
-  background: var(--wh-parch-light);
-  color: var(--wh-ink);
+  border: 1px solid var(--wh-bronze-dim);
+  background: var(--wh-bg-deep);
+  color: var(--wh-amber-deep);
   border-radius: 2px;
-  padding: 10px;
+  padding: 8px 10px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 5px;
   text-align: left;
   transition: all .15s;
-  font-family: inherit;
+  font-family: var(--wh-mono);
   font-weight: 600;
 }
 
 .wh40k-step span {
-  width: 26px;
-  height: 26px;
+  width: auto;
+  min-width: 40px;
+  height: auto;
   border-radius: 2px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--wh-bronze);
-  font-size: 13px;
+  border: 0;
+  font-size: 12px;
   font-weight: 700;
-  font-family: "Georgia", serif;
-  background: var(--wh-parch-dark);
-  color: var(--wh-ink);
+  font-family: var(--wh-mono);
+  background: transparent;
+  color: var(--wh-amber-deep);
+  padding: 1px 6px;
+  letter-spacing: 0.04em;
 }
 
+.wh40k-step span::before { content: "[ "; }
+.wh40k-step span::after { content: " ]"; }
+
 .wh40k-step small {
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.04em;
-  font-family: "Georgia", serif;
+  font-family: var(--wh-mono);
   font-weight: 600;
 }
 
 .wh40k-step.active {
-  border-color: var(--wh-moss-border);
-  color: var(--wh-moss-gold);
-  background: linear-gradient(180deg, var(--wh-moss-light), var(--wh-moss));
-  box-shadow: 0 0 0 1px var(--wh-bronze-bright) inset;
+  border-color: var(--wh-amber);
+  color: var(--wh-amber-bright);
+  background: rgba(255,184,77,.08);
+  box-shadow: 0 0 0 1px var(--wh-amber) inset, 0 0 10px rgba(255,184,77,.2);
 }
 
 .wh40k-step.active span {
-  background: var(--wh-moss-dark);
-  border-color: var(--wh-bronze-bright);
-  color: var(--wh-moss-gold);
+  color: var(--wh-amber-bright);
+  text-shadow: 0 0 6px rgba(255,184,77,.5);
 }
 
+.wh40k-step.active span::before { content: "[▸"; }
+.wh40k-step.active span::after { content: "◂]"; }
+
 .wh40k-step.done {
-  border-color: var(--wh-bronze);
-  color: var(--wh-bronze);
-  background: rgba(200,160,80,.08);
+  border-color: var(--wh-ok);
+  color: var(--wh-ok);
+  background: rgba(122,224,122,.05);
 }
+
+.wh40k-step.done span {
+  color: var(--wh-ok);
+}
+
+.wh40k-step.done span::before { content: "[✓"; }
+.wh40k-step.done span::after { content: " ]"; }
 
 /* === Main layout === */
 .wh40k-builder-main {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
   min-height: 0;
 }
 
 .wh40k-builder-sidebar {
   border-right: 1px solid var(--wh-bronze-dim);
-  padding: 18px;
+  padding: 16px;
   overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: rgba(180,150,90,.08);
+  background: rgba(10,6,4,.5);
 }
 
 .wh40k-builder-content {
-  padding: 22px;
+  padding: 20px;
   overflow: auto;
 }
 
 /* === Sidebar cards === */
 .wh40k-side-card {
-  border: 1px solid var(--wh-bronze);
+  border: 1px solid var(--wh-bronze-dim);
   border-radius: 2px;
-  background: var(--wh-parch-light);
+  background: var(--wh-bg-deep);
   padding: 14px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  position: relative;
+}
+
+.wh40k-side-card::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--wh-amber-dim), transparent);
+  pointer-events: none;
 }
 
 .wh40k-side-title {
-  font-family: "Georgia", serif;
-  font-size: 12px;
+  font-family: var(--wh-mono);
+  font-size: 11px;
   font-weight: 700;
   margin-bottom: 10px;
-  color: var(--wh-speaker);
-  letter-spacing: 0.15em;
+  color: var(--wh-amber-dim);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  border-bottom: 1px solid var(--wh-bronze);
+  border-bottom: 1px dashed var(--wh-bronze-dim);
   padding-bottom: 6px;
 }
 
+.wh40k-side-title::before {
+  content: "// ";
+  color: var(--wh-amber-deep);
+}
+
 .wh40k-side-page {
-  font-family: "Georgia", serif;
-  font-size: 19px;
+  font-family: var(--wh-serif);
+  font-size: 18px;
   font-weight: 700;
   margin-bottom: 8px;
-  color: var(--wh-speaker-bright);
+  color: var(--wh-amber);
+  text-shadow: 0 0 6px rgba(255,184,77,.25);
 }
 
 .wh40k-side-desc {
   font-size: 13px;
-  color: var(--wh-ink);
-  line-height: 1.55;
-  font-style: italic;
+  color: var(--wh-amber-soft);
+  line-height: 1.6;
 }
 
 .wh40k-summary-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .wh40k-summary-row {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: 52px auto 1fr;
+  gap: 6px;
   font-size: 12px;
   line-height: 1.45;
   padding: 3px 0;
-  border-bottom: 1px dashed rgba(139,105,60,.25);
+  font-family: var(--wh-mono);
+  border-bottom: 1px dotted rgba(139,105,60,.2);
 }
 
 .wh40k-summary-row span {
-  color: var(--wh-bronze);
-  font-family: "Georgia", serif;
+  color: var(--wh-amber-dim);
   letter-spacing: 0.05em;
-  text-transform: uppercase;
   font-size: 11px;
 }
 
+.wh40k-summary-row span::before { content: "["; color: var(--wh-amber-deep); }
+.wh40k-summary-row span::after { content: "]"; color: var(--wh-amber-deep); }
+
+/* = sign column (create pseudo via ::before on strong) */
 .wh40k-summary-row strong {
   font-weight: 600;
   word-break: break-word;
-  color: var(--wh-ink);
+  color: var(--wh-amber-bright);
+  grid-column: 3;
+}
+
+.wh40k-summary-row strong::before {
+  content: "= ";
+  color: var(--wh-amber-deep);
+  font-weight: 400;
 }
 
 .wh40k-payload-preview {
   margin: 0;
   white-space: pre-wrap;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--wh-mono);
   font-size: 12px;
   line-height: 1.5;
-  color: var(--wh-moss-gold);
-  background: linear-gradient(180deg, var(--wh-moss), var(--wh-moss-dark));
-  padding: 8px 10px;
+  color: var(--wh-amber-bright);
+  background: var(--wh-bg-deep);
+  padding: 10px 12px;
   border-radius: 2px;
-  border: 1px solid var(--wh-bronze);
+  border: 1px solid var(--wh-bronze-dim);
+  text-shadow: 0 0 6px rgba(255,184,77,.3);
+  position: relative;
+}
+
+.wh40k-payload-preview::before {
+  content: "> COMPILED:";
+  display: block;
+  font-size: 10px;
+  color: var(--wh-amber-deep);
+  letter-spacing: 0.15em;
+  margin-bottom: 6px;
+  text-shadow: none;
 }
 
 .wh40k-final-preview {
@@ -362,47 +414,55 @@
   max-height: 200px;
   overflow: auto;
   word-break: break-all;
-  box-shadow: inset 0 0 0 1px rgba(201,162,75,.2);
+  box-shadow: inset 0 0 0 1px rgba(255,184,77,.15);
 }
 
 .wh40k-warning-list {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   font-size: 12px;
-  line-height: 1.5;
-  color: var(--wh-ink);
+  line-height: 1.55;
+  color: var(--wh-warn);
+  font-family: var(--wh-mono);
 }
 
 .wh40k-warning-list li::marker {
-  color: var(--wh-speaker);
+  content: "[!] ";
+  color: var(--wh-warn);
 }
 
 /* === Content === */
 .wh40k-page-hero {
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 2px double var(--wh-bronze);
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--wh-bronze-dim);
   position: relative;
 }
 
 .wh40k-page-title {
-  font-family: "Georgia", serif;
-  font-size: 26px;
+  font-family: var(--wh-serif);
+  font-size: 24px;
   font-weight: 800;
   margin-bottom: 6px;
-  color: var(--wh-speaker);
+  color: var(--wh-amber);
   letter-spacing: 0.05em;
-  text-shadow: 0 1px 0 rgba(255,245,215,.4);
+  text-shadow: 0 0 10px rgba(255,184,77,.3);
+}
+
+.wh40k-page-title::before {
+  content: "▸ ";
+  color: var(--wh-amber-dim);
+  font-family: var(--wh-mono);
+  font-size: 20px;
 }
 
 .wh40k-page-desc {
-  font-size: 14px;
-  color: var(--wh-ink);
-  font-style: italic;
-  line-height: 1.5;
+  font-size: 13px;
+  color: var(--wh-amber-soft);
+  line-height: 1.6;
 }
 
 .wh40k-page-grid {
@@ -414,105 +474,160 @@
 .wh40k-section,
 .wh40k-final-card,
 .wh40k-splash {
-  border: 1px solid var(--wh-bronze);
+  border: 1px solid var(--wh-bronze-dim);
   border-radius: 2px;
-  background: var(--wh-parch-light);
-  padding: 16px;
+  background: var(--wh-bg-deep);
+  padding: 14px;
   position: relative;
-  box-shadow: 0 1px 4px rgba(0,0,0,.1);
+}
+
+.wh40k-section::before,
+.wh40k-final-card::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: -1px; right: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--wh-amber-dim) 40%, var(--wh-amber-dim) 60%, transparent);
+  pointer-events: none;
 }
 
 .wh40k-section h3,
 .wh40k-final-title {
-  margin: 0 0 12px;
-  font-family: "Georgia", serif;
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--wh-speaker);
-  letter-spacing: 0.08em;
+  margin: 0 0 10px;
+  font-family: var(--wh-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--wh-amber-dim);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--wh-bronze);
+  border-bottom: 1px dashed var(--wh-bronze-dim);
+}
+
+.wh40k-section h3::before,
+.wh40k-final-title::before {
+  content: "> ";
+  color: var(--wh-amber-deep);
 }
 
 /* === Options === */
 .wh40k-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .wh40k-option {
-  border: 1px solid var(--wh-bronze);
-  background: var(--wh-parch);
-  color: var(--wh-ink);
+  border: 1px solid var(--wh-bronze-dim);
+  background: var(--wh-bg-0);
+  color: var(--wh-amber-soft);
   border-radius: 2px;
-  padding: 9px 12px;
+  padding: 8px 11px;
   cursor: pointer;
   display: inline-flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   min-width: 112px;
   text-align: left;
-  font-family: inherit;
-  transition: all .15s;
+  font-family: var(--wh-mono);
+  transition: all .12s;
+  position: relative;
+  padding-left: 22px;
+}
+
+.wh40k-option::before {
+  content: "[ ]";
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  font-size: 11px;
+  color: var(--wh-amber-deep);
+  font-family: var(--wh-mono);
 }
 
 .wh40k-option:hover:not(.disabled):not(.active) {
-  border-color: var(--wh-speaker);
-  background: var(--wh-parch-light);
-  box-shadow: 0 2px 6px rgba(139,32,64,.18);
+  border-color: var(--wh-amber);
+  background: rgba(255,184,77,.06);
+  color: var(--wh-amber-bright);
+}
+
+.wh40k-option:hover:not(.disabled):not(.active)::before {
+  content: "[>]";
+  color: var(--wh-amber);
 }
 
 .wh40k-option-code {
-  font-family: "Georgia", serif;
+  font-family: var(--wh-mono);
   font-size: 11px;
-  color: var(--wh-bronze);
+  color: var(--wh-amber-dim);
   font-weight: 700;
   letter-spacing: 0.1em;
 }
 
 .wh40k-option-label {
-  font-size: 13px;
-  line-height: 1.4;
-  color: var(--wh-ink);
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--wh-amber-soft);
+  font-family: var(--wh-serif);
 }
 
-/* 已选:墨绿色填充 + 金字(RT 对话选项感) */
+/* === Option: ACTIVE (selected) === */
 .wh40k-option.active {
-  border-color: var(--wh-bronze-bright);
-  background: linear-gradient(180deg, var(--wh-moss-light), var(--wh-moss));
-  box-shadow: 0 0 0 1px var(--wh-bronze-bright) inset, 0 2px 8px rgba(0,0,0,.25);
+  border-color: var(--wh-ok);
+  background: rgba(122,224,122,.08);
+  box-shadow: 0 0 0 1px var(--wh-ok) inset, 0 0 10px rgba(122,224,122,.15);
+}
+
+.wh40k-option.active::before {
+  content: "[✓]";
+  color: var(--wh-ok);
+  text-shadow: 0 0 6px rgba(122,224,122,.5);
 }
 
 .wh40k-option.active .wh40k-option-code {
-  color: var(--wh-bronze-bright);
+  color: var(--wh-ok);
 }
 
 .wh40k-option.active .wh40k-option-label {
-  color: var(--wh-moss-gold);
+  color: #cfffcf;
 }
 
-/* 禁用 */
+/* === Option: DISABLED === */
 .wh40k-option.disabled {
   opacity: .42;
   cursor: not-allowed;
-  filter: grayscale(.6);
-  background: var(--wh-parch-dark);
+  filter: grayscale(.5);
+  background: var(--wh-bg-deep);
+}
+
+.wh40k-option.disabled::before {
+  content: "[⊘]";
+  color: #666;
 }
 
 .wh40k-option.disabled:hover {
   border-color: var(--wh-bronze-dim);
-  background: var(--wh-parch-dark);
-  box-shadow: none;
+  background: var(--wh-bg-deep);
 }
 
-/* 冲突 */
+.wh40k-option.disabled:hover::before {
+  content: "[⊘]";
+  color: #666;
+}
+
+/* === Option: CONFLICT === */
 .wh40k-option.conflict {
   opacity: 1 !important;
   filter: none !important;
-  border-color: var(--wh-blood-bright) !important;
-  background: linear-gradient(180deg, #5a1a1a, #3a0e0e) !important;
-  box-shadow: 0 0 0 1px var(--wh-blood-bright) inset, 0 0 12px rgba(192,57,43,.4) !important;
+  border-color: var(--wh-err) !important;
+  background: rgba(201,48,48,.12) !important;
+  box-shadow: 0 0 0 1px var(--wh-err) inset, 0 0 12px rgba(201,48,48,.3) !important;
+}
+
+.wh40k-option.conflict::before {
+  content: "[!]" !important;
+  color: var(--wh-err) !important;
+  text-shadow: 0 0 6px rgba(201,48,48,.6);
 }
 
 .wh40k-option.conflict .wh40k-option-code,
@@ -524,14 +639,22 @@
   display: block;
   margin-top: 3px;
   font-size: 10px;
-  color: var(--wh-blood);
-  letter-spacing: 0.04em;
-  font-style: italic;
+  color: var(--wh-err);
+  letter-spacing: 0.1em;
+  font-family: var(--wh-mono);
   font-weight: 600;
+}
+
+.wh40k-option-badge::before {
+  content: "⊘ ";
 }
 
 .wh40k-option.conflict .wh40k-option-badge {
   color: #ff9a83;
+}
+
+.wh40k-option.conflict .wh40k-option-badge::before {
+  content: "[!] ";
 }
 
 /* === Name input === */
@@ -546,12 +669,16 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 12px;
-  color: var(--wh-speaker);
-  letter-spacing: 0.08em;
+  font-size: 11px;
+  color: var(--wh-amber-dim);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  font-family: "Georgia", serif;
+  font-family: var(--wh-mono);
   font-weight: 700;
+}
+
+.wh40k-name-box label::before {
+  content: "> INPUT:";
 }
 
 .wh40k-name-box input {
@@ -559,19 +686,19 @@
   box-sizing: border-box;
   border-radius: 2px;
   border: 1px solid var(--wh-bronze);
-  background: var(--wh-parch-light);
-  color: var(--wh-ink);
+  background: var(--wh-bg-deep);
+  color: var(--wh-amber-bright);
   padding: 10px 12px;
-  font-family: "Georgia", serif;
+  font-family: var(--wh-mono);
   font-size: 14px;
   transition: all .15s;
+  text-shadow: 0 0 6px rgba(255,184,77,.3);
 }
 
 .wh40k-name-box input:focus {
   outline: none;
-  border-color: var(--wh-speaker);
-  box-shadow: 0 0 0 1px var(--wh-speaker);
-  background: #fff;
+  border-color: var(--wh-amber);
+  box-shadow: 0 0 0 1px var(--wh-amber), 0 0 10px rgba(255,184,77,.3);
 }
 
 /* === Splash(开始页) === */
@@ -583,54 +710,57 @@
   min-height: 340px;
   justify-content: center;
   text-align: center;
-  padding: 40px 22px;
+  padding: 50px 24px;
   background:
-    radial-gradient(ellipse at center, var(--wh-parch-light) 0%, var(--wh-parch) 70%, var(--wh-parch-dark) 100%);
+    radial-gradient(ellipse at center, rgba(255,170,51,.06) 0%, transparent 70%),
+    var(--wh-bg-deep);
   overflow: hidden;
+  position: relative;
 }
 
 .wh40k-splash::after {
   content: "☩";
   position: absolute;
-  bottom: -30px;
+  bottom: -40px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 180px;
-  color: var(--wh-bronze);
-  opacity: .12;
+  font-size: 200px;
+  color: var(--wh-amber-dim);
+  opacity: .08;
   line-height: 1;
   pointer-events: none;
-  text-shadow: 2px 2px 0 rgba(0,0,0,.25), -1px -1px 0 rgba(255,245,215,.5);
 }
 
 .wh40k-splash-quote {
-  font-family: "Georgia", serif;
-  font-size: 32px;
+  font-family: var(--wh-serif);
+  font-size: 30px;
   font-weight: 800;
-  color: var(--wh-speaker);
+  color: var(--wh-amber);
   letter-spacing: 0.08em;
-  text-shadow: 0 1px 0 rgba(255,245,215,.5);
+  text-shadow: 0 0 16px rgba(255,184,77,.4), 0 1px 0 rgba(0,0,0,.5);
   position: relative;
   z-index: 1;
 }
 
 .wh40k-splash-line {
-  font-family: "Georgia", serif;
-  font-size: 18px;
-  color: var(--wh-ink);
-  font-style: italic;
-  letter-spacing: 0.03em;
+  font-family: var(--wh-mono);
+  font-size: 14px;
+  color: var(--wh-amber-dim);
+  letter-spacing: 0.15em;
   position: relative;
   z-index: 1;
 }
 
+.wh40k-splash-line::before { content: ">>> "; }
+.wh40k-splash-line::after { content: " <<<"; }
+
 .wh40k-splash-text,
 .wh40k-final-text {
   font-size: 13px;
-  color: var(--wh-ink-soft);
-  line-height: 1.7;
+  color: var(--wh-amber-soft);
+  line-height: 1.75;
   max-width: 480px;
-  font-style: italic;
+  font-family: var(--wh-mono);
   position: relative;
   z-index: 1;
 }
@@ -645,8 +775,8 @@
 /* === Footer === */
 .wh40k-builder-footer {
   padding: 14px 22px;
-  border-top: 3px double var(--wh-bronze);
-  background: rgba(130,100,50,.07);
+  border-top: 1px dashed var(--wh-bronze-dim);
+  background: rgba(10,6,4,.4);
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -656,59 +786,67 @@
 
 .wh40k-warning-box {
   font-size: 12px;
-  color: var(--wh-speaker-dim);
+  color: var(--wh-warn);
   line-height: 1.5;
   flex: 1;
-  font-style: italic;
+  font-family: var(--wh-mono);
   font-weight: 600;
+}
+
+.wh40k-warning-box::before {
+  content: "[!] ";
+  color: var(--wh-warn);
 }
 
 .wh40k-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
-/* === Buttons === */
+/* === Buttons:终端命令按钮 === */
 .wh40k-btn {
   border: 1px solid var(--wh-bronze);
-  background: var(--wh-parch-light);
-  color: var(--wh-ink);
+  background: var(--wh-bg-deep);
+  color: var(--wh-amber);
   border-radius: 2px;
-  padding: 10px 20px;
+  padding: 9px 16px;
   cursor: pointer;
-  font-family: "Georgia", serif;
-  font-size: 13px;
+  font-family: var(--wh-mono);
+  font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  transition: all .15s;
+  letter-spacing: 0.15em;
+  transition: all .12s;
+  text-transform: uppercase;
 }
 
 .wh40k-btn:hover:not(:disabled) {
-  border-color: var(--wh-speaker);
-  color: var(--wh-speaker);
-  background: #fff;
-  box-shadow: 0 2px 6px rgba(139,32,64,.2);
+  border-color: var(--wh-amber);
+  color: var(--wh-amber-bright);
+  background: rgba(255,184,77,.08);
+  text-shadow: 0 0 6px rgba(255,184,77,.4);
+  box-shadow: 0 0 10px rgba(255,184,77,.15);
 }
 
+/* Primary: 执行类 */
 .wh40k-btn.primary {
-  border: 1px solid var(--wh-bronze-bright);
-  background: linear-gradient(180deg, var(--wh-moss-light), var(--wh-moss));
-  color: var(--wh-moss-gold);
-  text-shadow: 0 1px 2px rgba(0,0,0,.8);
-  box-shadow: inset 0 0 0 1px rgba(201,162,75,.3), 0 2px 6px rgba(0,0,0,.3);
+  border: 1px solid var(--wh-ok);
+  background: rgba(122,224,122,.08);
+  color: var(--wh-ok);
+  text-shadow: 0 0 6px rgba(122,224,122,.4);
+  box-shadow: inset 0 0 0 1px rgba(122,224,122,.15), 0 0 8px rgba(122,224,122,.15);
 }
 
 .wh40k-btn.primary:hover:not(:disabled) {
-  background: linear-gradient(180deg, var(--wh-moss), var(--wh-moss-dark));
-  color: #f0d06a;
-  box-shadow: inset 0 0 0 1px var(--wh-bronze-bright), 0 0 16px rgba(201,162,75,.3);
+  background: rgba(122,224,122,.18);
+  color: #d4ffd4;
+  box-shadow: inset 0 0 0 1px var(--wh-ok), 0 0 18px rgba(122,224,122,.35);
 }
 
 .wh40k-btn:disabled {
-  opacity: .4;
+  opacity: .35;
   cursor: not-allowed;
-  color: var(--wh-ink-mute);
+  color: var(--wh-amber-deep);
 }
 
 /* === Responsive === */
@@ -716,10 +854,9 @@
   .wh40k-builder-main {
     grid-template-columns: 1fr;
   }
-
   .wh40k-builder-sidebar {
     border-right: 0;
-    border-bottom: 1px solid var(--wh-bronze);
+    border-bottom: 1px solid var(--wh-bronze-dim);
     max-height: 34vh;
   }
 }
@@ -734,31 +871,37 @@
 
   .wh40k-builder-progress {
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 6px;
-    padding: 10px 12px;
+    gap: 4px;
+    padding: 8px 10px;
   }
 
   .wh40k-step {
-    padding: 8px;
+    padding: 6px 4px;
   }
 
   .wh40k-step small {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   .wh40k-builder-header,
   .wh40k-builder-content,
   .wh40k-builder-footer {
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .wh40k-builder-title {
-    font-size: 18px;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+  }
+
+  .wh40k-builder-title::before,
+  .wh40k-builder-title::after {
+    font-size: 12px;
   }
 
   .wh40k-builder-sidebar {
-    padding: 14px;
+    padding: 12px;
     max-height: 30vh;
   }
 
@@ -782,245 +925,22 @@
 
   .wh40k-actions .wh40k-btn {
     flex: 1;
+    padding: 9px 10px;
+    letter-spacing: 0.08em;
   }
 
   #wh40k-builder-launcher {
     top: 60px;
     right: 10px;
-    padding: 8px 12px;
+    padding: 7px 12px;
     font-size: 12px;
   }
 
   .wh40k-splash-quote {
-    font-size: 26px;
+    font-size: 24px;
   }
 
   .wh40k-splash::after {
     font-size: 140px;
   }
-}
-/* =================================================================
-   WH40K Imperial Gothic — Rogue Trader Inspired Theme
-   粘贴到:用户设置 → 自定义 CSS (Custom CSS)
-   ================================================================= */
-
-:root {
-  --wh-parch: #e4d6b3;
-  --wh-parch-light: #f0e3c3;
-  --wh-parch-dark: #c2a87a;
-  --wh-ink: #1e2230;
-  --wh-ink-soft: #3a3f52;
-  --wh-bronze: #8a6a38;
-  --wh-bronze-bright: #c9a24b;
-  --wh-bronze-dim: #5e4a28;
-  --wh-speaker: #8b2040;
-  --wh-speaker-bright: #a93255;
-  --wh-moss: #2d3a2a;
-  --wh-moss-light: #3d4c38;
-  --wh-moss-dark: #1a2218;
-  --wh-moss-gold: #c9a465;
-}
-
-/* === 通用消息基础重置 === */
-.mes {
-  border: 0 !important;
-  border-radius: 2px !important;
-  margin: 10px 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  position: relative !important;
-  box-shadow: 0 3px 10px rgba(0,0,0,.45) !important;
-}
-
-/* =================================================================
-   AI 消息 —— 羊皮纸文书(Rogue Trader NPC 对话风)
-   ================================================================= */
-.mes[is_user="false"] {
-  background:
-    radial-gradient(ellipse at 50% 30%, var(--wh-parch-light) 0%, var(--wh-parch) 55%, var(--wh-parch-dark) 100%) !important;
-  color: var(--wh-ink) !important;
-  border: 1px solid var(--wh-bronze) !important;
-  box-shadow: 0 3px 12px rgba(0,0,0,.5), inset 0 0 40px rgba(120,90,40,.12) !important;
-}
-
-/* AI 消息顶部金铜装饰条 */
-.mes[is_user="false"]::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 5px;
-  background: linear-gradient(180deg, #e4c278 0%, #8a6a38 45%, #5e4a28 100%);
-  border-bottom: 1px solid #3a2e18;
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* AI 消息底部金铜装饰条 */
-.mes[is_user="false"]::after {
-  content: "";
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 5px;
-  background: linear-gradient(0deg, #e4c278 0%, #8a6a38 45%, #5e4a28 100%);
-  border-top: 1px solid #3a2e18;
-  pointer-events: none;
-  z-index: 2;
-}
-
-/* AI 消息正文 */
-.mes[is_user="false"] .mes_text {
-  color: var(--wh-ink) !important;
-  font-family: Georgia, "Times New Roman", serif !important;
-  line-height: 1.8 !important;
-  padding: 18px 20px 16px !important;
-  text-shadow: 0 1px 0 rgba(255,245,215,.3) !important;
-}
-
-/* AI 说话人名字 —— 紫红朱砂 */
-.mes[is_user="false"] .ch_name,
-.mes[is_user="false"] .name_text {
-  color: var(--wh-speaker) !important;
-  font-family: Georgia, serif !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.05em !important;
-  text-shadow: 0 1px 0 rgba(255,245,215,.4) !important;
-}
-
-/* AI 消息中的加粗 —— 紫红 */
-.mes[is_user="false"] .mes_text strong,
-.mes[is_user="false"] .mes_text b {
-  color: var(--wh-speaker) !important;
-  font-weight: 700 !important;
-}
-
-/* 斜体 —— 深铜色,像注释 */
-.mes[is_user="false"] .mes_text em,
-.mes[is_user="false"] .mes_text i {
-  color: var(--wh-bronze-dim) !important;
-  font-style: italic !important;
-}
-
-/* 引用块 —— 像圣典引文 */
-.mes[is_user="false"] .mes_text blockquote {
-  border-left: 3px double var(--wh-speaker) !important;
-  background: rgba(139,32,64,.05) !important;
-  padding: 10px 14px !important;
-  margin: 10px 0 !important;
-  color: var(--wh-ink) !important;
-  font-style: italic !important;
-}
-
-/* 代码块 */
-.mes[is_user="false"] .mes_text code {
-  background: rgba(45,58,42,.9) !important;
-  color: var(--wh-moss-gold) !important;
-  border: 1px solid var(--wh-bronze-dim) !important;
-  padding: 1px 6px !important;
-  border-radius: 2px !important;
-  font-size: 0.9em !important;
-}
-
-.mes[is_user="false"] .mes_text pre {
-  background: linear-gradient(180deg, var(--wh-moss), var(--wh-moss-dark)) !important;
-  border: 1px solid var(--wh-bronze) !important;
-  border-radius: 2px !important;
-  padding: 12px 14px !important;
-  color: var(--wh-moss-gold) !important;
-}
-
-/* =================================================================
-   用户消息 —— 墨绿对话选项(Rogue Trader 玩家选项风)
-   ================================================================= */
-.mes[is_user="true"] {
-  background: linear-gradient(180deg, var(--wh-moss-light) 0%, var(--wh-moss-dark) 100%) !important;
-  color: var(--wh-moss-gold) !important;
-  border: 1px solid var(--wh-bronze-bright) !important;
-  box-shadow: 0 3px 12px rgba(0,0,0,.55), inset 0 0 0 1px rgba(201,162,75,.2) !important;
-}
-
-/* 用户消息正文 */
-.mes[is_user="true"] .mes_text {
-  color: var(--wh-moss-gold) !important;
-  font-family: Georgia, "Times New Roman", serif !important;
-  line-height: 1.75 !important;
-  padding: 14px 18px !important;
-  text-shadow: 0 1px 2px rgba(0,0,0,.7) !important;
-}
-
-/* 用户名字 —— 亮金 */
-.mes[is_user="true"] .ch_name,
-.mes[is_user="true"] .name_text {
-  color: var(--wh-bronze-bright) !important;
-  font-family: Georgia, serif !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.1em !important;
-  text-shadow: 0 1px 2px rgba(0,0,0,.8) !important;
-}
-
-/* 加粗 —— 更亮金 */
-.mes[is_user="true"] .mes_text strong,
-.mes[is_user="true"] .mes_text b {
-  color: #f0d06a !important;
-  font-weight: 700 !important;
-}
-
-/* 斜体 —— 淡金带 italic */
-.mes[is_user="true"] .mes_text em,
-.mes[is_user="true"] .mes_text i {
-  color: var(--wh-bronze-bright) !important;
-  font-style: italic !important;
-}
-
-/* 用户消息里的代码 —— 反过来用羊皮纸 */
-.mes[is_user="true"] .mes_text code {
-  background: var(--wh-parch) !important;
-  color: var(--wh-ink) !important;
-  border: 1px solid var(--wh-bronze-bright) !important;
-  padding: 1px 6px !important;
-  border-radius: 2px !important;
-}
-
-/* =================================================================
-   输入框 —— 墨绿+金边(RT 选项输入区)
-   ================================================================= */
-#send_textarea {
-  background: linear-gradient(180deg, var(--wh-moss) 0%, var(--wh-moss-dark) 100%) !important;
-  border: 1px solid var(--wh-bronze-bright) !important;
-  color: var(--wh-moss-gold) !important;
-  font-family: Georgia, serif !important;
-  border-radius: 2px !important;
-}
-
-#send_textarea::placeholder {
-  color: rgba(201,164,101,.55) !important;
-  font-style: italic !important;
-}
-
-#send_textarea:focus {
-  border-color: #f0d06a !important;
-  box-shadow: 0 0 0 1px #f0d06a, 0 0 10px rgba(201,162,75,.3) !important;
-}
-
-/* 发送按钮 */
-#send_but,
-#send_but i {
-  color: var(--wh-bronze-bright) !important;
-}
-
-#send_but:hover {
-  color: #f0d06a !important;
-}
-
-/* 编辑消息按钮 */
-.mes_edit_done,
-.mes_edit_cancel,
-.mes_edit_delete {
-  color: var(--wh-speaker) !important;
-}
-
-/* 用户消息上的编辑按钮 —— 改金色 */
-.mes[is_user="true"] .mes_edit_done,
-.mes[is_user="true"] .mes_edit_cancel,
-.mes[is_user="true"] .mes_edit_delete {
-  color: var(--wh-bronze-bright) !important;
 }
