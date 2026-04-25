@@ -752,95 +752,12 @@ function openBuilder(forcePage = null) {
   document.body.style.overflow = 'hidden';
 }
 
+// === injectChatStyles 已移除 ===
+// 之前注入了 #send_textarea 的全局绿色样式以及 .mes[is_user] 的用户消息样式
+// 现在改为通过 SillyTavern 世界书或 Author's Note 注入对话框样式,扩展不再污染全局
 function injectChatStyles() {
-  if (document.getElementById('wh40k-chat-injected-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'wh40k-chat-injected-styles';
-  style.textContent = `
-    /* === WH40K 用户消息:终端命令行样式 === */
-    .mes[is_user="true"] .mes_block,
-    .mes.is_user .mes_block,
-    .last_mes[is_user="true"] .mes_block {
-      background: linear-gradient(180deg, #0f1a0c 0%, #06120a 100%) !important;
-      border: 1px solid #4a5f42 !important;
-      border-left: 3px solid #7ae07a !important;
-      border-radius: 2px !important;
-      box-shadow: 0 3px 10px rgba(0,0,0,.5), inset 0 0 0 1px rgba(122,224,122,.08) !important;
-    }
-    .mes[is_user="true"] .mes_text,
-    .mes.is_user .mes_text {
-      color: #c8e8c0 !important;
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace !important;
-      line-height: 1.7 !important;
-      padding: 12px 14px !important;
-      text-shadow: 0 0 4px rgba(122,224,122,.18) !important;
-      position: relative !important;
-    }
-    .mes[is_user="true"] .mes_text::before,
-    .mes.is_user .mes_text::before {
-      content: "> ";
-      color: #7ae07a;
-      font-weight: 700;
-      text-shadow: 0 0 6px rgba(122,224,122,.6);
-    }
-    .mes[is_user="true"] .ch_name,
-    .mes[is_user="true"] .name_text,
-    .mes.is_user .ch_name,
-    .mes.is_user .name_text {
-      color: #7ae07a !important;
-      font-family: ui-monospace, Menlo, Consolas, monospace !important;
-      font-weight: 700 !important;
-      letter-spacing: 0.12em !important;
-      text-shadow: 0 0 4px rgba(122,224,122,.4) !important;
-    }
-    .mes[is_user="true"] .mes_text strong,
-    .mes.is_user .mes_text strong,
-    .mes[is_user="true"] .mes_text b,
-    .mes.is_user .mes_text b {
-      color: #b8ffb8 !important;
-      font-weight: 700 !important;
-    }
-    .mes[is_user="true"] .mes_text em,
-    .mes.is_user .mes_text em,
-    .mes[is_user="true"] .mes_text i,
-    .mes.is_user .mes_text i {
-      color: #88c888 !important;
-      font-style: italic !important;
-    }
-    .mes[is_user="true"] .mes_text code,
-    .mes.is_user .mes_text code {
-      background: rgba(0,0,0,.5) !important;
-      color: #ffb84d !important;
-      border: 1px solid #5e4a28 !important;
-      padding: 1px 6px !important;
-      border-radius: 2px !important;
-    }
-
-    /* === 输入框:绿色终端命令行 === */
-    #send_textarea {
-      background: linear-gradient(180deg, #0f1a0c 0%, #06120a 100%) !important;
-      border: 1px solid #4a5f42 !important;
-      border-left: 3px solid #7ae07a !important;
-      color: #c8e8c0 !important;
-      font-family: ui-monospace, Menlo, Consolas, monospace !important;
-      border-radius: 2px !important;
-      text-shadow: 0 0 4px rgba(122,224,122,.18) !important;
-    }
-    #send_textarea::placeholder {
-      color: rgba(122,224,122,.45) !important;
-      font-style: italic !important;
-    }
-    #send_textarea:focus {
-      border-color: #7ae07a !important;
-      box-shadow: 0 0 0 1px #7ae07a, 0 0 10px rgba(122,224,122,.25) !important;
-    }
-    #send_but, #send_but i {
-      color: #7ae07a !important;
-    }
-    #send_but:hover { color: #b8ffb8 !important; }
-  `;
-  document.head.appendChild(style);
-  console.log(`[${EXT_ID}] chat styles injected`);
+  // no-op: 保留函数以避免调用方崩溃,但什么都不注入
+  return;
 }
 
 function makeLauncher() {
