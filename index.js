@@ -69,7 +69,6 @@ const OPTIONS = {
   C: [
     ['C0', '随机'],
     ['C1', '正常人类'],
-    ['C2', '莱特林'],
     ['C3', '虚空之子'],
     ['C4', '不可接触者'],
     ['C5', '领航者'],
@@ -442,8 +441,7 @@ function trySendMessage(text) {
 // - E17-E20 阿斯塔特: 需 G1 男 + C1 正常人类
 // - E3 修女会: 需 G2 女 + 种族 ∈ {C1, C3, C4, C6}
 // - E7 机械神甫: 非 C4
-// - E10 流浪骑士: 非 C2/C6
-// - C2 莱特林 禁: E3 / E10 / E17-E20
+// - E10 流浪骑士: 非 C6
 // - C4 不可接触者 禁: E7 / E17-E20
 // - C5 领航者 禁: E1/E2/E3/E4/E5/E6/E7/E8/E17-E20/E21/E22/E25
 // - C6 猫人 禁: E10 / E17-E20
@@ -500,7 +498,6 @@ function isOptionAllowed(field, code, s = state) {
   const d = pick('D');
 
   const ASTARTES = ['E17', 'E18', 'E19', 'E20'];
-  const LETIN_BAN = ['E3', 'E10', ...ASTARTES];
   const CAT_BAN = ['E10', ...ASTARTES];
   const UNTOUCHABLE_BAN = ['E7', ...ASTARTES];
   const NAVIGATOR_BAN = ['E1','E2','E3','E4','E5','E6','E7','E8',...ASTARTES,'E21','E22','E25'];
@@ -515,9 +512,8 @@ function isOptionAllowed(field, code, s = state) {
       if (g && g !== 'G2') return { ok: false, reason: '仅限女性' };
       if (c && !SISTER_RACES.includes(c)) return { ok: false, reason: '当前种族不可' };
     }
-    if (code === 'E10' && (c === 'C2' || c === 'C6')) return { ok: false, reason: '当前种族不可' };
+    if (code === 'E10' && c === 'C6') return { ok: false, reason: '猫人不可担任' };
     if (code === 'E7' && c === 'C4') return { ok: false, reason: '不可接触者不适合' };
-    if (c === 'C2' && LETIN_BAN.includes(code)) return { ok: false, reason: '莱特林不可担任' };
     if (c === 'C6' && CAT_BAN.includes(code)) return { ok: false, reason: '猫人不可担任' };
     if (c === 'C4' && UNTOUCHABLE_BAN.includes(code)) return { ok: false, reason: '不可接触者不适合' };
     if (c === 'C5' && NAVIGATOR_BAN.includes(code)) return { ok: false, reason: '领航者不适合' };
@@ -553,7 +549,6 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'C') {
     if (ASTARTES.includes(e) && code !== 'C1') return { ok: false, reason: '阿斯塔特仅限 C1' };
     if (e === 'E3' && !SISTER_RACES.includes(code)) return { ok: false, reason: '修女会种族受限' };
-    if (code === 'C2' && LETIN_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
     if (code === 'C6' && CAT_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
     if (code === 'C4' && UNTOUCHABLE_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
     if (code === 'C5' && NAVIGATOR_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
@@ -659,10 +654,6 @@ function getWarnings() {
     warnings.push('领航者通常不适合修会附属路径，系统可能会改写为更贴近虚空贵族的身份。');
   }
 
-  if (state.C === 'C2' && ['E3', 'E10', 'E17', 'E18', 'E19', 'E20'].includes(state.E)) {
-    warnings.push('莱特林与当前职业组合不合法，AI会自动校正。');
-  }
-
   if (state.C === 'C6' && ['E10', 'E17', 'E18', 'E19', 'E20'].includes(state.E)) {
     warnings.push('猫人与当前职业组合不合法，AI会自动校正。');
   }
@@ -709,6 +700,8 @@ function loadDraftState() {
     const savedPage = ctx.chatMetadata?.[getMetaKey('page')];
     if (savedState && typeof savedState === 'object') {
       state = { ...DEFAULT_STATE, ...savedState };
+      // 旧版本可能保存了 C2(莱特林),已弃用 → 自动重置 C 字段
+      if (state.C === 'C2') state.C = 'C0';
     } else {
       state = { ...DEFAULT_STATE };
     }
@@ -880,7 +873,7 @@ function createOverlay() {
           <div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div>
           <div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v4.0.7.1</div>
         </div>
-        <button type="button" class="wh40k-icon-btn" data-action="close" aria-label="关闭">[ × ]</button>
+        <button type="button" class="wh40k-icon-btn" data-action="close" aria-label="关闭">[×]</button>
       </div>
       <div class="wh40k-builder-progress"></div>
       <div class="wh40k-builder-main">
