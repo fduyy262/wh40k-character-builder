@@ -4,13 +4,25 @@ const AUTO_OPEN_FOR_EMPTY_CHAT = true;
 const AUTO_SEND_AFTER_FILL = true;
 
 const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'N'];
+// 7 页结构:
+// 0 = splash 起始页
+// 1 = 基础信息(B 名字 / C 种族 / F 年龄 / G 性别 / I 外貌)
+// 2 = 出身来历(A 星球 / H 背景)
+// 3 = 身份立场(D 立场 / E 职业)
+// 4 = 初始情况(K 资源 / L 秘密 / N 羁绊)
+// 5 = 命运牵连(J 主线卷入)
+// 6 = 最终提交
 const PAGE_FIELDS = [
-  [],
-  ['B', 'C', 'F', 'G', 'I'],
-  ['A', 'D', 'E', 'H'],
-  ['K', 'L', 'N'],
-  ['J'],
+  [],                                  // 0 splash
+  ['B', 'C', 'F', 'G', 'I'],          // 1 基础信息
+  ['A', 'H'],                          // 2 出身来历
+  ['D', 'E'],                          // 3 身份立场
+  ['K', 'L', 'N'],                     // 4 初始情况
+  ['J'],                               // 5 命运牵连(特殊样式)
+  [],                                  // 6 最终提交
 ];
+const TOTAL_PAGES = PAGE_FIELDS.length;
+const FINAL_PAGE = TOTAL_PAGES - 1;
 
 const FIELD_TITLES = {
   A: 'A. 所在星球',
@@ -22,7 +34,7 @@ const FIELD_TITLES = {
   G: 'G. 性别',
   H: 'H. 人物背景',
   I: 'I. 外貌',
-  J: 'J. 命运牵引 / 主线卷入',
+  J: 'J. ??_????',
   K: 'K. 初始资源 / 开局条件',
   L: 'L. 初始秘密 / 隐藏命运',
   N: 'N. 初始羁绊',
@@ -234,26 +246,58 @@ const DEFAULT_STATE = {
   NAME: '',
 };
 
-const PAGE_TITLES = {
-  0: '初始化',
-  1: '基础信息',
-  2: '身份立场',
-  3: '剧情燃料',
-  4: '命运档案',
+// 7 页结构的标题与描述。索引 5 是 J 字段(命运牵连),特殊样式。
+function buildPageTitles() {
+  return {
+    0: '初始化',
+    1: '基础信息',
+    2: '出身来历',
+    3: '身份立场',
+    4: '初始情况',
+    5: '命运牵连',  // J 栏 - 特殊
+    6: '最终提交',
+  };
+}
+
+function buildPageDescriptions() {
+  return {
+    0: '点击下方按钮接入终端,开始您的公民登记。您将依次完成 5 节登记表。',
+    1: '// 第一节 — 您的姓名、血统、年龄、性别与外貌。',
+    2: '// 第二节 — 您的出生星球与身世背景。',
+    3: '// 第三节 — 您当前的阵营立场与职业。',
+    4: '// 第四节 — 您当前持有的资源、秘密与羁绊。',
+    5: '// ??_???? / [NON_STANDARD_FIELD] — 来源未知的字段',
+    6: '// 复核全部档案,提交至大行政官案头。',
+  };
+}
+
+const FIELD_DESCRIPTIONS = {
+  A: '声明您的出生星界。不同星界的居民承担不同的命运基底。',
+  B: '为您的灵魂指定一个识别符。',
+  C: '提交您的人类血统校准。非标准血统将受到额外关注。',
+  D: '宣誓您当前的阵营立场。审判庭与机械神教编制将锁定后续职业。',
+  E: '提交您的职业配给。本字段受立场与种族限制。',
+  F: '声明您的出生年份。',
+  G: '声明您的性别。某些职业仅限特定性别。',
+  H: '提交您的身世档案。背景将影响您的出场剧情。',
+  I: '描述您的生理特征与外貌。',
+  J: '※ NON_STANDARD_FIELD — 来源未知,请谨慎填写。 ※',
+  K: '声明您当前持有的资源与起始状态。',
+  L: '坦白您的初始秘密或潜伏命运。',
+  N: '登记您当前的核心羁绊。',
 };
 
-const PAGE_DESCRIPTIONS = {
-  0: '点击进入终端,开始您的公民登记。您将依次完成基础信息、身份立场、剧情燃料与命运档案四项提交。',
-  1: '// SECTION.01 — 提交姓名、血统、年龄、性别与生理特征。',
-  2: '// SECTION.02 — 指定出生星界、阵营宣誓、职业配给与身世档案。',
-  3: '// SECTION.03 — 声明初始资源、初始秘密与初始羁绊。',
-  4: '// SECTION.04 — 选择主线卷入等级。该字段非本终端标准模组,来源未知。',
-};
+const PAGE_TITLES = {};
+const PAGE_DESCRIPTIONS = {};
 
 let state = { ...DEFAULT_STATE };
 let currentPage = 0;
 let overlay = null;
 let launcher = null;
+
+// 在加载时填充派生数据
+Object.assign(PAGE_TITLES, buildPageTitles());
+Object.assign(PAGE_DESCRIPTIONS, buildPageDescriptions());
 
 function getCtx() {
   if (typeof SillyTavern === 'undefined' || typeof SillyTavern.getContext !== 'function') {
@@ -639,9 +683,10 @@ function getWarnings() {
 }
 
 function canProceedFromPage(page) {
-  if (page !== 1) return { ok: true, message: '' };
-  if (state.B === 'B1' && !state.NAME.trim()) {
-    return { ok: false, message: '请先填写自定义名字，或改回默认名字。' };
+  // B 字段现在在页 1(姓名页)
+  const fields = PAGE_FIELDS[page] || [];
+  if (fields.includes('B') && state.B === 'B1' && !state.NAME.trim()) {
+    return { ok: false, message: '请先填写自定义名字,或改回默认名字。' };
   }
   return { ok: true, message: '' };
 }
@@ -833,21 +878,20 @@ function createOverlay() {
       <div class="wh40k-builder-header">
         <div>
           <div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div>
-          <div class="wh40k-builder-subtitle">ADEPTVS ADMINISTRATVM / CITIZEN_REGISTRY_v4.0.7.1</div>
+          <div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v4.0.7.1</div>
         </div>
-        <button type="button" class="wh40k-icon-btn" data-action="close" aria-label="关闭">[X]</button>
+        <button type="button" class="wh40k-icon-btn" data-action="close" aria-label="关闭">[ × ]</button>
       </div>
       <div class="wh40k-builder-progress"></div>
       <div class="wh40k-builder-main">
-        <aside class="wh40k-builder-sidebar"></aside>
         <section class="wh40k-builder-content"></section>
       </div>
       <div class="wh40k-builder-footer">
         <div class="wh40k-warning-box"></div>
         <div class="wh40k-actions">
-          <button type="button" class="wh40k-btn" data-action="reset">[ RESET ]</button>
-          <button type="button" class="wh40k-btn" data-action="back">&lt; PREV</button>
-          <button type="button" class="wh40k-btn primary" data-action="next">NEXT &gt;</button>
+          <button type="button" class="wh40k-btn" data-action="reset">[ 重置 ]</button>
+          <button type="button" class="wh40k-btn" data-action="back">&lt; 上一步</button>
+          <button type="button" class="wh40k-btn primary" data-action="next">下一步 &gt;</button>
         </div>
       </div>
     </div>
@@ -869,15 +913,42 @@ function renderProgress() {
   const el = overlay.querySelector('.wh40k-builder-progress');
   el.innerHTML = '';
 
-  for (let i = 0; i < 5; i++) {
-    const item = document.createElement('button');
-    item.type = 'button';
-    item.className = 'wh40k-step';
-    item.dataset.page = String(i);
-    if (i === currentPage) item.classList.add('active');
-    if (i < currentPage) item.classList.add('done');
-    item.innerHTML = `<span>${i + 1}</span><small>${PAGE_TITLES[i]}</small>`;
-    item.addEventListener('click', () => {
+  // 起始页:仅显示 "等候输入" 文字,不显示进度
+  if (currentPage === 0) {
+    el.innerHTML = `<div class="wh40k-progress-label">// 等 候 输 入 //</div>`;
+    return;
+  }
+
+  // 最终页:显示 "档案就绪 / 提交"
+  if (currentPage === FINAL_PAGE) {
+    el.innerHTML = `<div class="wh40k-progress-label" style="color:#7ae07a;">// 档 案 就 绪 / 待 提 交 //</div>`;
+    return;
+  }
+
+  // 字段节(1-5):左侧"第 X / 5 节 · 标题",右侧 5 个圆点
+  const sectionIndex = currentPage; // 1..5
+  const total = TOTAL_PAGES - 2; // 5 节(去掉 splash + final)
+
+  const left = document.createElement('div');
+  left.className = 'wh40k-progress-label';
+  // J 栏(命运牵连)用血红色提示
+  const isJSection = currentPage === 5;
+  const labelColor = isJSection ? '#c92030' : '#ffb84d';
+  left.innerHTML = `第 <span style="color:${labelColor};font-weight:700;">${sectionIndex}</span> / ${total} 节 · <span style="${isJSection ? 'color:#c92030;font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:0.05em;' : ''}">${PAGE_TITLES[currentPage]}</span>`;
+  el.appendChild(left);
+
+  const dots = document.createElement('div');
+  dots.className = 'wh40k-progress-dots';
+  for (let i = 1; i <= total; i++) {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'wh40k-dot';
+    dot.dataset.page = String(i);
+    if (i === currentPage) dot.classList.add('active');
+    else if (i < currentPage) dot.classList.add('done');
+    if (i === 5) dot.classList.add('anomaly'); // J 栏特殊圆点
+    dot.title = PAGE_TITLES[i];
+    dot.addEventListener('click', () => {
       if (i === currentPage) return;
       if (i > currentPage) {
         for (let p = currentPage; p < i; p++) {
@@ -892,63 +963,16 @@ function renderProgress() {
       saveDraftState();
       render();
     });
-    el.appendChild(item);
+    dots.appendChild(dot);
   }
-}
-
-function renderSidebar() {
-  const side = overlay.querySelector('.wh40k-builder-sidebar');
-  const warnings = getWarnings();
-  const summary = buildSummaryRows();
-
-  side.innerHTML = `
-    <div class="wh40k-side-card">
-      <div class="wh40k-side-title">当前页面</div>
-      <div class="wh40k-side-page">${PAGE_TITLES[currentPage]}</div>
-      <div class="wh40k-side-desc">${PAGE_DESCRIPTIONS[currentPage]}</div>
-    </div>
-    <div class="wh40k-side-card">
-      <div class="wh40k-side-title">角色摘要</div>
-      <div class="wh40k-summary-list"></div>
-    </div>
-    <div class="wh40k-side-card">
-      <div class="wh40k-side-title">模板预览 / DATA_STREAM</div>
-      <pre class="wh40k-payload-preview"></pre>
-    </div>
-    <div class="wh40k-side-card">
-      <div class="wh40k-side-title">兼容性提示 / SYS_CHECK</div>
-      <ul class="wh40k-warning-list"></ul>
-    </div>
-  `;
-
-  const summaryList = side.querySelector('.wh40k-summary-list');
-  summary.forEach(([label, value]) => {
-    const row = document.createElement('div');
-    row.className = 'wh40k-summary-row';
-    row.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
-    summaryList.appendChild(row);
-  });
-
-  side.querySelector('.wh40k-payload-preview').textContent = buildPayload();
-
-  const warningList = side.querySelector('.wh40k-warning-list');
-  if (warnings.length === 0) {
-    const li = document.createElement('li');
-    li.textContent = '当前组合无强制拦截。若有世界观冲突，AI会在开场自动修正。';
-    warningList.appendChild(li);
-  } else {
-    warnings.forEach((w) => {
-      const li = document.createElement('li');
-      li.textContent = w;
-      warningList.appendChild(li);
-    });
-  }
+  el.appendChild(dots);
 }
 
 function makeOptionButton(field, code, label) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'wh40k-option';
+  if (field === 'J') btn.classList.add('anomaly'); // J 栏特殊血红样式
   btn.dataset.field = field;
   btn.dataset.code = code;
 
@@ -980,6 +1004,7 @@ function makeOptionButton(field, code, label) {
 function makeFieldSection(field) {
   const wrap = document.createElement('section');
   wrap.className = 'wh40k-section';
+  if (field === 'J') wrap.classList.add('anomaly'); // J 栏整体异常样式
 
   const h = document.createElement('h3');
   h.textContent = FIELD_TITLES[field];
@@ -1003,7 +1028,6 @@ function makeFieldSection(field) {
     input.addEventListener('input', (e) => {
       state.NAME = e.target.value;
       saveDraftState();
-      renderSidebar();
       renderFooterWarnings();
     });
     wrap.appendChild(nameBox);
@@ -1028,10 +1052,10 @@ function renderPageContent() {
     const splash = document.createElement('div');
     splash.className = 'wh40k-splash';
     splash.innerHTML = `
-      <div class="wh40k-splash-quote">AWAITING INPUT</div>
+      <div class="wh40k-splash-quote">等 候 输 入</div>
       <div class="wh40k-splash-line">请公民接入终端 · 开始登记</div>
-      <div class="wh40k-splash-text">此终端不会即时提交。您将在第 5 节完成全部登记后,一次性提交档案。填写期间,字段可随时修改或重置。</div>
-      <button type="button" class="wh40k-btn primary wh40k-start-btn">[ BEGIN REGISTRATION ]</button>
+      <div class="wh40k-splash-text">此终端不会即时提交。您将依次完成 5 节登记表,每节包含若干字段;填写期间,字段可随时修改或重置。全部完成后,在最终页一次性提交档案。</div>
+      <button type="button" class="wh40k-btn primary wh40k-start-btn">[ 进入登记 ]</button>
     `;
     splash.querySelector('.wh40k-start-btn').addEventListener('click', () => {
       currentPage = 1;
@@ -1047,17 +1071,17 @@ function renderPageContent() {
   PAGE_FIELDS[currentPage].forEach((field) => grid.appendChild(makeFieldSection(field)));
   content.appendChild(grid);
 
-  if (currentPage === 4) {
+  if (currentPage === FINAL_PAGE) {
     const finalCard = document.createElement('section');
     finalCard.className = 'wh40k-final-card';
     finalCard.innerHTML = `
-      <div class="wh40k-final-title">最终提交 / FINAL_SUBMIT</div>
+      <div class="wh40k-final-title">最终提交</div>
       <div class="wh40k-final-text">&gt; 以下为即将上传至大行政官案头的档案数据流。若自动传输失败,将改写至剪贴板供您手动粘贴。</div>
       <pre class="wh40k-payload-preview wh40k-final-preview"></pre>
       <div class="wh40k-final-actions">
-        <button type="button" class="wh40k-btn" data-action="fill-only">[ WRITE ONLY ]</button>
-        <button type="button" class="wh40k-btn" data-action="copy-payload">[ COPY ]</button>
-        <button type="button" class="wh40k-btn primary" data-action="confirm-send">★ SUBMIT ★</button>
+        <button type="button" class="wh40k-btn" data-action="fill-only">[ 仅写入 ]</button>
+        <button type="button" class="wh40k-btn" data-action="copy-payload">[ 复制 ]</button>
+        <button type="button" class="wh40k-btn primary" data-action="confirm-send">★ 提交档案 ★</button>
       </div>
     `;
     finalCard.querySelector('.wh40k-final-preview').textContent = buildPayload();
@@ -1084,17 +1108,16 @@ function renderFooterButtons() {
 
   back.disabled = currentPage === 0;
 
-  if (currentPage === 4) {
+  if (currentPage === FINAL_PAGE) {
     next.style.display = 'none';
   } else {
     next.style.display = '';
-    next.textContent = currentPage === 0 ? 'BEGIN >' : 'NEXT >';
+    next.textContent = currentPage === 0 ? '进入登记' : '下一步 >';
   }
 }
 
 function render() {
   renderProgress();
-  renderSidebar();
   renderPageContent();
   renderFooterWarnings();
   renderFooterButtons();
@@ -1114,7 +1137,7 @@ function goNext() {
     return;
   }
 
-  if (currentPage >= 4) return;
+  if (currentPage >= FINAL_PAGE) return;
   currentPage += 1;
   saveDraftState();
   render();
