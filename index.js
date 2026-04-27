@@ -6,7 +6,7 @@ const AUTO_SEND_AFTER_FILL = true;
 const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'N'];
 // 7 页结构:
 // 0 = splash 起始页
-// 1 = 基础信息(B 名字 / C 种族 / F 年龄 / G 性别 / I 外貌)
+// 1 = 基础信息(B 名字 / C 血统 / F 年龄 / G 性别 / I 外貌)
 // 2 = 出身来历(A 星球 / H 背景)
 // 3 = 身份立场(D 立场 / E 职业)
 // 4 = 初始情况(K 资源 / L 秘密 / N 羁绊)
@@ -27,7 +27,7 @@ const FINAL_PAGE = TOTAL_PAGES - 1;
 const FIELD_TITLES = {
   A: 'A. 所在星球',
   B: 'B. 名字',
-  C: 'C. 人类种族',
+  C: 'C. 人类血统 / 特殊分支',
   D: 'D. 阵营 / 当前立场',
   E: 'E. 职业',
   F: 'F. 年龄',
@@ -73,6 +73,7 @@ const OPTIONS = {
     ['C4', '不可接触者'],
     ['C5', '领航者'],
     ['C6', '猫人'],
+    ['C7', '机械神教培育人'],
   ],
   D: [
     ['D0', '随机 / 自定义'],
@@ -90,45 +91,61 @@ const OPTIONS = {
   ],
   E: [
     ['E0', '随机 / 自定义'],
+
+    // 帝国正规与普通社会
     ['E1', '帝国卫队士兵'],
-    ['E2', '审判庭侍从'],
-    ['E3', '修女会成员'],
-    ['E4', '蔷薇修女会侍从'],
-    ['E5', '帝国海军水手'],
-    ['E6', '赏金猎人'],
-    ['E7', '机械神教初级神甫'],
-    ['E8', '帝国教会牧师'],
-    ['E9', '没落行商浪人家族的指定继承人'],
-    ['E10', '流浪骑士（只有一台侍从级骑士）'],
-    ['E11', '帝国普通公民'],
-    ['E12', '帝国贵族侍从'],
-    ['E13', '性工作者'],
-    ['E14', '重体力劳动者'],
-    ['E15', '大学学者'],
-    ['E16', '无业者'],
-    ['E17', '阿斯塔特修士（仅限正常男性，死亡守望成员）'],
-    ['E18', '阿斯塔特修士（仅限正常男性，深渊律子的侦察兵）'],
-    ['E19', '阿斯塔特修士（仅限正常男性，翡翠龙战团的成员）'],
-    ['E20', '阿斯塔特修士（仅限正常男性，随机初创战团子团的特遣队成员）'],
-    ['E21', '法务部执法辅助人员 / 仲裁庭预备员'],
-    ['E22', '巢都帮派成员 / 地下打手'],
-    ['E23', '行商浪人随员 / 贸易顾问 / 虚空掮客'],
-    ['E24', '民用虚空船员 / 商船杂役 / 打捞者'],
-    ['E25', '医护员 / 战地救护人员'],
-    ['E26', '档案员 / 抄写员 / 行政书吏'],
-    ['E27', '机械神教探索队随员'],
-    ['E28', '黑市情报贩子 / 走私中间人'],
-    ['E29', '审讯者 / 审判官学徒(审判庭)'],
-    ['E30', '审判庭神秘学者'],
-    ['E31', '受批准灵能者(审判庭编制)'],
-    ['E32', '星语者(审判庭编制)'],
-    ['E33', '审判庭圣剑修士'],
-    ['E34', '拜死教刺客(审判庭征召)'],
-    ['E35', '武装侍僧'],
-    ['E36', '遗传学探索者'],
-    ['E37', '电流神父'],
-    ['E38', '高阶考古学僧'],
-    ['E39', '随军技僧'],
+    ['E2', '帝国商船船长'],
+    ['E3', '帝国海军军官'],
+    ['E4', '法务部预备员'],
+    ['E5', '医护员'],
+    ['E6', '行政书吏'],
+    ['E7', '铸造厂劳工'],
+    ['E8', '星区学院学者'],
+    ['E9', '帝国教会牧师'],
+    ['E10', '修女会成员'],
+    ['E11', '蔷薇修女会侍从'],
+    ['E12', '帝国贵族'],
+    ['E13', '贵族家族护卫'],
+    ['E14', '行商浪人继承人'],
+    ['E15', '虚空掮客'],
+    ['E16', '虚空打捞者'],
+    ['E17', '赏金猎人'],
+    ['E18', '流浪骑士（侍从级机甲）'],
+    ['E19', '无业流民'],
+    ['E20', '性工作者'],
+
+    // 阿斯塔特路线
+    ['E21', '死亡守望修士'],
+    ['E22', '深渊律子侦察兵'],
+    ['E23', '翡翠龙战团修士'],
+    ['E24', '初创子团修士'],
+
+    // 审判庭与灵能路线
+    ['E25', '审判庭侍从'],
+    ['E26', '审判庭神秘学者'],
+    ['E27', '受批准灵能者'],
+    ['E28', '星语者'],
+    ['E29', '拜死教刺客'],
+    ['E30', '未登记灵能者'],
+
+    // 机械神教路线
+    ['E31', '机械神教初级神甫'],
+    ['E32', '机械神教探索队正式成员'],
+    ['E33', '护教军游侠'],
+    ['E34', '遗传学探索者'],
+    ['E35', '高阶考古学僧'],
+    ['E36', '机仆监管员'],
+
+    // 黑暗边缘与法外路线
+    ['E37', '巢都帮派成员'],
+    ['E38', '锯齿小子初级成员'],
+    ['E39', '黑市情报贩子'],
+    ['E40', '走私者'],
+    ['E41', '海盗'],
+    ['E42', '叛逃海军军官'],
+    ['E43', '角斗奴'],
+    ['E44', '异形走私中间人'],
+    ['E45', '混沌教团外围信徒'],
   ],
   F: [
     ['F0', '随机 / 自定义'],
@@ -156,13 +173,13 @@ const OPTIONS = {
     ['H9', '没落家族'],
     ['H10', '黑帮遗孤'],
     ['H11', '巢都贫民'],
-    ['H12', '机械神教培育人'],
+    ['H12', '铸造世界劳工家庭'],
     ['H13', '穿越者'],
     ['H14', '你是阿尔法特工，但你不知道自己是忠诚还是叛变'],
     ['H15', '教会附属孤儿院出身'],
-    ['H16', '舰船家系 / 虚空船员后代'],
+    ['H16', '舰船家系 / 虚空船员家庭出身'],
     ['H17', '边境殖民者家庭'],
-    ['H18', '法务部 / 地方治安家庭'],
+    ['H18', '法务部 / 地方治安家庭出身'],
     ['H19', '贵族旁支 / 失势支脉'],
     ['H20', '被收养者 / 身世不明'],
     ['H21', '黑市 / 走私圈出身'],
@@ -212,6 +229,15 @@ const OPTIONS = {
     ['L7', '你是某项预言、占卜或推演中的变量'],
     ['L8', '某位高位者曾秘密接触过你'],
     ['L9', '你体内潜伏着一种尚未显现的异常'],
+    ['L10', '你的档案中存在一页被焚毁的记录'],
+    ['L11', '你持有一枚无法读取的古老数据钥'],
+    ['L12', '你梦见过一艘不应存在的金色巨舰'],
+    ['L13', '你曾收到一封没有署名的密令'],
+    ['L14', '你偶尔能感知到非人类的低语'],
+    ['L15', '你曾在星语噪音中听见自己的名字'],
+    ['L16', '你曾被审判庭短暂拘押，但记录已经消失'],
+    ['L17', '你曾参与过一次不该留下记录的清洗'],
+    ['L18', '你曾被迫出卖自己以换取生路'],
   ],
   N: [
     ['N0', '无 / 随机'],
@@ -225,6 +251,17 @@ const OPTIONS = {
     ['N8', '有一位机械神教联系人'],
     ['N9', '有一位审判庭线人'],
     ['N10', '有一位曾救过你的人'],
+    ['N11', '有一位行商浪人保护人'],
+    ['N12', '有一位法务部旧识'],
+    ['N13', '有一位行政部档案员朋友'],
+    ['N14', '有一位海军军官联系人'],
+    ['N15', '有一位异形或异端联系人'],
+    ['N16', '有一位长期跟随你的机仆'],
+    ['N17', '有一位蔷薇修女会的旧识'],
+    ['N18', '有一位普通修女会的庇护者'],
+    ['N19', '有一位帝国骑士家族的熟人'],
+    ['N20', '有一位商船上的可靠副手'],
+    ['N21', '有一位底巢帮派中的内应'],
   ],
 };
 
@@ -273,12 +310,12 @@ function buildPageDescriptions() {
 const FIELD_DESCRIPTIONS = {
   A: '声明您的出生星界。不同星界的居民承担不同的命运基底。',
   B: '为您的灵魂指定一个识别符。',
-  C: '提交您的人类血统校准。非标准血统将受到额外关注。',
+  C: '提交您的人类血统与特殊分支校准。非标准血统将受到额外关注。',
   D: '宣誓您当前的阵营立场。审判庭与机械神教编制将锁定后续职业。',
-  E: '提交您的职业配给。本字段受立场与种族限制。',
+  E: '提交您的职业配给。本字段受立场、血统与特殊路线限制。',
   F: '声明您的出生年份。',
   G: '声明您的性别。某些职业仅限特定性别。',
-  H: '提交您的身世档案。背景将影响您的出场剧情。',
+  H: '提交您的身世档案。背景将影响您的出场剧情，但不等同于血统路线。',
   I: '描述您的生理特征与外貌。',
   J: '※ NON_STANDARD_FIELD — 来源未知,请谨慎填写。 ※',
   K: '声明您当前持有的资源与起始状态。',
@@ -456,21 +493,18 @@ function isRandomCode(code) {
 // common = 通用职业(任意普通立场可选,也可做审判庭 retinue)
 const PROFESSION_TAG = {
   // 审判庭专属
-  E2: 'iq',   // 审判庭侍从
-  E29: 'iq',  // 审讯者 / 审判官学徒
-  E30: 'iq',  // 审判庭神秘学者 / Savant
-  E31: 'iq',  // 审判庭受批准灵能者
-  E32: 'iq',  // 星语者 Astropath
-  E33: 'iq',  // 审判庭圣剑修士 Crusader
-  E34: 'iq',  // 死亡邪教刺客
+  E25: 'iq',  // 审判庭侍从
+  E26: 'iq',  // 审判庭神秘学者
+  E27: 'iq',  // 受批准灵能者
+  E28: 'iq',  // 星语者
+  E29: 'iq',  // 拜死教刺客
   // 机械神教专属
-  E7: 'mech', // 机械神教初级神甫
-  E27: 'mech',// 机械神教探索队随员
-  E35: 'mech',// 斯凯塔里流浪者
-  E36: 'mech',// 生物学僧 Genetor
-  E37: 'mech',// 电流神父
-  E38: 'mech',// 高阶考古学僧 Explorator
-  E39: 'mech',// 随军技僧 Enginseer
+  E31: 'mech', // 机械神教初级神甫
+  E32: 'mech', // 机械神教探索队正式成员
+  E33: 'mech', // 护教军游侠
+  E34: 'mech', // 遗传学探索者
+  E35: 'mech', // 高阶考古学僧
+  E36: 'mech', // 机仆监管员
 };
 
 function professionTag(code) {
@@ -484,7 +518,7 @@ function stanceTag(code) {
 }
 
 function isOptionAllowed(field, code, s = state) {
-  // "随机/自定义" 永远允许
+  // "随机/自定义" 永远允许,最终交给AI按世界书校正
   if (isRandomCode(code)) return { ok: true };
 
   // 读取其他字段的"明确选择"(非随机)
@@ -496,106 +530,98 @@ function isOptionAllowed(field, code, s = state) {
   const c = pick('C');
   const e = pick('E');
   const d = pick('D');
+  const h = pick('H');
 
-  const ASTARTES = ['E17', 'E18', 'E19', 'E20'];
-  const CAT_BAN = ['E10', ...ASTARTES];
-  const UNTOUCHABLE_BAN = ['E7', ...ASTARTES];
-  const NAVIGATOR_BAN = ['E1','E2','E3','E4','E5','E6','E7','E8',...ASTARTES,'E21','E22','E25'];
-  const SISTER_RACES = ['C1','C3','C4','C6'];
+  const ASTARTES = ['E21', 'E22', 'E23', 'E24'];
+  const IQ_PROFESSIONS = ['E25', 'E26', 'E27', 'E28', 'E29'];
+  const MECH_PROFESSIONS = ['E31', 'E32', 'E33', 'E34', 'E35', 'E36'];
+  const PSYKER_PROFESSIONS = ['E27', 'E28', 'E30'];
+  const SISTER_RACES = ['C1', 'C3', 'C4', 'C6'];
+  const CAT_BAN = ['E18', ...ASTARTES, ...MECH_PROFESSIONS];
+  const UNTOUCHABLE_BAN = [...ASTARTES, ...MECH_PROFESSIONS, ...PSYKER_PROFESSIONS];
+  const NAVIGATOR_BAN = [
+    'E1', 'E4', 'E7', 'E9', 'E10', 'E11',
+    ...ASTARTES, ...IQ_PROFESSIONS, 'E30', ...MECH_PROFESSIONS,
+    'E37', 'E38', 'E43', 'E45'
+  ];
 
-  if (field === 'E') {
-    if (ASTARTES.includes(code)) {
-      if (g && g !== 'G1') return { ok: false, reason: '仅限男性' };
-      if (c && c !== 'C1') return { ok: false, reason: '仅限正常人类' };
-    }
-    if (code === 'E3') {
-      if (g && g !== 'G2') return { ok: false, reason: '仅限女性' };
-      if (c && !SISTER_RACES.includes(c)) return { ok: false, reason: '当前种族不可' };
-    }
-    if (code === 'E10' && c === 'C6') return { ok: false, reason: '猫人不可担任' };
-    if (code === 'E7' && c === 'C4') return { ok: false, reason: '不可接触者不适合' };
-    if (c === 'C6' && CAT_BAN.includes(code)) return { ok: false, reason: '猫人不可担任' };
-    if (c === 'C4' && UNTOUCHABLE_BAN.includes(code)) return { ok: false, reason: '不可接触者不适合' };
-    if (c === 'C5' && NAVIGATOR_BAN.includes(code)) return { ok: false, reason: '领航者不适合' };
+  const codeTag = (field === 'E') ? professionTag(code) : (e ? professionTag(e) : null);
+  const codeStanceTag = (field === 'D') ? stanceTag(code) : (d ? stanceTag(d) : null);
+  const codeRace = (field === 'C') ? code : c;
 
-    // === 立场 ⇄ 职业 绑定 ===
-    const eTag = professionTag(code);
-    const dTag = d ? stanceTag(d) : null;
-    if (eTag === 'iq' && dTag && dTag !== 'iq') {
-      return { ok: false, reason: '仅限审判庭立场' };
-    }
-    if (eTag === 'mech' && dTag && dTag !== 'mech') {
-      return { ok: false, reason: '仅限机械神教立场' };
-    }
-    if (dTag === 'mech' && eTag !== 'mech') {
-      return { ok: false, reason: '机械神教立场仅限神教职业' };
-    }
+  const isMechRace = codeRace === 'C7';
+  const hasMechStance = codeStanceTag === 'mech';
+  const hasMechProfession = codeTag === 'mech';
 
-    // === H12 机械神教培育人 三角绑定 ===
-    const h = pick('H');
-    if (h === 'H12' && eTag !== 'mech') {
-      return { ok: false, reason: '机械神教培育人需神教职业' };
-    }
-    if (h && h !== 'H12' && eTag === 'mech') {
-      return { ok: false, reason: '神教职业需 H12 背景' };
-    }
-
-    // === H13 穿越者不能成为阿斯塔特 ===
-    if (h === 'H13' && ASTARTES.includes(code)) {
-      return { ok: false, reason: '穿越者无法成为阿斯塔特' };
+  // === C7 机械神教培育人硬锁 ===
+  // C7 ↔ D9/D10/D11 ↔ E31-E36
+  if (field === 'C') {
+    if (code === 'C7') {
+      if (d && stanceTag(d) !== 'mech') return { ok: false, reason: 'C7 需机械神教立场' };
+      if (e && professionTag(e) !== 'mech') return { ok: false, reason: 'C7 需机械神教职业' };
+    } else {
+      if (d && stanceTag(d) === 'mech') return { ok: false, reason: '神教立场需 C7' };
+      if (e && professionTag(e) === 'mech') return { ok: false, reason: '神教职业需 C7' };
     }
   }
 
-  if (field === 'C') {
-    if (ASTARTES.includes(e) && code !== 'C1') return { ok: false, reason: '阿斯塔特仅限 C1' };
-    if (e === 'E3' && !SISTER_RACES.includes(code)) return { ok: false, reason: '修女会种族受限' };
-    if (code === 'C6' && CAT_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
-    if (code === 'C4' && UNTOUCHABLE_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
-    if (code === 'C5' && NAVIGATOR_BAN.includes(e)) return { ok: false, reason: '与当前职业冲突' };
+  if (field === 'D') {
+    const dTag = stanceTag(code);
+    const eTag = e ? professionTag(e) : null;
+
+    if (dTag === 'mech') {
+      if (c && c !== 'C7') return { ok: false, reason: '神教立场需 C7' };
+      if (eTag && eTag !== 'mech') return { ok: false, reason: '神教立场仅限神教职业' };
+    } else {
+      if (c === 'C7') return { ok: false, reason: 'C7 需机械神教立场' };
+      if (eTag === 'mech') return { ok: false, reason: '神教职业仅配神教立场' };
+    }
+
+    if (eTag === 'iq' && dTag !== 'iq') {
+      return { ok: false, reason: '审判庭职业仅配审判庭立场' };
+    }
+  }
+
+  if (field === 'E') {
+    const eTag = professionTag(code);
+    const dTag = d ? stanceTag(d) : null;
+
+    if (eTag === 'mech') {
+      if (c && c !== 'C7') return { ok: false, reason: '神教职业需 C7' };
+      if (dTag && dTag !== 'mech') return { ok: false, reason: '神教职业仅配神教立场' };
+    } else {
+      if (c === 'C7') return { ok: false, reason: 'C7 需神教职业' };
+      if (dTag === 'mech') return { ok: false, reason: '神教立场仅限神教职业' };
+    }
+
+    if (eTag === 'iq') {
+      if (dTag && dTag !== 'iq') return { ok: false, reason: '仅限审判庭立场' };
+    }
+
+    if (ASTARTES.includes(code)) {
+      if (g && g !== 'G1') return { ok: false, reason: '仅限男性' };
+      if (c && c !== 'C1') return { ok: false, reason: '仅限正常人类' };
+      if (h === 'H13') return { ok: false, reason: '穿越者无法成为阿斯塔特' };
+    }
+
+    if (code === 'E10') {
+      if (g && g !== 'G2') return { ok: false, reason: '仅限女性' };
+      if (c && !SISTER_RACES.includes(c)) return { ok: false, reason: '当前血统不可' };
+    }
+
+    if (code === 'E18' && c === 'C6') return { ok: false, reason: '猫人不可担任' };
+
+    if (c === 'C6' && CAT_BAN.includes(code)) return { ok: false, reason: '猫人不可担任' };
+    if (c === 'C4' && UNTOUCHABLE_BAN.includes(code)) return { ok: false, reason: '不可接触者不适合' };
+    if (c === 'C5' && NAVIGATOR_BAN.includes(code)) return { ok: false, reason: '领航者不适合' };
   }
 
   if (field === 'G') {
     if (ASTARTES.includes(e) && code !== 'G1') return { ok: false, reason: '阿斯塔特仅限男性' };
-    if (e === 'E3' && code !== 'G2') return { ok: false, reason: '修女会仅限女性' };
+    if (e === 'E10' && code !== 'G2') return { ok: false, reason: '修女会仅限女性' };
   }
 
-  // === 立场(D)页:根据当前职业反向约束 ===
-  if (field === 'D') {
-    const dTag = stanceTag(code);
-    const eTag = e ? professionTag(e) : null;
-    const h = pick('H');
-    if (eTag === 'iq' && dTag !== 'iq') {
-      return { ok: false, reason: '审判庭职业仅配审判庭立场' };
-    }
-    if (eTag === 'mech' && dTag !== 'mech') {
-      return { ok: false, reason: '机械神教职业仅配神教立场' };
-    }
-    if (eTag === 'common' && dTag === 'mech') {
-      return { ok: false, reason: '机械神教立场不容普通职业' };
-    }
-    // H12 绑定
-    if (h === 'H12' && dTag !== 'mech') {
-      return { ok: false, reason: '机械神教培育人需神教立场' };
-    }
-    if (h && h !== 'H12' && dTag === 'mech') {
-      return { ok: false, reason: '神教立场需 H12 背景' };
-    }
-  }
-
-  // === 背景(H)页:根据当前立场/职业反向约束 ===
   if (field === 'H') {
-    const dTag = d ? stanceTag(d) : null;
-    const eTag = e ? professionTag(e) : null;
-    if (code === 'H12') {
-      // 只有机械神教立场 / 神教职业 才能选 H12
-      if (dTag && dTag !== 'mech') return { ok: false, reason: 'H12 需机械神教立场' };
-      if (eTag && eTag !== 'mech') return { ok: false, reason: 'H12 需神教职业' };
-    } else {
-      // 非 H12 背景不能配神教立场/职业
-      if (dTag === 'mech') return { ok: false, reason: '神教立场必选 H12' };
-      if (eTag === 'mech') return { ok: false, reason: '神教职业必选 H12' };
-    }
-    // H13 穿越者:当前职业是阿斯塔特则不可选
     if (code === 'H13' && ASTARTES.includes(e)) {
       return { ok: false, reason: '阿斯塔特无法是穿越者' };
     }
@@ -632,9 +658,15 @@ function buildSummaryRows() {
 
 function getWarnings() {
   const warnings = [];
-  const isAstartes = ['E17', 'E18', 'E19', 'E20'].includes(state.E);
-  const isSister = state.E === 'E3';
-  const isRose = state.E === 'E4';
+  const ASTARTES = ['E21', 'E22', 'E23', 'E24'];
+  const MECH_PROFESSIONS = ['E31', 'E32', 'E33', 'E34', 'E35', 'E36'];
+  const IQ_PROFESSIONS = ['E25', 'E26', 'E27', 'E28', 'E29'];
+  const isAstartes = ASTARTES.includes(state.E);
+  const isSister = state.E === 'E10';
+  const isRose = state.E === 'E11';
+  const isMechProfession = MECH_PROFESSIONS.includes(state.E);
+  const isMechStance = ['D9', 'D10', 'D11'].includes(state.D);
+  const isIqProfession = IQ_PROFESSIONS.includes(state.E);
 
   if (state.B === 'B1' && !state.NAME.trim()) {
     warnings.push('你选择了自定义名字，但还没有填写名字。');
@@ -643,30 +675,43 @@ function getWarnings() {
   if (isAstartes) {
     if (state.G !== 'G1') warnings.push('阿斯塔特最终会被校正为男性。');
     if (state.C !== 'C1') warnings.push('阿斯塔特最终会被校正为正常人类或改职。');
+    if (state.H === 'H13') warnings.push('穿越者无法成为阿斯塔特，AI会自动改写职业或背景。');
   }
 
   if (isSister) {
     if (state.G !== 'G2') warnings.push('修女会成员最终会被校正为女性或改职。');
-    if (!['C1', 'C3', 'C4', 'C6'].includes(state.C)) warnings.push('当前种族通常不能成为修女会正式成员，系统会自动改职或改写身份。');
+    if (!['C1', 'C3', 'C4', 'C6'].includes(state.C)) warnings.push('当前血统通常不能成为修女会正式成员，系统会自动改职或改写身份。');
   }
 
-  if (isRose && state.C === 'C5') {
-    warnings.push('领航者通常不适合修会附属路径，系统可能会改写为更贴近虚空贵族的身份。');
+  if (isRose && ['C5', 'C7'].includes(state.C)) {
+    warnings.push('当前血统通常不适合蔷薇修女会侍从路径，系统可能会改写身份。');
   }
 
-  if (state.C === 'C6' && ['E10', 'E17', 'E18', 'E19', 'E20'].includes(state.E)) {
+  if (state.C === 'C7' && (!isMechProfession || !isMechStance)) {
+    warnings.push('C7 机械神教培育人必须绑定机械神教立场与机械神教职业。');
+  }
+
+  if ((isMechProfession || isMechStance) && state.C !== 'C7') {
+    warnings.push('机械神教路线必须选择 C7 机械神教培育人。');
+  }
+
+  if (isIqProfession && !['D5', 'D6', 'D7', 'D8'].includes(state.D)) {
+    warnings.push('审判庭职业通常需要审判庭立场，系统会自动校正。');
+  }
+
+  if (state.C === 'C6' && ['E18', ...ASTARTES, ...MECH_PROFESSIONS].includes(state.E)) {
     warnings.push('猫人与当前职业组合不合法，AI会自动校正。');
   }
 
-  if (state.C === 'C5' && ['E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E17', 'E18', 'E19', 'E20', 'E21', 'E22', 'E25'].includes(state.E)) {
+  if (state.C === 'C5' && ['E1', 'E4', 'E7', 'E9', 'E10', 'E11', ...ASTARTES, ...IQ_PROFESSIONS, 'E30', ...MECH_PROFESSIONS, 'E37', 'E38', 'E43', 'E45'].includes(state.E)) {
     warnings.push('领航者与当前职业组合通常不合法，AI会自动校正。');
   }
 
-  if (state.C === 'C4' && ['E7', 'E17', 'E18', 'E19', 'E20'].includes(state.E)) {
+  if (state.C === 'C4' && [...ASTARTES, ...MECH_PROFESSIONS, 'E27', 'E28', 'E30'].includes(state.E)) {
     warnings.push('不可接触者与当前职业组合通常不合法，AI会自动校正。');
   }
 
-  if (state.E === 'E10' && !['H4', 'H9', 'H19'].includes(state.H)) {
+  if (state.E === 'E18' && !['H4', 'H9', 'H19'].includes(state.H)) {
     warnings.push('流浪骑士出身不够典型，AI会用打捞、继承或偷获等方式补足来历。');
   }
 
