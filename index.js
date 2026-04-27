@@ -4,7 +4,6 @@ const AUTO_OPEN_FOR_EMPTY_CHAT = true;
 const AUTO_SEND_AFTER_FILL = true;
 
 const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'N'];
-
 // 7 页结构:
 // 0 = splash 起始页
 // 1 = 基础信息(B 名字 / C 血统 / F 年龄 / G 性别 / I 外貌)
@@ -14,15 +13,14 @@ const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
 // 5 = 命运牵连(J 主线卷入)
 // 6 = 最终提交
 const PAGE_FIELDS = [
-  [],
-  ['B', 'C', 'F', 'G', 'I'],
-  ['A', 'H'],
-  ['D', 'E'],
-  ['K', 'L', 'N'],
-  ['J'],
-  [],
+  [],                                  // 0 splash
+  ['B', 'C', 'F', 'G', 'I'],           // 1 基础信息
+  ['A', 'H'],                          // 2 出身来历
+  ['D', 'E'],                          // 3 身份立场
+  ['K', 'L', 'N'],                     // 4 初始情况
+  ['J'],                               // 5 命运牵连(特殊样式)
+  [],                                  // 6 最终提交
 ];
-
 const TOTAL_PAGES = PAGE_FIELDS.length;
 const FINAL_PAGE = TOTAL_PAGES - 1;
 
@@ -62,16 +60,14 @@ const OPTIONS = {
     ['A16', '波特兰星（莫斯塔克扩区-农业世界）'],
     ['A17', '奥尔图拉（莫斯塔克扩区-独特世界）'],
     ['A18', '圣阿克利亚（莫斯塔克扩区-国教世界）'],
-    ['A19', '欧姆巴佩11号太空站（卡利亚星区-火星秘密空间站）'],
+    ['A19', '欧姆巴佩11号太空站（卡利亚星区-火星正统派秘密空间站）'],
     ['A20', '奥利赛V太空站（卡利亚星区-导航者空间站）'],
     ['A21', '哥利亚太空要塞（卡利亚星区-死亡守望要塞）'],
   ],
-
   B: [
     ['B0', '默认（{{user}}）'],
     ['B1', '自定义名字'],
   ],
-
   C: [
     ['C1', '正常人类'],
     ['C3', '虚空之子'],
@@ -80,7 +76,6 @@ const OPTIONS = {
     ['C6', '猫人'],
     ['C7', '机械神教培育人'],
   ],
-
   D: [
     ['D1', '人类帝国忠诚者'],
     ['D2', '边缘独立者 / 灰色地带'],
@@ -93,10 +88,9 @@ const OPTIONS = {
     ['D9', '机械神教-探索者'],
     ['D10', '机械神教-异形博学派'],
     ['D11', '机械神教-火星正统派'],
+    ['D12', '机械神教-技术异端'],
   ],
-
   E: [
-    // 帝国正规与普通社会
     ['E1', '帝国卫队士兵'],
     ['E2', '帝国商船船长'],
     ['E3', '帝国海军军官'],
@@ -117,30 +111,22 @@ const OPTIONS = {
     ['E18', '流浪骑士（侍从级机甲）'],
     ['E19', '无业流民'],
     ['E20', '性工作者'],
-
-    // 阿斯塔特路线
     ['E21', '死亡守望修士'],
     ['E22', '深渊律子侦察兵'],
     ['E23', '翡翠龙战团修士'],
     ['E24', '初创子团修士'],
-
-    // 审判庭与灵能路线
     ['E25', '审判庭侍从'],
     ['E26', '审判庭神秘学者'],
     ['E27', '受批准灵能者'],
     ['E28', '星语者'],
     ['E29', '拜死教刺客'],
     ['E30', '未登记灵能者'],
-
-    // 机械神教路线
     ['E31', '机械神教初级神甫'],
     ['E32', '机械神教探索队正式成员'],
     ['E33', '护教军游侠'],
     ['E34', '遗传学探索者'],
     ['E35', '高阶考古学僧'],
     ['E36', '机仆监管员'],
-
-    // 黑暗边缘与法外路线
     ['E37', '巢都帮派成员'],
     ['E38', '锯齿小子初级成员'],
     ['E39', '黑市情报贩子'],
@@ -151,20 +137,17 @@ const OPTIONS = {
     ['E44', '异形走私中间人'],
     ['E45', '混沌教团外围信徒'],
   ],
-
   F: [
     ['F1', '青年'],
     ['F2', '壮年'],
     ['F3', '中年'],
     ['F4', '年长'],
   ],
-
   G: [
     ['G1', '男'],
     ['G2', '女'],
     ['G3', '模糊 / 不明'],
   ],
-
   H: [
     ['H1', '正常家庭'],
     ['H2', '军队世家'],
@@ -191,14 +174,12 @@ const OPTIONS = {
     ['H23', '边缘废土聚落'],
     ['H24', '流亡者后裔'],
   ],
-
   I: [
     ['I1', '丑陋至极，难以形容'],
     ['I2', '高大健壮，相貌普通'],
     ['I3', '普通身材，普通外貌'],
     ['I4', '身材优美，人见人爱'],
   ],
-
   J: [
     ['J1', '无主线（纯自由剧情）'],
     ['J2', '单主线·永恒欢愉'],
@@ -209,7 +190,6 @@ const OPTIONS = {
     ['J7', '双主线·帝皇幻梦号 + 太平潮起'],
     ['J8', '三主线全开（高负荷 / 长跑模式）'],
   ],
-
   K: [
     ['K1', '身无长物'],
     ['K2', '基本温饱'],
@@ -222,7 +202,6 @@ const OPTIONS = {
     ['K9', '持有一条危险情报'],
     ['K10', '拥有一件受限装备'],
   ],
-
   L: [
     ['L0', '无'],
     ['L1', '你持有伪造身份'],
@@ -244,7 +223,6 @@ const OPTIONS = {
     ['L17', '你曾参与过一次不该留下记录的清洗'],
     ['L18', '你曾被迫出卖自己以换取生路'],
   ],
-
   N: [
     ['N0', '无'],
     ['N1', '家人仍在'],
@@ -305,7 +283,7 @@ function buildPageDescriptions() {
   return {
     0: '点击下方按钮接入终端,开始您的公民登记。您将依次完成 5 节登记表。',
     1: '// 第一节 — 您的姓名、血统、年龄、性别与外貌。',
-    2: '// 第二节 — 您的出生星球与身世背景。',
+    2: '// 第二节 — 您的出生星界与身世背景。',
     3: '// 第三节 — 您当前的阵营立场与职业。',
     4: '// 第四节 — 您当前持有的资源、秘密与羁绊。',
     5: '// ??_???? / [NON_STANDARD_FIELD] — 来源未知的字段',
@@ -384,10 +362,8 @@ function getOptionLabel(field, code) {
 function queryInputBox() {
   const byId = document.getElementById('send_textarea');
   if (byId) return byId;
-
   const inForm = document.querySelector('#form_sheld textarea');
   if (inForm) return inForm;
-
   return document.querySelector('textarea[placeholder*="消息"]')
       || document.querySelector('textarea[placeholder*="message" i]');
 }
@@ -405,7 +381,6 @@ function setInputValue(text) {
     console.error(`[${EXT_ID}] 找不到 SillyTavern 输入框(#send_textarea)`);
     return false;
   }
-
   console.log(`[${EXT_ID}] 找到输入框:`, input.id || input.tagName);
 
   try { input.focus(); } catch (_) {}
@@ -451,10 +426,8 @@ async function copyToClipboard(text) {
   ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';
   document.body.appendChild(ta);
   ta.select();
-
   let ok = false;
   try { ok = document.execCommand('copy'); } catch (_) {}
-
   document.body.removeChild(ta);
   return ok;
 }
@@ -479,14 +452,12 @@ function isRandomCode(code) {
 }
 
 const PROFESSION_TAG = {
-  // 审判庭专属
   E25: 'iq',
   E26: 'iq',
   E27: 'iq',
   E28: 'iq',
   E29: 'iq',
 
-  // 机械神教专属
   E31: 'mech',
   E32: 'mech',
   E33: 'mech',
@@ -501,12 +472,15 @@ function professionTag(code) {
 
 function stanceTag(code) {
   if (['D5', 'D6', 'D7', 'D8'].includes(code)) return 'iq';
-  if (['D9', 'D10', 'D11'].includes(code)) return 'mech';
+  if (['D9', 'D10', 'D11', 'D12'].includes(code)) return 'mech';
   return 'common';
 }
 
+function isMechBackground(code) {
+  return ['H12', 'H14'].includes(code);
+}
+
 function isOptionAllowed(field, code, s = state) {
-  // 旧版存档兼容：X0 仍允许被AI校正，但新版界面不再提供多数随机选项。
   if (isRandomCode(code)) return { ok: true };
 
   const pick = (f) => {
@@ -523,44 +497,20 @@ function isOptionAllowed(field, code, s = state) {
   const ASTARTES = ['E21', 'E22', 'E23', 'E24'];
   const IQ_PROFESSIONS = ['E25', 'E26', 'E27', 'E28', 'E29'];
   const MECH_PROFESSIONS = ['E31', 'E32', 'E33', 'E34', 'E35', 'E36'];
-  const MECH_BACKGROUNDS = ['H12', 'H14'];
   const PSYKER_PROFESSIONS = ['E27', 'E28', 'E30'];
   const SISTER_RACES = ['C1', 'C3', 'C4', 'C6'];
 
   const CAT_BAN = ['E18', ...ASTARTES, ...MECH_PROFESSIONS];
-
-  const UNTOUCHABLE_BAN = [
-    ...ASTARTES,
-    ...MECH_PROFESSIONS,
-    ...PSYKER_PROFESSIONS,
-  ];
-
+  const UNTOUCHABLE_BAN = [...ASTARTES, ...MECH_PROFESSIONS, ...PSYKER_PROFESSIONS];
   const NAVIGATOR_BAN = [
     'E1', 'E4', 'E7', 'E9', 'E10', 'E11',
-    ...ASTARTES,
-    ...IQ_PROFESSIONS,
-    'E30',
-    ...MECH_PROFESSIONS,
-    'E37', 'E38', 'E43', 'E45',
+    ...ASTARTES, ...IQ_PROFESSIONS, 'E30', ...MECH_PROFESSIONS,
+    'E37', 'E38', 'E43', 'E45'
   ];
 
-  const codeTag = field === 'E' ? professionTag(code) : (e ? professionTag(e) : null);
-  const codeStanceTag = field === 'D' ? stanceTag(code) : (d ? stanceTag(d) : null);
-  const codeRace = field === 'C' ? code : c;
-  const codeBackground = field === 'H' ? code : h;
-
-  // === C7 机械神教培育人硬锁 ===
-  // C7 ↔ D9-D11 ↔ E31-E36 ↔ H12/H14
   if (field === 'C') {
-    if (code === 'C7') {
-      if (d && stanceTag(d) !== 'mech') return { ok: false, reason: 'C7 需机械神教立场' };
-      if (e && professionTag(e) !== 'mech') return { ok: false, reason: 'C7 需机械神教职业' };
-      if (h && !MECH_BACKGROUNDS.includes(h)) return { ok: false, reason: 'C7 需神教背景' };
-    } else {
-      if (d && stanceTag(d) === 'mech') return { ok: false, reason: '神教立场需 C7' };
-      if (e && professionTag(e) === 'mech') return { ok: false, reason: '神教职业需 C7' };
-      if (h && MECH_BACKGROUNDS.includes(h)) return { ok: false, reason: '神教背景需 C7' };
-    }
+    // C字段允许作为路线切换入口，不因后续默认字段阻塞选择。
+    return { ok: true };
   }
 
   if (field === 'D') {
@@ -570,11 +520,9 @@ function isOptionAllowed(field, code, s = state) {
     if (dTag === 'mech') {
       if (c && c !== 'C7') return { ok: false, reason: '神教立场需 C7' };
       if (eTag && eTag !== 'mech') return { ok: false, reason: '神教立场仅限神教职业' };
-      if (h && !MECH_BACKGROUNDS.includes(h)) return { ok: false, reason: '神教立场需神教背景' };
     } else {
       if (c === 'C7') return { ok: false, reason: 'C7 需机械神教立场' };
       if (eTag === 'mech') return { ok: false, reason: '神教职业仅配神教立场' };
-      if (h && MECH_BACKGROUNDS.includes(h)) return { ok: false, reason: '神教背景需神教立场' };
     }
 
     if (eTag === 'iq' && dTag !== 'iq') {
@@ -589,11 +537,9 @@ function isOptionAllowed(field, code, s = state) {
     if (eTag === 'mech') {
       if (c && c !== 'C7') return { ok: false, reason: '神教职业需 C7' };
       if (dTag && dTag !== 'mech') return { ok: false, reason: '神教职业仅配神教立场' };
-      if (h && !MECH_BACKGROUNDS.includes(h)) return { ok: false, reason: '神教职业需神教背景' };
     } else {
       if (c === 'C7') return { ok: false, reason: 'C7 需神教职业' };
       if (dTag === 'mech') return { ok: false, reason: '神教立场仅限神教职业' };
-      if (h && MECH_BACKGROUNDS.includes(h)) return { ok: false, reason: '神教背景需神教职业' };
     }
 
     if (eTag === 'iq') {
@@ -618,25 +564,23 @@ function isOptionAllowed(field, code, s = state) {
     if (c === 'C5' && NAVIGATOR_BAN.includes(code)) return { ok: false, reason: '领航者不适合' };
   }
 
+  if (field === 'G') {
+    if (ASTARTES.includes(e) && code !== 'G1') return { ok: false, reason: '阿斯塔特仅限男性' };
+    if (e === 'E10' && code !== 'G2') return { ok: false, reason: '修女会仅限女性' };
+  }
+
   if (field === 'H') {
-    if (MECH_BACKGROUNDS.includes(code)) {
-      if (c && c !== 'C7') return { ok: false, reason: '神教背景需 C7' };
-      if (d && stanceTag(d) !== 'mech') return { ok: false, reason: '神教背景需神教立场' };
-      if (e && professionTag(e) !== 'mech') return { ok: false, reason: '神教背景需神教职业' };
-    } else {
-      if (c === 'C7') return { ok: false, reason: 'C7 需 H12/H14' };
-      if (d && stanceTag(d) === 'mech') return { ok: false, reason: '神教立场需 H12/H14' };
-      if (e && professionTag(e) === 'mech') return { ok: false, reason: '神教职业需 H12/H14' };
+    if (c === 'C7' && !isMechBackground(code)) {
+      return { ok: false, reason: 'C7 需神教背景' };
+    }
+
+    if (c && c !== 'C7' && isMechBackground(code)) {
+      return { ok: false, reason: '神教背景需 C7' };
     }
 
     if (code === 'H13' && ASTARTES.includes(e)) {
       return { ok: false, reason: '阿斯塔特无法是穿越者' };
     }
-  }
-
-  if (field === 'G') {
-    if (ASTARTES.includes(e) && code !== 'G1') return { ok: false, reason: '阿斯塔特仅限男性' };
-    if (e === 'E10' && code !== 'G2') return { ok: false, reason: '修女会仅限女性' };
   }
 
   return { ok: true };
@@ -653,11 +597,11 @@ function buildPayload() {
 function buildSummaryRows() {
   return [
     ['名字', state.B === 'B1' ? `B1 · ${state.NAME.trim() || '（未填写）'}` : 'B0 · 默认（{{user}}）'],
-    ['种族', `${state.C} · ${getOptionLabel('C', state.C)}`],
+    ['血统', `${state.C} · ${getOptionLabel('C', state.C)}`],
     ['年龄', `${state.F} · ${getOptionLabel('F', state.F)}`],
     ['性别', `${state.G} · ${getOptionLabel('G', state.G)}`],
     ['长相', `${state.I} · ${getOptionLabel('I', state.I)}`],
-    ['星球', `${state.A} · ${getOptionLabel('A', state.A)}`],
+    ['星界', `${state.A} · ${getOptionLabel('A', state.A)}`],
     ['阵营', `${state.D} · ${getOptionLabel('D', state.D)}`],
     ['职业', `${state.E} · ${getOptionLabel('E', state.E)}`],
     ['背景', `${state.H} · ${getOptionLabel('H', state.H)}`],
@@ -673,15 +617,14 @@ function getWarnings() {
   const ASTARTES = ['E21', 'E22', 'E23', 'E24'];
   const MECH_PROFESSIONS = ['E31', 'E32', 'E33', 'E34', 'E35', 'E36'];
   const IQ_PROFESSIONS = ['E25', 'E26', 'E27', 'E28', 'E29'];
-  const MECH_BACKGROUNDS = ['H12', 'H14'];
 
   const isAstartes = ASTARTES.includes(state.E);
   const isSister = state.E === 'E10';
   const isRose = state.E === 'E11';
   const isMechProfession = MECH_PROFESSIONS.includes(state.E);
-  const isMechStance = ['D9', 'D10', 'D11'].includes(state.D);
-  const isMechBackground = MECH_BACKGROUNDS.includes(state.H);
+  const isMechStance = ['D9', 'D10', 'D11', 'D12'].includes(state.D);
   const isIqProfession = IQ_PROFESSIONS.includes(state.E);
+  const isMechBg = isMechBackground(state.H);
 
   if (state.B === 'B1' && !state.NAME.trim()) {
     warnings.push('你选择了自定义名字，但还没有填写名字。');
@@ -702,11 +645,11 @@ function getWarnings() {
     warnings.push('当前血统通常不适合蔷薇修女会侍从路径，系统可能会改写身份。');
   }
 
-  if (state.C === 'C7' && (!isMechProfession || !isMechStance || !isMechBackground)) {
-    warnings.push('C7 机械神教培育人必须绑定机械神教立场、职业与背景。');
+  if (state.C === 'C7' && (!isMechProfession || !isMechStance || !isMechBg)) {
+    warnings.push('C7 机械神教培育人必须绑定机械神教立场、机械神教职业与神教背景。');
   }
 
-  if ((isMechProfession || isMechStance || isMechBackground) && state.C !== 'C7') {
+  if ((isMechProfession || isMechStance || isMechBg) && state.C !== 'C7') {
     warnings.push('机械神教路线必须选择 C7 机械神教培育人。');
   }
 
@@ -760,18 +703,18 @@ function loadDraftState() {
 
     if (savedState && typeof savedState === 'object') {
       state = { ...DEFAULT_STATE, ...savedState };
-
-      // 旧版本兼容：已弃用随机或旧字段时自动回退
-      if (state.A === 'A0') state.A = DEFAULT_STATE.A;
-      if (state.C === 'C0' || state.C === 'C2') state.C = DEFAULT_STATE.C;
-      if (state.D === 'D0') state.D = DEFAULT_STATE.D;
-      if (state.E === 'E0') state.E = DEFAULT_STATE.E;
-      if (state.F === 'F0') state.F = DEFAULT_STATE.F;
-      if (state.G === 'G0') state.G = DEFAULT_STATE.G;
-      if (state.H === 'H0') state.H = DEFAULT_STATE.H;
-      if (state.I === 'I0') state.I = DEFAULT_STATE.I;
-      if (state.J === 'J0') state.J = DEFAULT_STATE.J;
-      if (state.K === 'K0') state.K = DEFAULT_STATE.K;
+      if (state.C === 'C2') state.C = 'C1';
+      if (state.A === 'A0') state.A = 'A1';
+      if (state.C === 'C0') state.C = 'C1';
+      if (state.D === 'D0') state.D = 'D1';
+      if (state.E === 'E0') state.E = 'E1';
+      if (state.F === 'F0') state.F = 'F1';
+      if (state.G === 'G0') state.G = 'G1';
+      if (state.H === 'H0') state.H = 'H1';
+      if (state.I === 'I0') state.I = 'I3';
+      if (state.J === 'J0') state.J = 'J1';
+      if (state.K === 'K0') state.K = 'K1';
+      if (state.N === 'N21' && getOptionLabel('N', 'N21') === 'N21') state.N = 'N0';
     } else {
       state = { ...DEFAULT_STATE };
     }
@@ -827,13 +770,11 @@ function injectChatStyles() {
 
 function makeLauncher() {
   if (launcher) launcher.remove();
-
   launcher = document.createElement('button');
   launcher.id = 'wh40k-builder-launcher';
   launcher.type = 'button';
   launcher.textContent = '[⚔ 角色创建器]';
   launcher.style.cssText = 'position:fixed;top:64px;right:12px;z-index:10000';
-
   launcher.addEventListener('click', () => {
     if (overlay && overlay.classList.contains('open')) {
       closeBuilder();
@@ -841,7 +782,6 @@ function makeLauncher() {
       openBuilder();
     }
   });
-
   document.body.appendChild(launcher);
   console.log(`[${EXT_ID}] launcher appended to body`);
 }
@@ -854,7 +794,7 @@ function createOverlay() {
       <div class="wh40k-builder-header">
         <div>
           <div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div>
-          <div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.1.0</div>
+          <div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.2.0</div>
         </div>
         <button type="button" class="wh40k-icon-btn" data-action="close" aria-label="关闭">[×]</button>
       </div>
@@ -901,33 +841,27 @@ function renderProgress() {
 
   const sectionIndex = currentPage;
   const total = TOTAL_PAGES - 2;
-  const isJSection = currentPage === 5;
-  const labelColor = isJSection ? '#c92030' : '#ffb84d';
 
   const left = document.createElement('div');
   left.className = 'wh40k-progress-label';
+  const isJSection = currentPage === 5;
+  const labelColor = isJSection ? '#c92030' : '#ffb84d';
   left.innerHTML = `第 <span style="color:${labelColor};font-weight:700;">${sectionIndex}</span> / ${total} 节 · <span style="${isJSection ? 'color:#c92030;font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:0.05em;' : ''}">${PAGE_TITLES[currentPage]}</span>`;
   el.appendChild(left);
 
   const dots = document.createElement('div');
   dots.className = 'wh40k-progress-dots';
-
   for (let i = 1; i <= total; i++) {
     const dot = document.createElement('button');
     dot.type = 'button';
     dot.className = 'wh40k-dot';
     dot.dataset.page = String(i);
-
     if (i === currentPage) dot.classList.add('active');
     else if (i < currentPage) dot.classList.add('done');
-
     if (i === 5) dot.classList.add('anomaly');
-
     dot.title = PAGE_TITLES[i];
-
     dot.addEventListener('click', () => {
       if (i === currentPage) return;
-
       if (i > currentPage) {
         for (let p = currentPage; p < i; p++) {
           const result = canProceedFromPage(p);
@@ -937,15 +871,12 @@ function renderProgress() {
           }
         }
       }
-
       currentPage = i;
       saveDraftState();
       render();
     });
-
     dots.appendChild(dot);
   }
-
   el.appendChild(dots);
 }
 
@@ -953,20 +884,16 @@ function makeOptionButton(field, code, label) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'wh40k-option';
-
   if (field === 'J') btn.classList.add('anomaly');
-
   btn.dataset.field = field;
   btn.dataset.code = code;
 
   const check = isOptionAllowed(field, code);
   const isActive = state[field] === code;
   const badge = !check.ok ? `<span class="wh40k-option-badge">⊘ ${check.reason}</span>` : '';
-
   btn.innerHTML = `<span class="wh40k-option-code">${code}</span><span class="wh40k-option-label">${label}</span>${badge}`;
 
   if (isActive) btn.classList.add('active');
-
   if (!check.ok) {
     btn.classList.add('disabled');
     btn.title = check.reason;
@@ -977,7 +904,6 @@ function makeOptionButton(field, code, label) {
     if (!check.ok && !isActive) {
       return;
     }
-
     state[field] = code;
     saveDraftState();
     render();
@@ -989,7 +915,6 @@ function makeOptionButton(field, code, label) {
 function makeFieldSection(field) {
   const wrap = document.createElement('section');
   wrap.className = 'wh40k-section';
-
   if (field === 'J') wrap.classList.add('anomaly');
 
   const h = document.createElement('h3');
@@ -998,11 +923,7 @@ function makeFieldSection(field) {
 
   const optionsWrap = document.createElement('div');
   optionsWrap.className = 'wh40k-options';
-
-  OPTIONS[field].forEach(([code, label]) => {
-    optionsWrap.appendChild(makeOptionButton(field, code, label));
-  });
-
+  OPTIONS[field].forEach(([code, label]) => optionsWrap.appendChild(makeOptionButton(field, code, label)));
   wrap.appendChild(optionsWrap);
 
   if (field === 'B') {
@@ -1014,14 +935,12 @@ function makeFieldSection(field) {
         <input type="text" placeholder="输入角色名字" value="${escapeHtml(state.NAME)}" />
       </label>
     `;
-
     const input = nameBox.querySelector('input');
     input.addEventListener('input', (e) => {
       state.NAME = e.target.value;
       saveDraftState();
       renderFooterWarnings();
     });
-
     wrap.appendChild(nameBox);
   }
 
@@ -1049,24 +968,18 @@ function renderPageContent() {
       <div class="wh40k-splash-text">此终端不会即时提交。您将依次完成 5 节登记表,每节包含若干字段;填写期间,字段可随时修改或重置。全部完成后,在最终页一次性提交档案。</div>
       <button type="button" class="wh40k-btn primary wh40k-start-btn">[ 进入登记 ]</button>
     `;
-
     splash.querySelector('.wh40k-start-btn').addEventListener('click', () => {
       currentPage = 1;
       saveDraftState();
       render();
     });
-
     content.appendChild(splash);
     return;
   }
 
   const grid = document.createElement('div');
   grid.className = 'wh40k-page-grid';
-
-  PAGE_FIELDS[currentPage].forEach((field) => {
-    grid.appendChild(makeFieldSection(field));
-  });
-
+  PAGE_FIELDS[currentPage].forEach((field) => grid.appendChild(makeFieldSection(field)));
   content.appendChild(grid);
 
   if (currentPage === FINAL_PAGE) {
@@ -1082,12 +995,10 @@ function renderPageContent() {
         <button type="button" class="wh40k-btn primary" data-action="confirm-send">★ 提交档案 ★</button>
       </div>
     `;
-
     finalCard.querySelector('.wh40k-final-preview').textContent = buildPayload();
     finalCard.querySelector('[data-action="fill-only"]').addEventListener('click', fillOnly);
     finalCard.querySelector('[data-action="copy-payload"]').addEventListener('click', copyPayloadOnly);
     finalCard.querySelector('[data-action="confirm-send"]').addEventListener('click', confirmAndSend);
-
     content.appendChild(finalCard);
   }
 }
@@ -1095,7 +1006,6 @@ function renderPageContent() {
 function renderFooterWarnings() {
   const box = overlay.querySelector('.wh40k-warning-box');
   const warnings = getWarnings();
-
   if (warnings.length === 0) {
     box.textContent = '提示：AI会根据你的世界书规则自动纠正非法组合，并在开场叙事中给出简短解释。';
   } else {
@@ -1133,14 +1043,12 @@ function goBack() {
 
 function goNext() {
   const result = canProceedFromPage(currentPage);
-
   if (!result.ok) {
     alert(result.message);
     return;
   }
 
   if (currentPage >= FINAL_PAGE) return;
-
   currentPage += 1;
   saveDraftState();
   render();
@@ -1148,7 +1056,6 @@ function goNext() {
 
 async function fillOnly() {
   const result = canProceedFromPage(1);
-
   if (!result.ok) {
     alert(result.message);
     return;
@@ -1159,10 +1066,8 @@ async function fillOnly() {
   await new Promise((r) => setTimeout(r, 80));
 
   const ok = setInputValue(payload);
-
   if (!ok) {
     const copied = await copyToClipboard(payload);
-
     if (copied) {
       alert('未能自动写入输入框。模板已复制到剪贴板,请手动粘贴到聊天输入框。');
     } else {
@@ -1173,7 +1078,6 @@ async function fillOnly() {
 
 async function copyPayloadOnly() {
   const result = canProceedFromPage(1);
-
   if (!result.ok) {
     alert(result.message);
     return;
@@ -1181,7 +1085,6 @@ async function copyPayloadOnly() {
 
   const payload = buildPayload();
   const ok = await copyToClipboard(payload);
-
   if (ok) {
     alert('模板已复制到剪贴板!关闭此窗口,长按聊天输入框粘贴即可。');
   } else {
@@ -1191,7 +1094,6 @@ async function copyPayloadOnly() {
 
 async function confirmAndSend() {
   const result = canProceedFromPage(1);
-
   if (!result.ok) {
     alert(result.message);
     return;
@@ -1202,16 +1104,13 @@ async function confirmAndSend() {
   await new Promise((r) => setTimeout(r, 80));
 
   const filled = setInputValue(payload);
-
   if (!filled) {
     const copied = await copyToClipboard(payload);
-
     if (copied) {
       alert('未能自动写入输入框。模板已复制到剪贴板,请手动粘贴并发送。');
     } else {
       alert('未能写入输入框。请手动复制以下内容:\n\n' + payload);
     }
-
     return;
   }
 
@@ -1222,7 +1121,6 @@ async function confirmAndSend() {
   }
 
   const sendBtn = querySendButton();
-
   if (sendBtn) {
     sendBtn.click();
     await markBuilderShown();
@@ -1239,7 +1137,6 @@ async function maybeAutoOpen() {
   }
 
   const ctx = getCtx();
-
   console.log(`[${EXT_ID}] maybeAutoOpen: groupId=${ctx.groupId} charId=${ctx.characterId} chatLen=${ctx.chat?.length}`);
 
   if (!shouldEnableForCurrentChat()) {
@@ -1301,11 +1198,9 @@ function init() {
 
   try {
     const { eventSource, event_types } = getCtx();
-
     eventSource.on(event_types.CHAT_CHANGED, () => {
       try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] CHAT_CHANGED handler error`, e); }
     });
-
     eventSource.on(event_types.CHAT_CREATED, () => {
       state = { ...DEFAULT_STATE };
       currentPage = 0;
@@ -1316,14 +1211,8 @@ function init() {
   }
 
   try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] initial maybeAutoOpen error`, e); }
-
-  setTimeout(() => {
-    try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] delayed maybeAutoOpen error`, e); }
-  }, 600);
-
-  setTimeout(() => {
-    try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] delayed maybeAutoOpen error`, e); }
-  }, 2000);
+  setTimeout(() => { try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] delayed maybeAutoOpen error`, e); } }, 600);
+  setTimeout(() => { try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] delayed maybeAutoOpen error`, e); } }, 2000);
 
   console.log(`[${EXT_ID}] init complete`);
 }
@@ -1334,7 +1223,6 @@ function boot() {
   if (isCtxReady()) {
     try {
       const { eventSource, event_types } = getCtx();
-
       eventSource.on(event_types.APP_READY, () => {
         console.log(`[${EXT_ID}] APP_READY fired`);
         setTimeout(init, 0);
