@@ -14,7 +14,7 @@ const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
 // 6 = 最终提交
 const PAGE_FIELDS = [
   [],                                  // 0 splash
-  ['B', 'C', 'F', 'G', 'I'],           // 1 基础信息
+  ['B', 'C', 'F', 'G', 'I'],          // 1 基础信息
   ['A', 'H'],                          // 2 出身来历
   ['D', 'E'],                          // 3 身份立场
   ['K', 'L', 'N'],                     // 4 初始情况
@@ -63,6 +63,7 @@ const OPTIONS = {
     ['A19', '欧姆巴佩11号太空站（卡利亚星区-火星正统派秘密空间站）'],
     ['A20', '奥利赛V太空站（卡利亚星区-导航者空间站）'],
     ['A21', '哥利亚太空要塞（卡利亚星区-死亡守望要塞）'],
+    ['A22', '新福吉斯（莫斯塔克扩区-锻造世界）'],
   ],
   B: [
     ['B0', '默认（{{user}}）'],
@@ -85,10 +86,11 @@ const OPTIONS = {
     ['D6', '审判庭-激进派'],
     ['D7', '审判庭-占视者派'],
     ['D8', '审判庭-妄尊异形派'],
-    ['D9', '机械神教-探索者'],
-    ['D10', '机械神教-异形博学派'],
-    ['D11', '机械神教-火星正统派'],
-    ['D12', '机械神教-技术异端'],
+    ['D9', '机械神教-火星正统派'],
+    ['D10', '机械神教-探索者派'],
+    ['D11', '机械神教-异形博学派'],
+    ['D12', '机械神教-莫伊雷分裂派'],
+    ['D13', '机械神教-考尔派'],
   ],
   E: [
     ['E1', '帝国卫队士兵'],
@@ -126,7 +128,7 @@ const OPTIONS = {
     ['E33', '护教军游侠'],
     ['E34', '遗传学探索者'],
     ['E35', '高阶考古学僧'],
-    ['E36', '机仆监管员'],
+    ['E36', '技术监工'],
     ['E37', '巢都帮派成员'],
     ['E38', '锯齿小子初级成员'],
     ['E39', '黑市情报贩子'],
@@ -222,6 +224,13 @@ const OPTIONS = {
     ['L16', '你曾被审判庭短暂拘押，经历了痛苦的审讯'],
     ['L17', '你曾参与过一次不该留下记录的清洗'],
     ['L18', '你曾被迫出卖自己肉体以换取生路'],
+    ['L19', '你曾使用未授权标准建造模板片段'],
+    ['L20', '你已被欧姆巴佩11号站秘密建档'],
+    ['L21', '你加入过一个半异端学术协会'],
+    ['L22', '你正在隐瞒一次未授权肉体改造'],
+    ['L23', '你持有一份未提交火星的技术档案'],
+    ['L24', '你被怀疑处于技术弊病第二阶'],
+    ['L25', '你掌握一条通向第三阶路径的禁忌线索'],
   ],
   N: [
     ['N0', '无'],
@@ -237,9 +246,9 @@ const OPTIONS = {
     ['N10', '有一位曾救过你的人'],
     ['N11', '有一位行商浪人保护人'],
     ['N12', '有一位法务部旧识'],
-    ['N13', '有一位内政部档案员朋友'],
+    ['N13', '有一位行政部档案员朋友'],
     ['N14', '有一位海军军官联系人'],
-    ['N15', '有一位异形联系人'],
+    ['N15', '有一位异形或异端联系人'],
     ['N16', '有一位长期跟随你的男性机仆'],
     ['N17', '有一位长期跟随你的女性机仆'],
     ['N18', '有一位蔷薇修女会的旧识'],
@@ -247,6 +256,7 @@ const OPTIONS = {
     ['N20', '有一位帝国骑士家族的熟人'],
     ['N21', '有一位商船上的可靠副手'],
     ['N22', '有一位底巢帮派中的内应'],
+    ['N24', '有一位半异端协会导师庇护你'],
   ],
 };
 
@@ -267,6 +277,7 @@ const DEFAULT_STATE = {
   NAME: '',
 };
 
+// 7 页结构的标题与描述。索引 5 是 J 字段(命运牵连),特殊样式。
 function buildPageTitles() {
   return {
     0: '初始化',
@@ -274,7 +285,7 @@ function buildPageTitles() {
     2: '出身来历',
     3: '身份立场',
     4: '初始情况',
-    5: '命运牵连',
+    5: '命运牵连',  // J 栏 - 特殊
     6: '最终提交',
   };
 }
@@ -315,6 +326,7 @@ let currentPage = 0;
 let overlay = null;
 let launcher = null;
 
+// 在加载时填充派生数据
 Object.assign(PAGE_TITLES, buildPageTitles());
 Object.assign(PAGE_DESCRIPTIONS, buildPageDescriptions());
 
@@ -360,10 +372,13 @@ function getOptionLabel(field, code) {
 }
 
 function queryInputBox() {
+  // SillyTavern 聊天输入框的稳定 ID
   const byId = document.getElementById('send_textarea');
   if (byId) return byId;
+  // 兜底 1:form_sheld 容器里的 textarea
   const inForm = document.querySelector('#form_sheld textarea');
   if (inForm) return inForm;
+  // 兜底 2:placeholder 含"消息"/"message"的 textarea(避免误选角色卡编辑器)
   return document.querySelector('textarea[placeholder*="消息"]')
       || document.querySelector('textarea[placeholder*="message" i]');
 }
@@ -385,6 +400,7 @@ function setInputValue(text) {
 
   try { input.focus(); } catch (_) {}
 
+  // 方法 1:原生 value setter(兼容 React 受控)
   try {
     const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value')?.set;
     if (setter) setter.call(input, text);
@@ -392,8 +408,10 @@ function setInputValue(text) {
     console.warn(`[${EXT_ID}] native setter 失败:`, e);
   }
 
+  // 方法 2:直接赋值(兜底)
   try { input.value = text; } catch (_) {}
 
+  // 方法 3:jQuery 赋值 + 触发(SillyTavern 的监听器依赖这个!)
   if (typeof jQuery === 'function') {
     try {
       jQuery(input).val(text).trigger('input').trigger('change').trigger('keyup');
@@ -402,6 +420,7 @@ function setInputValue(text) {
     }
   }
 
+  // 方法 4:派发原生事件(某些监听器用的)
   try {
     input.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
     input.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
@@ -418,9 +437,9 @@ async function copyToClipboard(text) {
     try {
       await navigator.clipboard.writeText(text);
       return true;
-    } catch (_) {}
+    } catch (_) { /* fall through */ }
   }
-
+  // Legacy fallback
   const ta = document.createElement('textarea');
   ta.value = text;
   ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';
@@ -447,23 +466,40 @@ function trySendMessage(text) {
   return false;
 }
 
+// ================= 硬约束:选项兼容性判断 =================
+// 规则:
+// - X0 (随机/自定义) 永远允许,因为最终由 AI 决定
+// - 如果其他字段尚未明确选择(仍是 X0),也不算冲突
+// - E17-E20 阿斯塔特: 需 G1 男 + C1 正常人类
+// - E3 修女会: 需 G2 女 + 种族 ∈ {C1, C3, C4, C6}
+// - E7 机械神甫: 非 C4
+// - E10 流浪骑士: 非 C6
+// - C4 不可接触者 禁: E7 / E17-E20
+// - C5 领航者 禁: E1/E2/E3/E4/E5/E6/E7/E8/E17-E20/E21/E22/E25
+// - C6 猫人 禁: E10 / E17-E20
+
 function isRandomCode(code) {
-  return /^[A-Z]0$/.test(code);
+  return /^[A-Z]0$/.test(code);  // A0, B0, ... E0 (非 E10/E20 等)
 }
 
+// ========== 立场 ⇄ 职业 体系绑定 ==========
+// iq  = 审判庭编制(D5-D8 专属)
+// mech = 机械神教编制(D9-D13 专属)
+// common = 通用职业(任意普通立场可选,也可做审判庭 retinue)
 const PROFESSION_TAG = {
-  E25: 'iq',
-  E26: 'iq',
-  E27: 'iq',
-  E28: 'iq',
-  E29: 'iq',
-
-  E31: 'mech',
-  E32: 'mech',
-  E33: 'mech',
-  E34: 'mech',
-  E35: 'mech',
-  E36: 'mech',
+  // 审判庭专属
+  E25: 'iq',  // 审判庭侍从
+  E26: 'iq',  // 审判庭神秘学者
+  E27: 'iq',  // 受批准灵能者
+  E28: 'iq',  // 星语者
+  E29: 'iq',  // 拜死教刺客
+  // 机械神教专属
+  E31: 'mech', // 机械神教初级神甫
+  E32: 'mech', // 机械神教探索队正式成员
+  E33: 'mech', // 护教军游侠
+  E34: 'mech', // 遗传学探索者
+  E35: 'mech', // 高阶考古学僧
+  E36: 'mech', // 技术监工
 };
 
 function professionTag(code) {
@@ -472,7 +508,7 @@ function professionTag(code) {
 
 function stanceTag(code) {
   if (['D5', 'D6', 'D7', 'D8'].includes(code)) return 'iq';
-  if (['D9', 'D10', 'D11', 'D12'].includes(code)) return 'mech';
+  if (['D9', 'D10', 'D11', 'D12', 'D13'].includes(code)) return 'mech';
   return 'common';
 }
 
@@ -480,7 +516,13 @@ function isMechBackground(code) {
   return ['H12', 'H14'].includes(code);
 }
 
+function isMechSecret(code) {
+  const match = /^L(\d+)$/.exec(code || '');
+  return !!match && Number(match[1]) >= 19;
+}
+
 function isOptionAllowed(field, code, s = state) {
+  // 旧存档中的 X0 仍允许作为兜底，但新版界面不再提供随机选项。
   if (isRandomCode(code)) return { ok: true };
 
   const pick = (f) => {
@@ -509,7 +551,7 @@ function isOptionAllowed(field, code, s = state) {
   ];
 
   if (field === 'C') {
-    // C字段允许作为路线切换入口，不因后续默认字段阻塞选择。
+    // C 字段允许作为路线切换入口，不因后续默认字段阻塞选择。
     return { ok: true };
   }
 
@@ -519,7 +561,7 @@ function isOptionAllowed(field, code, s = state) {
 
     if (dTag === 'mech') {
       if (c && c !== 'C7') return { ok: false, reason: '神教立场需 C7' };
-      if (eTag && eTag !== 'mech') return { ok: false, reason: '神教立场仅限神教职业' };
+      // 不检查当前 E，避免 C7 路线切换时被默认职业卡死。
     } else {
       if (c === 'C7') return { ok: false, reason: 'C7 需机械神教立场' };
       if (eTag === 'mech') return { ok: false, reason: '神教职业仅配神教立场' };
@@ -536,7 +578,7 @@ function isOptionAllowed(field, code, s = state) {
 
     if (eTag === 'mech') {
       if (c && c !== 'C7') return { ok: false, reason: '神教职业需 C7' };
-      if (dTag && dTag !== 'mech') return { ok: false, reason: '神教职业仅配神教立场' };
+      // 不检查当前 D，避免 C7 路线切换时被默认立场卡死。
     } else {
       if (c === 'C7') return { ok: false, reason: 'C7 需神教职业' };
       if (dTag === 'mech') return { ok: false, reason: '神教立场仅限神教职业' };
@@ -583,6 +625,12 @@ function isOptionAllowed(field, code, s = state) {
     }
   }
 
+  if (field === 'L') {
+    if (isMechSecret(code) && c !== 'C7') {
+      return { ok: false, reason: '神教秘密需 C7' };
+    }
+  }
+
   return { ok: true };
 }
 
@@ -622,9 +670,10 @@ function getWarnings() {
   const isSister = state.E === 'E10';
   const isRose = state.E === 'E11';
   const isMechProfession = MECH_PROFESSIONS.includes(state.E);
-  const isMechStance = ['D9', 'D10', 'D11', 'D12'].includes(state.D);
+  const isMechStance = ['D9', 'D10', 'D11', 'D12', 'D13'].includes(state.D);
   const isIqProfession = IQ_PROFESSIONS.includes(state.E);
   const isMechBg = isMechBackground(state.H);
+  const hasMechSecret = isMechSecret(state.L);
 
   if (state.B === 'B1' && !state.NAME.trim()) {
     warnings.push('你选择了自定义名字，但还没有填写名字。');
@@ -649,8 +698,8 @@ function getWarnings() {
     warnings.push('C7 机械神教培育人必须绑定机械神教立场、机械神教职业与神教背景。');
   }
 
-  if ((isMechProfession || isMechStance || isMechBg) && state.C !== 'C7') {
-    warnings.push('机械神教路线必须选择 C7 机械神教培育人。');
+  if ((isMechProfession || isMechStance || isMechBg || hasMechSecret) && state.C !== 'C7') {
+    warnings.push('机械神教路线与神教专属秘密必须选择 C7 机械神教培育人。');
   }
 
   if (isIqProfession && !['D5', 'D6', 'D7', 'D8'].includes(state.D)) {
@@ -677,6 +726,7 @@ function getWarnings() {
 }
 
 function canProceedFromPage(page) {
+  // B 字段现在在页 1(姓名页)
   const fields = PAGE_FIELDS[page] || [];
   if (fields.includes('B') && state.B === 'B1' && !state.NAME.trim()) {
     return { ok: false, message: '请先填写自定义名字,或改回默认名字。' };
@@ -700,12 +750,11 @@ function loadDraftState() {
     const ctx = getCtx();
     const savedState = ctx.chatMetadata?.[getMetaKey('draft')];
     const savedPage = ctx.chatMetadata?.[getMetaKey('page')];
-
     if (savedState && typeof savedState === 'object') {
       state = { ...DEFAULT_STATE, ...savedState };
-      if (state.C === 'C2') state.C = 'C1';
+      // 旧版本兼容: 移除弃用随机项与弃用编号
       if (state.A === 'A0') state.A = 'A1';
-      if (state.C === 'C0') state.C = 'C1';
+      if (state.C === 'C0' || state.C === 'C2') state.C = 'C1';
       if (state.D === 'D0') state.D = 'D1';
       if (state.E === 'E0') state.E = 'E1';
       if (state.F === 'F0') state.F = 'F1';
@@ -714,11 +763,9 @@ function loadDraftState() {
       if (state.I === 'I0') state.I = 'I3';
       if (state.J === 'J0') state.J = 'J1';
       if (state.K === 'K0') state.K = 'K1';
-      if (state.N === 'N21' && getOptionLabel('N', 'N21') === 'N21') state.N = 'N0';
     } else {
       state = { ...DEFAULT_STATE };
     }
-
     currentPage = typeof savedPage === 'number' ? savedPage : 0;
   } catch (err) {
     state = { ...DEFAULT_STATE };
@@ -749,6 +796,7 @@ function resetState() {
 function closeBuilder() {
   overlay?.classList.remove('open');
   if (launcher) launcher.textContent = '[⚔ 角色创建器]';
+  // Restore body scroll
   document.documentElement.style.overflow = '';
   document.body.style.overflow = '';
 }
@@ -760,11 +808,16 @@ function openBuilder(forcePage = null) {
   render();
   overlay.classList.add('open');
   if (launcher) launcher.textContent = '[✕ 关闭终端]';
+  // Lock body scroll so the modal truly feels full-screen
   document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
 }
 
+// === injectChatStyles 已移除 ===
+// 之前注入了 #send_textarea 的全局绿色样式以及 .mes[is_user] 的用户消息样式
+// 现在改为通过 SillyTavern 世界书或 Author's Note 注入对话框样式,扩展不再污染全局
 function injectChatStyles() {
+  // no-op: 保留函数以避免调用方崩溃,但什么都不注入
   return;
 }
 
@@ -774,8 +827,10 @@ function makeLauncher() {
   launcher.id = 'wh40k-builder-launcher';
   launcher.type = 'button';
   launcher.textContent = '[⚔ 角色创建器]';
+  // Appearance handled by style.css; only position is forced here to guarantee visibility.
   launcher.style.cssText = 'position:fixed;top:64px;right:12px;z-index:10000';
   launcher.addEventListener('click', () => {
+    // Toggle: if modal is open, close it; otherwise open it.
     if (overlay && overlay.classList.contains('open')) {
       closeBuilder();
     } else {
@@ -794,7 +849,7 @@ function createOverlay() {
       <div class="wh40k-builder-header">
         <div>
           <div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div>
-          <div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.2.0</div>
+          <div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.3.0</div>
         </div>
         <button type="button" class="wh40k-icon-btn" data-action="close" aria-label="关闭">[×]</button>
       </div>
@@ -829,21 +884,25 @@ function renderProgress() {
   const el = overlay.querySelector('.wh40k-builder-progress');
   el.innerHTML = '';
 
+  // 起始页:仅显示 "等候输入" 文字,不显示进度
   if (currentPage === 0) {
     el.innerHTML = `<div class="wh40k-progress-label">// 等 候 输 入 //</div>`;
     return;
   }
 
+  // 最终页:显示 "档案就绪 / 提交"
   if (currentPage === FINAL_PAGE) {
     el.innerHTML = `<div class="wh40k-progress-label" style="color:#7ae07a;">// 档 案 就 绪 / 待 提 交 //</div>`;
     return;
   }
 
-  const sectionIndex = currentPage;
-  const total = TOTAL_PAGES - 2;
+  // 字段节(1-5):左侧"第 X / 5 节 · 标题",右侧 5 个圆点
+  const sectionIndex = currentPage; // 1..5
+  const total = TOTAL_PAGES - 2; // 5 节(去掉 splash + final)
 
   const left = document.createElement('div');
   left.className = 'wh40k-progress-label';
+  // J 栏(命运牵连)用血红色提示
   const isJSection = currentPage === 5;
   const labelColor = isJSection ? '#c92030' : '#ffb84d';
   left.innerHTML = `第 <span style="color:${labelColor};font-weight:700;">${sectionIndex}</span> / ${total} 节 · <span style="${isJSection ? 'color:#c92030;font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:0.05em;' : ''}">${PAGE_TITLES[currentPage]}</span>`;
@@ -858,7 +917,7 @@ function renderProgress() {
     dot.dataset.page = String(i);
     if (i === currentPage) dot.classList.add('active');
     else if (i < currentPage) dot.classList.add('done');
-    if (i === 5) dot.classList.add('anomaly');
+    if (i === 5) dot.classList.add('anomaly'); // J 栏特殊圆点
     dot.title = PAGE_TITLES[i];
     dot.addEventListener('click', () => {
       if (i === currentPage) return;
@@ -884,7 +943,7 @@ function makeOptionButton(field, code, label) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'wh40k-option';
-  if (field === 'J') btn.classList.add('anomaly');
+  if (field === 'J') btn.classList.add('anomaly'); // J 栏特殊血红样式
   btn.dataset.field = field;
   btn.dataset.code = code;
 
@@ -901,6 +960,7 @@ function makeOptionButton(field, code, label) {
   }
 
   btn.addEventListener('click', () => {
+    // 禁用且未选中 → 拒绝选,告知原因
     if (!check.ok && !isActive) {
       return;
     }
@@ -915,7 +975,7 @@ function makeOptionButton(field, code, label) {
 function makeFieldSection(field) {
   const wrap = document.createElement('section');
   wrap.className = 'wh40k-section';
-  if (field === 'J') wrap.classList.add('anomaly');
+  if (field === 'J') wrap.classList.add('anomaly'); // J 栏整体异常样式
 
   const h = document.createElement('h3');
   h.textContent = FIELD_TITLES[field];
@@ -1062,7 +1122,7 @@ async function fillOnly() {
   }
 
   const payload = buildPayload();
-  closeBuilder();
+  closeBuilder();  // 先关 modal,让输入框完全暴露给 focus
   await new Promise((r) => setTimeout(r, 80));
 
   const ok = setInputValue(payload);
@@ -1082,7 +1142,6 @@ async function copyPayloadOnly() {
     alert(result.message);
     return;
   }
-
   const payload = buildPayload();
   const ok = await copyToClipboard(payload);
   if (ok) {
@@ -1100,7 +1159,7 @@ async function confirmAndSend() {
   }
 
   const payload = buildPayload();
-  closeBuilder();
+  closeBuilder();  // 先关 modal
   await new Promise((r) => setTimeout(r, 80));
 
   const filled = setInputValue(payload);
@@ -1120,6 +1179,7 @@ async function confirmAndSend() {
     return;
   }
 
+  // 尝试点发送按钮
   const sendBtn = querySendButton();
   if (sendBtn) {
     sendBtn.click();
@@ -1135,7 +1195,6 @@ async function maybeAutoOpen() {
     console.warn(`[${EXT_ID}] maybeAutoOpen: ctx not ready`);
     return;
   }
-
   const ctx = getCtx();
   console.log(`[${EXT_ID}] maybeAutoOpen: groupId=${ctx.groupId} charId=${ctx.characterId} chatLen=${ctx.chat?.length}`);
 
@@ -1211,6 +1270,7 @@ function init() {
   }
 
   try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] initial maybeAutoOpen error`, e); }
+  // Extra retries in case characterId / chat data isn't populated yet on first pass.
   setTimeout(() => { try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] delayed maybeAutoOpen error`, e); } }, 600);
   setTimeout(() => { try { maybeAutoOpen(); } catch (e) { console.error(`[${EXT_ID}] delayed maybeAutoOpen error`, e); } }, 2000);
 
@@ -1220,6 +1280,7 @@ function init() {
 function boot() {
   console.log(`[${EXT_ID}] boot() called, ctxReady=${isCtxReady()}`);
 
+  // Try to bind APP_READY if the SillyTavern global is already up.
   if (isCtxReady()) {
     try {
       const { eventSource, event_types } = getCtx();
@@ -1232,11 +1293,13 @@ function boot() {
     }
   }
 
+  // Multiple timed fallbacks so we don't depend on APP_READY firing at the right moment.
   setTimeout(init, 300);
   setTimeout(init, 1500);
   setTimeout(init, 4000);
 }
 
+// Wait for DOM + jQuery (SillyTavern ships jQuery globally). Fall back to plain DOMContentLoaded.
 if (typeof jQuery === 'function') {
   jQuery(function () { boot(); });
 } else if (document.readyState === 'loading') {
