@@ -3,7 +3,7 @@ const TARGET_CHARACTER_NAME = '';
 const AUTO_OPEN_FOR_EMPTY_CHAT = true;
 const AUTO_SEND_AFTER_FILL = true;
 
-const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'N', 'Q', 'S', 'U', 'V', 'J'];
+const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'N', 'P', 'Q', 'S', 'U', 'V', 'J'];
 // 8 页结构:
 // 0 = splash 起始页
 // 1 = 基础信息(B 名字 / C 血统 / F 年龄 / G 性别 / I 外貌 / Q 身体状态)
@@ -18,7 +18,7 @@ const PAGE_FIELDS = [
   ['B', 'C', 'F', 'G', 'I', 'Q'],          // 1 基础信息
   ['A', 'H'],                               // 2 出身来历
   ['D', 'E'],                               // 3 身份立场
-  ['K', 'L', 'N'],                          // 4 初始情况
+  ['K', 'L', 'N', 'P'],                     // 4 初始情况(含开局同伴 P)
   ['S', 'U', 'V'],                          // 5 角色驱动
   ['J'],                                    // 6 命运牵连(+额外补充)
   [],                                       // 7 最终提交
@@ -40,6 +40,7 @@ const FIELD_TITLES = {
   K: 'K. 初始资源 / 开局条件',
   L: 'L. 初始秘密 / 隐藏命运',
   N: 'N. 初始羁绊',
+  P: 'P. 开局同伴',
   Q: 'Q. 身体状态',
   S: 'S. 开场地点',
   U: 'U. 目标动机',
@@ -70,7 +71,7 @@ const OPTIONS = {
     ['A20', '奥利赛V太空站（卡利亚星区-导航者空间站）'],
     ['A21', '哥利亚太空要塞（卡利亚星区-死亡守望要塞）'],
     ['A22', '新福吉斯（莫斯塔克扩区-锻造世界）'],
-    ['A23', '瀛洲-21（卡利亚星区外围-翡翠龙战团母星·折叠空间）'],
+    ['A23', '瀛洲-21（卡利亚星区外围-翡翠龙战团母星·东亚隐修封建社会）'],
   ],
   B: [
     ['B0', '默认（{{user}}）'],
@@ -337,6 +338,34 @@ const OPTIONS = {
     ['V5', '主线（专注推进主线剧情，少 filler）'],
     ['V6', '自主（AI 等你主动行动，不催进度）'],
   ],
+  P: [
+    ['P0', '独自（开局没有同伴，你完全靠自己）'],
+    ['P1', '赤红净化博学者（红袍下藏满工具，曾是儿童变异稳定专员，外表年轻）'],
+    ['P2', '赏金枪手（前帝国卫队的拉丁裔女性，独立赏金猎人，专精中距离）'],
+    ['P3', '流亡叛博学者（百岁高龄但外表年轻的女性，三方通缉的火星叛徒）'],
+    ['P4', '骑士机甲驾驶员（家族继承人之一，22 岁，独角兽机甲驾驶员）'],
+    ['P5', '见习修女（年轻女见习修女，温柔但严格，会唱圣歌也会拔枪）'],
+    ['P6', '贵族怪盗（19 岁莫斯塔克旁系，受 Casu 微改，娴熟于潜入与社交）'],
+    ['P7', '星界军老兵（中年男性，持爆弹枪，话不多但靠得住）'],
+    ['P8', '黑暗灵族战巫（487 岁，黑骨竞技场战巫，外表如人类 25 岁）'],
+    ['P9', '导航学徒（25 岁导航者家族成员，已订婚，仍在学习星图）'],
+    ['P10', '克鲁特猎手（外形怪异的克鲁特异形，对契约绝对忠诚，擅长追踪）'],
+    ['P11', '人类灵族混血海盗（32 岁女舰队队长，黑市常客，舰只小但快）'],
+    ['P12', '欧格林保镖（魁梧的欧格林异形壮汉，肌肉远胜脑子，但绝对忠诚）'],
+    ['P13', '机械神教技术神甫（26 岁考尔派，多领域跨界的培育人女性）'],
+    ['P14', '审判官助理（32 岁拉丁裔女性，前异形产品走私贩，已"洗白"）'],
+    ['P15', '莱特林狙击手（半身人异形狙击手，敏捷，话不多但弹道精准）'],
+    ['P16', '伪装贵族妓院主理（36 岁女性，永恒欢愉教团想要的"完美容器"）'],
+    ['P17', '北欧风走私头目（35 岁日耳曼血统女首领，"风暴鸦"集团掌门）'],
+    ['P18', '待命女仆长（25 岁女性，身份为家政管家，等待新主人）'],
+    ['P19', '流亡星图师（中年男性，被火星通缉，擅长亚空间路线计算，沉默寡言但精于推算）'],
+    ['P20', '黑暗灵族娼妓（542 岁魅魔，黑骨高级娼妓，外表如人类 30 岁）'],
+    ['P21', '失明朝圣者（年长男性神父，背着圣物匣，瞎眼但能"看见"，狂热程度待观察）'],
+    ['P22', '雇佣枪手（男性枪手，背景模糊，前同事都死了，对钱忠诚）'],
+    ['P23', '半异端学者（年轻男性学者，拖着一箱旧书与禁论，被监控但有用）'],
+    ['P24', '颓废女学者（31 岁苍白的法兰西血统女学者，浏海遮住右脸，私下研究禁忌的亚空间符号，明知会消耗自己仍不停笔）'],
+    ['P25', '自定义（玩家手动输入同伴描述）'],
+  ],
 };
 
 const DEFAULT_STATE = {
@@ -353,6 +382,7 @@ const DEFAULT_STATE = {
   K: 'K1',
   L: 'L0',
   N: 'N0',
+  P: 'P0',          // 默认独自
   Q: 'Q1',
   S: 'S1',
   U: 'U12',         // 默认漂泊(最中性)
@@ -360,6 +390,7 @@ const DEFAULT_STATE = {
   NAME: '',         // B1 自定义名字
   H_CUSTOM: '',     // H25 自定义出身
   S_CUSTOM: '',     // S23 自定义开场地点
+  P_CUSTOM: '',     // P25 自定义同伴
   EXTRA: '',        // J 后的额外补充
 };
 
@@ -383,7 +414,7 @@ function buildPageDescriptions() {
     1: '// 第一节 — 您的姓名、血统、年龄、性别、外貌与身体状态。',
     2: '// 第二节 — 您的出生星界与身世背景。可在 H25 处自定义出身。',
     3: '// 第三节 — 您当前的阵营立场与职业。',
-    4: '// 第四节 — 您当前持有的资源、秘密与羁绊。',
+    4: '// 第四节 — 您当前持有的资源、秘密、羁绊与开局同伴。',
     5: '// 第五节 — 您的开场地点、目标动机与叙事节奏偏好。',
     6: '// ??_???? / [NON_STANDARD_FIELD] — 来源未知的字段;另可在底部自由补充。',
     7: '// 复核全部档案,提交至大行政官案头。',
@@ -404,6 +435,7 @@ const FIELD_DESCRIPTIONS = {
   K: '声明您当前持有的资源与起始状态。',
   L: '坦白您的初始秘密或潜伏命运。',
   N: '登记您当前的核心羁绊。',
+  P: '指定您的开局同伴(可选)。同伴会作为开局 status2 第一个槽位加入您的小队。',
   Q: '声明您当前的身体状况。包括隐性创伤、改造痕迹与未愈合的旧伤。',
   S: '指定您的开场地点。从 22 个具体场景中选择一个，或在 S23 处自行描述。',
   U: '声明您的核心动机。它将驱动您的中长期决策与剧情选择。',
@@ -588,7 +620,7 @@ function trySendMessage(text) {
 // - A19 欧姆巴佩11号: 限神教职业(E31-E36)或审判庭(E25-E26)
 // - A20 奥利赛V: 不硬禁(允许领航者及被雇佣者)
 // - A21 哥利亚要塞: 限 E21 死亡守望
-// - A23 瀛洲-21: 限 E23 翡翠龙战团修士
+// - A23 瀛洲-21: 不硬禁(地表有完整封建社会, 凡人与帝国机构均存在)
 //
 // 【动机约束】
 // - U2 寻亲 ←→ N1 家人仍在: 双向硬禁(逻辑矛盾)
@@ -605,7 +637,7 @@ function trySendMessage(text) {
 // 【开场地点 S】
 // - S 字段对每个职业有允许集合(详见 ALLOWED_S 表), 不在集合中即硬禁
 // - S23 自定义永远允许
-// - 出生星界 A19/A21/A23 各自有允许的 S 子集
+// - 出生星界 A19/A21 各自有允许的 S 子集; A20/A23 不限
 
 function isRandomCode(code) {
   return /^[A-Z]0$/.test(code);  // A0, B0, ... E0 (非 E10/E20 等)
@@ -704,12 +736,12 @@ const ALLOWED_S_BY_PROFESSION = {
 // 出生星界 ←→ 职业 限定
 const A19_OK_E = ['E25','E26','E31','E32','E33','E34','E35','E36'];  // 欧姆巴佩11号(神教+审判庭)
 const A21_OK_E = ['E21'];  // 哥利亚要塞(死亡守望)
-const A23_OK_E = ['E23'];  // 瀛洲-21(翡翠龙)
+// A20 奥利赛V / A23 瀛洲-21 不做职业硬禁(放开,凡人与帝国机构可存在)
 
 // 出生星界 ←→ 开场地点 限定
 const A19_OK_S = ['S8','S22','S23'];          // 欧姆巴佩11号: 舰内/神甫居所
 const A21_OK_S = ['S3','S8','S22','S23'];     // 哥利亚要塞: 圣堂/舰内/神甫居所
-const A23_OK_S = ['S8','S10','S13','S15','S23']; // 瀛洲-21: 舰内/边境/修道院/废墟
+// A20 / A23 不做地点限定
 
 // 背景白名单
 const NAVIGATOR_OK_BG = ['H4','H16','H19','H20'];                    // C5 领航者
@@ -732,6 +764,26 @@ const STREET_PROFESSIONS = ['E1','E7','E19','E37','E43'];
 
 // 组织化职业: 不允许 U12 漂泊
 const ORG_PROFESSIONS_FOR_U12 = ['E10','E11','E21','E22','E23','E24','E25','E26','E27','E28','E29','E31','E32','E33','E34','E35','E36'];
+
+// ============ P 同伴常量 ============
+
+// 黑暗灵族同伴(异形)
+const DARK_ELDAR_PARTNERS = ['P8', 'P20'];
+
+// 修女类职业(包括蔷薇辅秘)
+const SISTER_JOBS = ['E10', 'E11'];
+
+// 男性人类同伴(供修女路线软警告使用)
+const MALE_PARTNERS = ['P7', 'P19', 'P21', 'P22', 'P23'];
+
+// 异形同伴(供 D5 纯洁派检查 + 修女路线检查)
+const XENOS_PARTNERS = ['P8', 'P10', 'P12', 'P15', 'P20'];
+
+// 神教同伴(C7 推荐配伍)
+const MECH_PARTNERS = ['P1', 'P13'];
+
+// 万能同伴(任何路线无任何配伍警告)
+const UNIVERSAL_PARTNERS = ['P0', 'P2', 'P18', 'P22', 'P25'];
 
 function isOptionAllowed(field, code, s = state) {
   // 旧存档中的 X0 仍允许作为兜底，但新版界面不再提供随机选项。
@@ -866,10 +918,7 @@ function isOptionAllowed(field, code, s = state) {
     if (code === 'A21' && e && !A21_OK_E.includes(e)) {
       return { ok: false, reason: '哥利亚要塞仅对死亡守望开放' };
     }
-    // A23 瀛洲-21: 限翡翠龙
-    if (code === 'A23' && e && !A23_OK_E.includes(e)) {
-      return { ok: false, reason: '瀛洲-21 是隐藏母星，仅翡翠龙战团修士可在此开场' };
-    }
+    // A23 瀛洲-21: 不硬禁(地表有完整封建社会, 凡人与帝国机构均存在)
     // A20 奥利赛V: 不硬禁(允许领航者及被雇佣者)
   }
 
@@ -980,9 +1029,7 @@ function isOptionAllowed(field, code, s = state) {
     if (a === 'A21' && !A21_OK_S.includes(code)) {
       return { ok: false, reason: '哥利亚要塞只允许圣堂/舰内/神甫居所开场' };
     }
-    if (a === 'A23' && !A23_OK_S.includes(code)) {
-      return { ok: false, reason: '瀛洲-21 只允许舰内/边境/修道院/废墟开场' };
-    }
+    // A23 瀛洲-21: 不限定 S(地表有完整社会, 各种场景都合理)
 
     // 职业 ←→ S 矩阵
     if (e && ALLOWED_S_BY_PROFESSION[e] && !ALLOWED_S_BY_PROFESSION[e].includes(code)) {
@@ -1029,6 +1076,44 @@ function isOptionAllowed(field, code, s = state) {
     }
   }
 
+  // ============ P 开局同伴 ============
+  if (field === 'P') {
+    // P0 独自 / P25 自定义 永远允许(玩家自由选择,不做硬禁)
+    if (code === 'P0' || code === 'P25') return { ok: true };
+
+    // 修女会(E10/E11) 禁黑暗灵族同伴(教义不可调和)
+    if (SISTER_JOBS.includes(e) && DARK_ELDAR_PARTNERS.includes(code)) {
+      return { ok: false, reason: '修女会与黑暗灵族不可调和' };
+    }
+
+    // D5 纯洁派 禁三方通缉的流亡叛博学者(立刻处决对象)
+    if (d === 'D5' && code === 'P3') {
+      return { ok: false, reason: '纯洁派会立刻处决三方通缉的火星叛徒' };
+    }
+
+    // D5 纯洁派 禁黑暗灵族同伴(异形即异端)
+    if (d === 'D5' && DARK_ELDAR_PARTNERS.includes(code)) {
+      return { ok: false, reason: '纯洁派立场下,异形即异端' };
+    }
+
+    // C4 不可接触者 禁见习修女(信仰仪式会失灵)
+    if (c === 'C4' && code === 'P5') {
+      return { ok: false, reason: '不可接触者会让修女信仰仪式失灵' };
+    }
+
+    // P24 颓废女学者(亚空间研究者) 硬禁组合
+    if (code === 'P24') {
+      // 火星正统派对亚空间研究者立即清剿
+      if (d === 'D9') {
+        return { ok: false, reason: '火星正统派对所有亚空间研究者持立即清剿态度' };
+      }
+      // 纯洁派对未授权亚空间研究者立即处决
+      if (d === 'D5') {
+        return { ok: false, reason: '纯洁派会立刻处决所有未授权亚空间研究者' };
+      }
+    }
+  }
+
   return { ok: true };
 }
 
@@ -1044,6 +1129,9 @@ function buildPayload() {
   }
   if (state.S === 'S23' && (state.S_CUSTOM || '').trim()) {
     lines.push(`自定义开场地点：${state.S_CUSTOM.trim()}`);
+  }
+  if (state.P === 'P25' && (state.P_CUSTOM || '').trim()) {
+    lines.push(`自定义同伴：${state.P_CUSTOM.trim()}`);
   }
   if ((state.EXTRA || '').trim()) {
     lines.push('');
@@ -1076,6 +1164,9 @@ function buildSummaryRows() {
     ['资源', `${state.K} · ${getOptionLabel('K', state.K)}`],
     ['秘密', `${state.L} · ${getOptionLabel('L', state.L)}`],
     ['羁绊', `${state.N} · ${getOptionLabel('N', state.N)}`],
+    ['同伴', state.P === 'P25'
+      ? `P25 · ${(state.P_CUSTOM || '').trim() || '（自定义未填写）'}`
+      : `${state.P} · ${getOptionLabel('P', state.P)}`],
     ['主线', `${state.J} · ${getOptionLabel('J', state.J)}`],
     ['节奏', `${state.V} · ${getOptionLabel('V', state.V)}`],
   ];
@@ -1165,6 +1256,63 @@ function getWarnings() {
     warnings.push('当前职业通常不在大型舰船上服役，AI 会改写为乘客或临时雇员。');
   }
 
+  // ============ P 同伴软警告 ============
+  // P25 自定义同伴留空提示
+  if (state.P === 'P25' && !(state.P_CUSTOM || '').trim()) {
+    warnings.push('已选自定义同伴，但未填写描述；建议填写一两句具体同伴。');
+  }
+
+  // 阿斯塔特配凡人同伴(包含所有非阿斯塔特同伴,P24 颓废女学者也算)
+  const NON_ASTARTES_PARTNERS = ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21','P22','P23','P24'];
+  if (ASTARTES.includes(state.E) && NON_ASTARTES_PARTNERS.includes(state.P)) {
+    warnings.push('阿斯塔特通常与战团兄弟同行；非战团同伴会被视作辅助军或仆从。');
+  }
+
+  // C7 培育人配非神教同伴(P0/P25 跳过)
+  if (state.C === 'C7' && state.P !== 'P0' && state.P !== 'P25' && !MECH_PARTNERS.includes(state.P)) {
+    warnings.push('C7 培育人通常与神教同伴搭档；其他同伴需特殊豁免。');
+  }
+
+  // 修女会配男性人类同伴
+  if (SISTER_JOBS.includes(state.E) && MALE_PARTNERS.includes(state.P)) {
+    warnings.push('修女会与男性同行需要特殊豁免，AI 可能会安排陪同任务理由。');
+  }
+
+  // 修女会配异形同伴(除黑暗灵族已硬禁外的其他异形)
+  const SISTER_XENOS_WARN = ['P10','P12','P15'];  // 克鲁特/欧格林/莱特林(允许但提示)
+  if (SISTER_JOBS.includes(state.E) && SISTER_XENOS_WARN.includes(state.P)) {
+    warnings.push('修女会与异形同行较罕见，AI 可能会以辅助军或临时盟约处理。');
+  }
+
+  // D5 纯洁派 + P14 审判官助理(前异形走私)
+  if (state.D === 'D5' && state.P === 'P14') {
+    warnings.push('纯洁派对前异形走私者会持续审查，关系较为微妙。');
+  }
+
+  // D9-D13 神教 + P3 流亡叛博学者
+  if (['D9','D10','D11','D12','D13'].includes(state.D) && state.P === 'P3') {
+    warnings.push('机械神教对火星叛徒持敌意，开局合作需要剧情铺垫。');
+  }
+
+  // ============ P24 颓废女学者(亚空间研究者) 软警告 ============
+  if (state.P === 'P24') {
+    // 修女会对亚空间研究持深度怀疑
+    if (SISTER_JOBS.includes(state.E)) {
+      warnings.push('教会对亚空间研究持深度怀疑，与她同行须极度谨慎。');
+    }
+    // 不可接触者会干扰她的亚空间感知
+    if (state.C === 'C4') {
+      warnings.push('你的不可接触特质会干扰她的亚空间感知，但她对此感到着迷而非排斥。');
+    }
+    // 审判庭外勤的同事风险
+    const IQ_PROFS = ['E25','E26','E27','E28','E29'];
+    if (IQ_PROFS.includes(state.E)) {
+      warnings.push('你的审判庭同事若发现她，会立即把你和她一起处决。');
+    }
+    // D6/D7/D8/D11 推荐(不警告,这里只做反向提醒避免错配)
+    // 火星神教非正统派(D10/D11/D12/D13)对她相对宽容,无警告
+  }
+
   return warnings;
 }
 
@@ -1178,6 +1326,9 @@ function canProceedFromPage(page) {
   }
   if (fields.includes('S') && state.S === 'S23' && !(state.S_CUSTOM || '').trim()) {
     return { ok: false, message: '请填写自定义开场地点,或改选标准地点。' };
+  }
+  if (fields.includes('P') && state.P === 'P25' && !(state.P_CUSTOM || '').trim()) {
+    return { ok: false, message: '请填写自定义同伴的具体描述,或改选标准同伴。' };
   }
   return { ok: true, message: '' };
 }
@@ -1211,15 +1362,21 @@ function loadDraftState() {
       if (state.I === 'I0') state.I = 'I3';
       if (state.J === 'J0') state.J = 'J1';
       if (state.K === 'K0') state.K = 'K1';
-      // 新字段兜底(旧草稿不含 Q/S/U/V 时的初始值)
+      // 新字段兜底(旧草稿不含 Q/S/U/V/P 时的初始值)
       if (!state.Q) state.Q = 'Q1';
       if (!state.S || state.S === 'S0') state.S = 'S1';   // S0 已弃用
       if (!state.U) state.U = 'U12';                       // 默认漂泊
       if (!state.V) state.V = 'V2';
+      if (!state.P) state.P = 'P0';                        // 默认独自
       // 旧 S17 自定义编号迁移到 S23
       if (state.S === 'S17' && state.S_CUSTOM) state.S = 'S23';
+      // 旧 P23 自定义同伴迁移到 P24(P19 现在是流亡星图师,不是自定义)
+      if (state.P === 'P23' && state.P_CUSTOM) state.P = 'P24';
+      // 旧 P24 自定义同伴迁移到 P25(P24 现在是颓废女学者)
+      if (state.P === 'P24' && state.P_CUSTOM) state.P = 'P25';
       if (typeof state.H_CUSTOM !== 'string') state.H_CUSTOM = '';
       if (typeof state.S_CUSTOM !== 'string') state.S_CUSTOM = '';
+      if (typeof state.P_CUSTOM !== 'string') state.P_CUSTOM = '';
       if (typeof state.EXTRA !== 'string') state.EXTRA = '';
     } else {
       state = { ...DEFAULT_STATE };
@@ -1492,6 +1649,24 @@ function makeFieldSection(field) {
     const input = customBox.querySelector('input');
     input.addEventListener('input', (e) => {
       state.S_CUSTOM = e.target.value;
+      saveDraftState();
+      renderFooterWarnings();
+    });
+    wrap.appendChild(customBox);
+  }
+
+  if (field === 'P') {
+    const customBox = document.createElement('div');
+    customBox.className = `wh40k-name-box${state.P === 'P25' ? ' show' : ''}`;
+    customBox.innerHTML = `
+      <label>
+        <span>自定义同伴（请描述身份与外貌）</span>
+        <textarea placeholder="例如：一名沉默的中年男性医师,左手装有粗糙义肢,自称从某偏远修会逃出,实则身份不明..." rows="3" style="width:100%;background:#0a0a0a;color:#e8e8ea;border:1px solid #5e4a28;padding:8px;font-family:inherit;font-size:13px;line-height:1.5;resize:vertical;box-sizing:border-box;">${escapeHtml(state.P_CUSTOM || '')}</textarea>
+      </label>
+    `;
+    const textarea = customBox.querySelector('textarea');
+    textarea.addEventListener('input', (e) => {
+      state.P_CUSTOM = e.target.value;
       saveDraftState();
       renderFooterWarnings();
     });
