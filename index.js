@@ -351,20 +351,27 @@ const OPTIONS = {
     ['P9', '导航学徒（25 岁导航者家族成员，已订婚，仍在学习星图）'],
     ['P10', '克鲁特猎手（外形怪异的克鲁特异形，对契约绝对忠诚，擅长追踪）'],
     ['P11', '人类灵族混血海盗（32 岁女舰队队长，黑市常客，舰只小但快）'],
-    ['P12', '欧格林保镖（魁梧的欧格林异形壮汉，肌肉远胜脑子，但绝对忠诚）'],
+    ['P12', '审判官助理（32 岁拉丁裔女性，前异形产品走私贩，已\"洗白\"）'],
     ['P13', '机械神教技术神甫（26 岁考尔派，多领域跨界的培育人女性）'],
-    ['P14', '审判官助理（32 岁拉丁裔女性，前异形产品走私贩，已"洗白"）'],
-    ['P15', '莱特林狙击手（半身人异形狙击手，敏捷，话不多但弹道精准）'],
-    ['P16', '伪装贵族妓院主理（36 岁女性，永恒欢愉教团想要的"完美容器"）'],
-    ['P17', '北欧风走私头目（35 岁日耳曼血统女首领，"风暴鸦"集团掌门）'],
-    ['P18', '待命女仆长（25 岁女性，身份为家政管家，等待新主人）'],
-    ['P19', '流亡星图师（中年男性，被火星通缉，擅长亚空间路线计算，沉默寡言但精于推算）'],
-    ['P20', '黑暗灵族娼妓（542 岁魅魔，黑骨高级娼妓，外表如人类 30 岁）'],
-    ['P21', '失明朝圣者（年长男性神父，背着圣物匣，瞎眼但能"看见"，狂热程度待观察）'],
-    ['P22', '雇佣枪手（男性枪手，背景模糊，前同事都死了，对钱忠诚）'],
-    ['P23', '半异端学者（年轻男性学者，拖着一箱旧书与禁论，被监控但有用）'],
-    ['P24', '颓废女学者（31 岁苍白的法兰西血统女学者，浏海遮住右脸，私下研究禁忌的亚空间符号，明知会消耗自己仍不停笔）'],
-    ['P25', '自定义（玩家手动输入命运角色描述）'],
+    ['P14', '莱特林狙击手（半身人异形狙击手，敏捷，话不多但弹道精准）'],
+    ['P15', '伪装贵族妓院主理（36 岁女性，永恒欢愉教团想要的\"完美容器\"）'],
+    ['P16', '北欧风走私头目（35 岁日耳曼血统女首领，\"风暴鸦\"集团掌门）'],
+    ['P17', '待命女仆长（25 岁女性，身份为家政管家，等待新主人）'],
+    ['P18', '流亡星图师（中年男性，被火星通缉，擅长亚空间路线计算，沉默寡言但精于推算）'],
+    ['P19', '黑暗灵族娼妓（542 岁魅魔，黑骨高级娼妓，外表如人类 30 岁）'],
+    ['P20', '失明朝圣者（年长男性神父，背着圣物匣，瞎眼但能\"看见\"，狂热程度待观察）'],
+    ['P21', '雇佣枪手（男性枪手，背景模糊，前同事都死了，对钱忠诚）'],
+    ['P22', '颓废女学者（31 岁苍白的法兰西血统女学者，浏海遮住右脸，私下研究禁忌的亚空间符号，明知会消耗自己仍不停笔）'],
+    ['P23', '蔷薇修女（33 岁女性医疗修女，圣母级丰腴身材，雷萨主教的情人，温顺乖巧背后有惊人秘密）'],
+    ['P24', '失散的见习修女（15 岁女见习修女，金蓝双色长发，尖耳精灵血统，已故贵族之女）'],
+    ['P25', 'Casu 女神分身（约 1700 岁 Casu 女统领，白色倒月头冠遮目，可变形态完美渗透者）'],
+    ['P26', '钛族水氏族以太（22 岁钛瓦女神现世化身，深蓝肌肤金色光斑，被流放至卡利亚的精神领袖）'],
+    ['P27', '伊克沙尼亚贵族继承人（24 岁古铜肌肤的奥利安家族继承人，黑金双色头发，业余虚空网球冠军兼艺术收藏家）'],
+    ['P28', '马里格里斯之女（约 200 岁银金色长发的复合生物造物，1.85 米高，紫罗兰瞳孔，可在停滞舱中无限复活）'],
+    ['P29', '翡翠龙散修（高大男性阿斯塔特，无甲，东方武士气质，奉浪人戒律独行猎魔，腰挂一刀一枪）'],
+    ['P30', '叛逃海军军官（40 余岁男性前帝国海军中级军官，独眼，因拒绝执行某条命令而被通缉，仍保有海军礼仪）'],
+    ['P31', '异端机械神甫学徒（20 余岁男性年轻技士，左半边脸已机械化，被导师\"放走\"的偏离正统者，对知识的渴望盖过对生存的考虑）'],
+    ['P32', '自定义（玩家手动输入命运角色描述）'],
   ],
 };
 
@@ -390,7 +397,7 @@ const DEFAULT_STATE = {
   NAME: '',         // B1 自定义名字
   H_CUSTOM: '',     // H25 自定义出身
   S_CUSTOM: '',     // S23 自定义开场地点
-  P_CUSTOM: '',     // P25 自定义命运角色
+  P_CUSTOM: '',     // P32 自定义命运角色
   EXTRA: '',        // J 后的额外补充
 };
 
@@ -767,23 +774,38 @@ const ORG_PROFESSIONS_FOR_U12 = ['E10','E11','E21','E22','E23','E24','E25','E26'
 
 // ============ P 同伴常量 ============
 
-// 黑暗灵族同伴(异形)
-const DARK_ELDAR_PARTNERS = ['P8', 'P20'];
+// 黑暗灵族同伴(异形): P8 艾莉娅, P19 黑暗灵族娼妓
+const DARK_ELDAR_PARTNERS = ['P8', 'P19'];
 
 // 修女类职业(包括蔷薇辅秘)
 const SISTER_JOBS = ['E10', 'E11'];
 
 // 男性人类同伴(供修女路线软警告使用)
-const MALE_PARTNERS = ['P7', 'P19', 'P21', 'P22', 'P23'];
+// P7 星界军老兵 / P18 流亡星图师 / P20 失明朝圣者 / P21 雇佣枪手 / P29 翡翠龙散修 / P30 叛逃海军军官 / P31 异端机械神甫学徒
+const MALE_PARTNERS = ['P7', 'P18', 'P20', 'P21', 'P29', 'P30', 'P31'];
 
 // 异形同伴(供 D5 纯洁派检查 + 修女路线检查)
-const XENOS_PARTNERS = ['P8', 'P10', 'P12', 'P15', 'P20'];
+// P8/P19 黑暗灵族, P10 克鲁特, P14 莱特林, P25 Casu女神, P26 钛族
+const XENOS_PARTNERS = ['P8', 'P10', 'P14', 'P19', 'P25', 'P26'];
 
 // 神教同伴(C7 推荐配伍)
 const MECH_PARTNERS = ['P1', 'P13'];
 
+// Casu 女神同伴(混沌嫌疑+异形+亚空间神性,极特殊)
+const CASU_PARTNERS = ['P25'];
+
+// 钛族同伴(异形+精神领袖)
+const TAU_PARTNERS = ['P26'];
+
+// 全谱异端造物同伴(伊雯涅丝级别——审判庭/火星正统派必杀)
+const IUVENESCE_PARTNERS = ['P28'];
+
+// 阿斯塔特同伴(翡翠龙散修)
+const ASTARTES_PARTNERS = ['P29'];
+
 // 万能同伴(任何路线无任何配伍警告)
-const UNIVERSAL_PARTNERS = ['P0', 'P2', 'P18', 'P22', 'P25'];
+// P0 无 / P2 赏金枪手 / P17 贝法待命女仆长 / P21 雇佣枪手 / P32 自定义
+const UNIVERSAL_PARTNERS = ['P0', 'P2', 'P17', 'P21', 'P32'];
 
 function isOptionAllowed(field, code, s = state) {
   // 旧存档中的 X0 仍允许作为兜底，但新版界面不再提供随机选项。
@@ -1078,8 +1100,8 @@ function isOptionAllowed(field, code, s = state) {
 
   // ============ P 命运将至的人 ============
   if (field === 'P') {
-    // P0 独自 / P25 自定义 永远允许(玩家自由选择,不做硬禁)
-    if (code === 'P0' || code === 'P25') return { ok: true };
+    // P0 无 / P32 自定义 永远允许(玩家自由选择,不做硬禁)
+    if (code === 'P0' || code === 'P32') return { ok: true };
 
     // 修女会(E10/E11) 禁黑暗灵族同伴(教义不可调和)
     if (SISTER_JOBS.includes(e) && DARK_ELDAR_PARTNERS.includes(code)) {
@@ -1091,8 +1113,8 @@ function isOptionAllowed(field, code, s = state) {
       return { ok: false, reason: '纯洁派会立刻处决三方通缉的火星叛徒' };
     }
 
-    // D5 纯洁派 禁黑暗灵族同伴(异形即异端)
-    if (d === 'D5' && DARK_ELDAR_PARTNERS.includes(code)) {
+    // D5 纯洁派 禁所有异形同伴(异形即异端)
+    if (d === 'D5' && XENOS_PARTNERS.includes(code)) {
       return { ok: false, reason: '纯洁派立场下,异形即异端' };
     }
 
@@ -1101,15 +1123,65 @@ function isOptionAllowed(field, code, s = state) {
       return { ok: false, reason: '不可接触者会让修女信仰仪式失灵' };
     }
 
-    // P24 颓废女学者(亚空间研究者) 硬禁组合
-    if (code === 'P24') {
-      // 火星正统派对亚空间研究者立即清剿
+    // P22 颓废女学者(亚空间研究者) 硬禁组合
+    if (code === 'P22') {
       if (d === 'D9') {
         return { ok: false, reason: '火星正统派对所有亚空间研究者持立即清剿态度' };
       }
-      // 纯洁派对未授权亚空间研究者立即处决
       if (d === 'D5') {
         return { ok: false, reason: '纯洁派会立刻处决所有未授权亚空间研究者' };
+      }
+    }
+
+    // P25 Casu 女神分身(异形+混沌嫌疑) 硬禁
+    if (CASU_PARTNERS.includes(code)) {
+      // 修女会绝对清剿
+      if (SISTER_JOBS.includes(e)) {
+        return { ok: false, reason: '修女会立场下,Casu 女神分身是绝对清剿对象' };
+      }
+      // 纯洁派绝对清剿
+      if (d === 'D5') {
+        return { ok: false, reason: '纯洁派立场下,Casu 女神分身是绝对清剿对象' };
+      }
+      // 阿斯塔特对异形零容忍
+      if (['E21','E22','E23','E24'].includes(e)) {
+        return { ok: false, reason: '阿斯塔特对异形零容忍' };
+      }
+      // 火星正统派对亚空间神性绝对清剿
+      if (d === 'D9') {
+        return { ok: false, reason: '火星正统派对亚空间神性绝对清剿' };
+      }
+      // C7 培育人无法与异形友好
+      if (c === 'C7') {
+        return { ok: false, reason: '机械神教培育人无法与异形为伍' };
+      }
+    }
+
+    // P26 钛族水氏族以太(异形) 硬禁
+    if (TAU_PARTNERS.includes(code)) {
+      // 纯洁派绝对清剿
+      if (d === 'D5') {
+        return { ok: false, reason: '纯洁派立场下,钛族异形是绝对清剿对象' };
+      }
+      // 阿斯塔特对异形零容忍
+      if (['E21','E22','E23','E24'].includes(e)) {
+        return { ok: false, reason: '阿斯塔特对异形零容忍' };
+      }
+      // C7 培育人无法与异形友好
+      if (c === 'C7') {
+        return { ok: false, reason: '机械神教培育人无法与异形为伍' };
+      }
+    }
+
+    // P28 伊雯涅丝(全谱异端造物) 硬禁
+    if (IUVENESCE_PARTNERS.includes(code)) {
+      // 纯洁派立刻处决
+      if (d === 'D5') {
+        return { ok: false, reason: '纯洁派立场下,全谱异端造物是立即处决对象' };
+      }
+      // 火星正统派立即清剿
+      if (d === 'D9') {
+        return { ok: false, reason: '火星正统派对马里格里斯造物立即清剿' };
       }
     }
   }
@@ -1130,7 +1202,7 @@ function buildPayload() {
   if (state.S === 'S23' && (state.S_CUSTOM || '').trim()) {
     lines.push(`自定义开场地点：${state.S_CUSTOM.trim()}`);
   }
-  if (state.P === 'P25' && (state.P_CUSTOM || '').trim()) {
+  if (state.P === 'P32' && (state.P_CUSTOM || '').trim()) {
     lines.push(`自定义命运角色：${state.P_CUSTOM.trim()}`);
   }
   if ((state.EXTRA || '').trim()) {
@@ -1164,8 +1236,8 @@ function buildSummaryRows() {
     ['资源', `${state.K} · ${getOptionLabel('K', state.K)}`],
     ['秘密', `${state.L} · ${getOptionLabel('L', state.L)}`],
     ['羁绊', `${state.N} · ${getOptionLabel('N', state.N)}`],
-    ['命运角色', state.P === 'P25'
-      ? `P25 · ${(state.P_CUSTOM || '').trim() || '（自定义未填写）'}`
+    ['命运角色', state.P === 'P32'
+      ? `P32 · ${(state.P_CUSTOM || '').trim() || '（自定义未填写）'}`
       : `${state.P} · ${getOptionLabel('P', state.P)}`],
     ['主线', `${state.J} · ${getOptionLabel('J', state.J)}`],
     ['节奏', `${state.V} · ${getOptionLabel('V', state.V)}`],
@@ -1257,19 +1329,19 @@ function getWarnings() {
   }
 
   // ============ P 命运角色软警告 ============
-  // P25 自定义留空提示
-  if (state.P === 'P25' && !(state.P_CUSTOM || '').trim()) {
+  // P32 自定义留空提示
+  if (state.P === 'P32' && !(state.P_CUSTOM || '').trim()) {
     warnings.push('已选自定义命运角色，但未填写描述；建议填写一两句具体描述。');
   }
 
   // 阿斯塔特配凡人命运角色
-  const NON_ASTARTES_PARTNERS = ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21','P22','P23','P24'];
+  const NON_ASTARTES_PARTNERS = ['P1','P2','P3','P4','P5','P6','P7','P9','P11','P12','P13','P15','P16','P17','P18','P20','P21','P22','P23','P24','P27','P30','P31'];
   if (ASTARTES.includes(state.E) && NON_ASTARTES_PARTNERS.includes(state.P)) {
     warnings.push('阿斯塔特的命运多与战团兄弟交织；与凡人交集通常以辅助军、仆从或任务对象的形式出现。');
   }
 
-  // C7 培育人配非神教命运角色(P0/P25 跳过)
-  if (state.C === 'C7' && state.P !== 'P0' && state.P !== 'P25' && !MECH_PARTNERS.includes(state.P)) {
+  // C7 培育人配非神教命运角色(P0/P32 跳过)
+  if (state.C === 'C7' && state.P !== 'P0' && state.P !== 'P32' && !MECH_PARTNERS.includes(state.P)) {
     warnings.push('C7 培育人的命运通常与神教内部交织；与外人相遇需要剧情铺垫理由。');
   }
 
@@ -1279,13 +1351,13 @@ function getWarnings() {
   }
 
   // 修女会配异形命运角色(除黑暗灵族已硬禁外的其他异形)
-  const SISTER_XENOS_WARN = ['P10','P12','P15'];  // 克鲁特/欧格林/莱特林(允许但提示)
+  const SISTER_XENOS_WARN = ['P10','P14'];  // 克鲁特/莱特林(允许但提示;P25 Casu/P26 钛已硬禁)
   if (SISTER_JOBS.includes(state.E) && SISTER_XENOS_WARN.includes(state.P)) {
     warnings.push('修女会与异形相遇较罕见，AI 可能会以辅助军、临时盟约或目标的形式处理。');
   }
 
-  // D5 纯洁派 + P14 审判官助理(前异形走私)
-  if (state.D === 'D5' && state.P === 'P14') {
+  // D5 纯洁派 + P12 审判官助理(前异形走私)
+  if (state.D === 'D5' && state.P === 'P12') {
     warnings.push('纯洁派对前异形走私者持续审查，与她的相遇关系微妙。');
   }
 
@@ -1294,20 +1366,127 @@ function getWarnings() {
     warnings.push('机械神教对火星叛徒持敌意，相遇可能从对立或追捕开始。');
   }
 
-  // ============ P24 颓废女学者(亚空间研究者) 软警告 ============
-  if (state.P === 'P24') {
-    // 修女会对亚空间研究持深度怀疑
+  // ============ P22 颓废女学者(亚空间研究者) 软警告 ============
+  if (state.P === 'P22') {
     if (SISTER_JOBS.includes(state.E)) {
       warnings.push('教会对亚空间研究持深度怀疑，与她相遇须极度谨慎。');
     }
-    // 不可接触者会干扰她的亚空间感知
     if (state.C === 'C4') {
       warnings.push('你的不可接触特质会干扰她的亚空间感知，但她对此着迷而非排斥。');
     }
-    // 审判庭外勤的同事风险
     const IQ_PROFS = ['E25','E26','E27','E28','E29'];
     if (IQ_PROFS.includes(state.E)) {
       warnings.push('你的审判庭同事若发现她，会立刻处决你们两人。');
+    }
+  }
+
+  // ============ P23 蔷薇修女(阿波尼亚) 软警告 ============
+  if (state.P === 'P23') {
+    // 同会修女间的关系微妙
+    if (SISTER_JOBS.includes(state.E)) {
+      warnings.push('同为修女会成员，她的身份与秘密会让你们的关系格外微妙。');
+    }
+    // 纯洁派对蔷薇修女的半禁忌身份
+    if (state.D === 'D5') {
+      warnings.push('蔷薇修女会被纯洁派视为"准异端容忍范围"，与她接触会引来同僚怀疑。');
+    }
+  }
+
+  // ============ P24 失散的见习修女(菲洛米娜) 软警告 ============
+  if (state.P === 'P24') {
+    // 15 岁少女与成年玩家的关系敏感
+    warnings.push('她仅 15 岁，AI 会按未成年人保护处理与她的相处方式。');
+    // 与 P23 阿波尼亚是失散母女(剧情暗线)
+    // 不可接触者对其精灵血统的影响
+    if (state.C === 'C4') {
+      warnings.push('你的不可接触特质会让她的精灵血统能力略受抑制。');
+    }
+  }
+
+  // ============ P25 Casu 女神分身(莱达) 软警告 ============
+  if (state.P === 'P25') {
+    if (state.D === 'D1') {
+      warnings.push('帝国忠诚者立场与 Casu 女神分身同行风险极大，被发现即视为同化共谋。');
+    }
+    // 审判庭职业
+    const IQ_PROFS = ['E25','E26','E27','E28','E29'];
+    if (IQ_PROFS.includes(state.E)) {
+      warnings.push('审判庭职业与 Casu 同行需要极强的剧情豁免理由。');
+    }
+  }
+
+  // ============ P26 钛族水氏族以太(Aun'Kyne) 软警告 ============
+  if (state.P === 'P26') {
+    if (state.D === 'D1') {
+      warnings.push('帝国忠诚者与钛族同行会被审判庭定性为通敌。');
+    }
+    if (SISTER_JOBS.includes(state.E)) {
+      warnings.push('修女会与钛族异形同行需要非常特殊的政治掩护。');
+    }
+    // 审判庭职业
+    const IQ_PROFS = ['E25','E26','E27','E28','E29'];
+    if (IQ_PROFS.includes(state.E)) {
+      warnings.push('审判庭职业与钛族同行需要极强的剧情豁免理由。');
+    }
+  }
+
+  // ============ P28 伊雯涅丝(全谱异端造物) 软警告 ============
+  if (state.P === 'P28') {
+    // 修女会对马里格里斯造物极度敏感
+    if (SISTER_JOBS.includes(state.E)) {
+      warnings.push('修女会对全谱异端造物视若仇敌，与她同行须极度谨慎。');
+    }
+    // 阿斯塔特对造物的看法复杂
+    if (['E21','E22','E23','E24'].includes(state.E)) {
+      warnings.push('阿斯塔特对马里格里斯造物的态度复杂，可能必须以"任务对象"形式同行。');
+    }
+    // 审判庭职业
+    const IQ_PROFS = ['E25','E26','E27','E28','E29'];
+    if (IQ_PROFS.includes(state.E)) {
+      warnings.push('审判庭外勤与全谱异端造物同行须有极特殊的协议或私人立场。');
+    }
+    // 火星非正统派推荐
+    // (D6/D7/D8 激进派/占视者派/妄尊异形派 + D11 异形博学派完美匹配,无警告)
+  }
+
+  // ============ P29 翡翠龙散修(阿斯塔特) 软警告 ============
+  if (state.P === 'P29') {
+    // 玩家本身是阿斯塔特(异战团)
+    if (['E21','E22','E23','E24'].includes(state.E)) {
+      warnings.push('两位异战团阿斯塔特同行需要任务级理由，且翡翠龙散修不会主动透露其战团秘密。');
+    }
+    // 审判庭外勤可能怀疑他的来历
+    const IQ_PROFS = ['E25','E26','E27','E28','E29'];
+    if (IQ_PROFS.includes(state.E)) {
+      warnings.push('审判庭可能注意到这位脱离战团编制的阿斯塔特，并对其身份做秘密追查。');
+    }
+  }
+
+  // ============ P30 叛逃海军军官 软警告 ============
+  if (state.P === 'P30') {
+    // 帝国海军职业
+    if (state.E === 'E3') {
+      warnings.push('作为现役海军军官与一位被通缉的叛逃前同僚同行，会被海军判为同谋。');
+    }
+    if (state.D === 'D1') {
+      warnings.push('帝国忠诚者收容叛逃军官存在政治风险。');
+    }
+  }
+
+  // ============ P31 异端机械神甫学徒 软警告 ============
+  if (state.P === 'P31') {
+    // 火星正统派敌对
+    if (state.D === 'D9') {
+      warnings.push('火星正统派对偏离正统的学徒持监视态度，与他同行会引来龙领主特工注意。');
+    }
+    // 审判庭职业可能要"抓他"
+    const IQ_PROFS = ['E25','E26','E27','E28','E29'];
+    if (IQ_PROFS.includes(state.E)) {
+      warnings.push('他是你审判庭职责范围内的"半异端"——同行关系会从抓捕、审讯或秘密保护中的某种开始。');
+    }
+    // 修女会
+    if (SISTER_JOBS.includes(state.E)) {
+      warnings.push('修女会对偏离正统的机械神甫学徒持深度怀疑。');
     }
   }
 
@@ -1325,7 +1504,7 @@ function canProceedFromPage(page) {
   if (fields.includes('S') && state.S === 'S23' && !(state.S_CUSTOM || '').trim()) {
     return { ok: false, message: '请填写自定义开场地点,或改选标准地点。' };
   }
-  if (fields.includes('P') && state.P === 'P25' && !(state.P_CUSTOM || '').trim()) {
+  if (fields.includes('P') && state.P === 'P32' && !(state.P_CUSTOM || '').trim()) {
     return { ok: false, message: '请填写自定义命运角色的具体描述,或改选标准选项。' };
   }
   return { ok: true, message: '' };
@@ -1368,10 +1547,12 @@ function loadDraftState() {
       if (!state.P) state.P = 'P0';                        // 默认独自
       // 旧 S17 自定义编号迁移到 S23
       if (state.S === 'S17' && state.S_CUSTOM) state.S = 'S23';
-      // 旧 P23 自定义命运角色迁移到 P24(P19 现在是流亡星图师,不是自定义)
-      if (state.P === 'P23' && state.P_CUSTOM) state.P = 'P24';
-      // 旧 P24 自定义命运角色迁移到 P25(P24 现在是颓废女学者)
-      if (state.P === 'P24' && state.P_CUSTOM) state.P = 'P25';
+      // 旧版本 P 字段迁移(P 字段已扩展至 33 项)
+      // 上版 P25 自定义 -> 新版 P32 自定义
+      if (state.P === 'P25' && state.P_CUSTOM) state.P = 'P32';
+      // 更早版本: P23 自定义 -> P32, P24 自定义 -> P32
+      if (state.P === 'P23' && state.P_CUSTOM) state.P = 'P32';
+      if (state.P === 'P24' && state.P_CUSTOM && !state.P_CUSTOM_RESOLVED) state.P = 'P32';
       if (typeof state.H_CUSTOM !== 'string') state.H_CUSTOM = '';
       if (typeof state.S_CUSTOM !== 'string') state.S_CUSTOM = '';
       if (typeof state.P_CUSTOM !== 'string') state.P_CUSTOM = '';
@@ -1655,7 +1836,7 @@ function makeFieldSection(field) {
 
   if (field === 'P') {
     const customBox = document.createElement('div');
-    customBox.className = `wh40k-name-box${state.P === 'P25' ? ' show' : ''}`;
+    customBox.className = `wh40k-name-box${state.P === 'P32' ? ' show' : ''}`;
     customBox.innerHTML = `
       <label>
         <span>自定义命运角色（请描述身份与外貌；TA 不会立刻登场，而是在剧情中合理引入）</span>
