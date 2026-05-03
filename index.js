@@ -18,7 +18,7 @@ const PAGE_FIELDS = [
   ['B', 'C', 'F', 'G', 'I', 'Q'],          // 1 基础信息
   ['A', 'H'],                               // 2 出身来历
   ['D', 'E'],                               // 3 身份立场
-  ['K', 'L', 'N', 'P'],                     // 4 初始情况(含开局同伴 P)
+  ['K', 'L', 'N', 'P'],                     // 4 初始情况(含命运将至的人 P)
   ['S', 'U', 'V'],                          // 5 角色驱动
   ['J'],                                    // 6 命运牵连(+额外补充)
   [],                                       // 7 最终提交
@@ -40,7 +40,7 @@ const FIELD_TITLES = {
   K: 'K. 初始资源 / 开局条件',
   L: 'L. 初始秘密 / 隐藏命运',
   N: 'N. 初始羁绊',
-  P: 'P. 开局同伴',
+  P: 'P. 命运将至的人',
   Q: 'Q. 身体状态',
   S: 'S. 开场地点',
   U: 'U. 目标动机',
@@ -339,7 +339,7 @@ const OPTIONS = {
     ['V6', '自主（AI 等你主动行动，不催进度）'],
   ],
   P: [
-    ['P0', '独自（开局没有同伴，你完全靠自己）'],
+    ['P0', '无（没有特定的命运对象，剧情自由展开）'],
     ['P1', '赤红净化博学者（红袍下藏满工具，曾是儿童变异稳定专员，外表年轻）'],
     ['P2', '赏金枪手（前帝国卫队的拉丁裔女性，独立赏金猎人，专精中距离）'],
     ['P3', '流亡叛博学者（百岁高龄但外表年轻的女性，三方通缉的火星叛徒）'],
@@ -364,7 +364,7 @@ const OPTIONS = {
     ['P22', '雇佣枪手（男性枪手，背景模糊，前同事都死了，对钱忠诚）'],
     ['P23', '半异端学者（年轻男性学者，拖着一箱旧书与禁论，被监控但有用）'],
     ['P24', '颓废女学者（31 岁苍白的法兰西血统女学者，浏海遮住右脸，私下研究禁忌的亚空间符号，明知会消耗自己仍不停笔）'],
-    ['P25', '自定义（玩家手动输入同伴描述）'],
+    ['P25', '自定义（玩家手动输入命运角色描述）'],
   ],
 };
 
@@ -382,7 +382,7 @@ const DEFAULT_STATE = {
   K: 'K1',
   L: 'L0',
   N: 'N0',
-  P: 'P0',          // 默认独自
+  P: 'P0',          // 默认无命运角色
   Q: 'Q1',
   S: 'S1',
   U: 'U12',         // 默认漂泊(最中性)
@@ -390,7 +390,7 @@ const DEFAULT_STATE = {
   NAME: '',         // B1 自定义名字
   H_CUSTOM: '',     // H25 自定义出身
   S_CUSTOM: '',     // S23 自定义开场地点
-  P_CUSTOM: '',     // P25 自定义同伴
+  P_CUSTOM: '',     // P25 自定义命运角色
   EXTRA: '',        // J 后的额外补充
 };
 
@@ -414,7 +414,7 @@ function buildPageDescriptions() {
     1: '// 第一节 — 您的姓名、血统、年龄、性别、外貌与身体状态。',
     2: '// 第二节 — 您的出生星界与身世背景。可在 H25 处自定义出身。',
     3: '// 第三节 — 您当前的阵营立场与职业。',
-    4: '// 第四节 — 您当前持有的资源、秘密、羁绊与开局同伴。',
+    4: '// 第四节 — 您当前持有的资源、秘密、羁绊，以及一位命运将至的人。',
     5: '// 第五节 — 您的开场地点、目标动机与叙事节奏偏好。',
     6: '// ??_???? / [NON_STANDARD_FIELD] — 来源未知的字段;另可在底部自由补充。',
     7: '// 复核全部档案,提交至大行政官案头。',
@@ -435,7 +435,7 @@ const FIELD_DESCRIPTIONS = {
   K: '声明您当前持有的资源与起始状态。',
   L: '坦白您的初始秘密或潜伏命运。',
   N: '登记您当前的核心羁绊。',
-  P: '指定您的开局同伴(可选)。同伴会作为开局 status2 第一个槽位加入您的小队。',
+  P: '指定一位"命运将至的人"(可选)。此人不会在开局立刻登场,而是会在剧情发展中合理引入,并按其本性与你接触。',
   Q: '声明您当前的身体状况。包括隐性创伤、改造痕迹与未愈合的旧伤。',
   S: '指定您的开场地点。从 22 个具体场景中选择一个，或在 S23 处自行描述。',
   U: '声明您的核心动机。它将驱动您的中长期决策与剧情选择。',
@@ -1076,7 +1076,7 @@ function isOptionAllowed(field, code, s = state) {
     }
   }
 
-  // ============ P 开局同伴 ============
+  // ============ P 命运将至的人 ============
   if (field === 'P') {
     // P0 独自 / P25 自定义 永远允许(玩家自由选择,不做硬禁)
     if (code === 'P0' || code === 'P25') return { ok: true };
@@ -1131,7 +1131,7 @@ function buildPayload() {
     lines.push(`自定义开场地点：${state.S_CUSTOM.trim()}`);
   }
   if (state.P === 'P25' && (state.P_CUSTOM || '').trim()) {
-    lines.push(`自定义同伴：${state.P_CUSTOM.trim()}`);
+    lines.push(`自定义命运角色：${state.P_CUSTOM.trim()}`);
   }
   if ((state.EXTRA || '').trim()) {
     lines.push('');
@@ -1164,7 +1164,7 @@ function buildSummaryRows() {
     ['资源', `${state.K} · ${getOptionLabel('K', state.K)}`],
     ['秘密', `${state.L} · ${getOptionLabel('L', state.L)}`],
     ['羁绊', `${state.N} · ${getOptionLabel('N', state.N)}`],
-    ['同伴', state.P === 'P25'
+    ['命运角色', state.P === 'P25'
       ? `P25 · ${(state.P_CUSTOM || '').trim() || '（自定义未填写）'}`
       : `${state.P} · ${getOptionLabel('P', state.P)}`],
     ['主线', `${state.J} · ${getOptionLabel('J', state.J)}`],
@@ -1256,61 +1256,59 @@ function getWarnings() {
     warnings.push('当前职业通常不在大型舰船上服役，AI 会改写为乘客或临时雇员。');
   }
 
-  // ============ P 同伴软警告 ============
-  // P25 自定义同伴留空提示
+  // ============ P 命运角色软警告 ============
+  // P25 自定义留空提示
   if (state.P === 'P25' && !(state.P_CUSTOM || '').trim()) {
-    warnings.push('已选自定义同伴，但未填写描述；建议填写一两句具体同伴。');
+    warnings.push('已选自定义命运角色，但未填写描述；建议填写一两句具体描述。');
   }
 
-  // 阿斯塔特配凡人同伴(包含所有非阿斯塔特同伴,P24 颓废女学者也算)
+  // 阿斯塔特配凡人命运角色
   const NON_ASTARTES_PARTNERS = ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11','P12','P13','P14','P15','P16','P17','P18','P19','P20','P21','P22','P23','P24'];
   if (ASTARTES.includes(state.E) && NON_ASTARTES_PARTNERS.includes(state.P)) {
-    warnings.push('阿斯塔特通常与战团兄弟同行；非战团同伴会被视作辅助军或仆从。');
+    warnings.push('阿斯塔特的命运多与战团兄弟交织；与凡人交集通常以辅助军、仆从或任务对象的形式出现。');
   }
 
-  // C7 培育人配非神教同伴(P0/P25 跳过)
+  // C7 培育人配非神教命运角色(P0/P25 跳过)
   if (state.C === 'C7' && state.P !== 'P0' && state.P !== 'P25' && !MECH_PARTNERS.includes(state.P)) {
-    warnings.push('C7 培育人通常与神教同伴搭档；其他同伴需特殊豁免。');
+    warnings.push('C7 培育人的命运通常与神教内部交织；与外人相遇需要剧情铺垫理由。');
   }
 
-  // 修女会配男性人类同伴
+  // 修女会配男性人类命运角色
   if (SISTER_JOBS.includes(state.E) && MALE_PARTNERS.includes(state.P)) {
-    warnings.push('修女会与男性同行需要特殊豁免，AI 可能会安排陪同任务理由。');
+    warnings.push('修女会与男性同行较敏感，AI 可能会以任务、保护、调查等形式安排相遇。');
   }
 
-  // 修女会配异形同伴(除黑暗灵族已硬禁外的其他异形)
+  // 修女会配异形命运角色(除黑暗灵族已硬禁外的其他异形)
   const SISTER_XENOS_WARN = ['P10','P12','P15'];  // 克鲁特/欧格林/莱特林(允许但提示)
   if (SISTER_JOBS.includes(state.E) && SISTER_XENOS_WARN.includes(state.P)) {
-    warnings.push('修女会与异形同行较罕见，AI 可能会以辅助军或临时盟约处理。');
+    warnings.push('修女会与异形相遇较罕见，AI 可能会以辅助军、临时盟约或目标的形式处理。');
   }
 
   // D5 纯洁派 + P14 审判官助理(前异形走私)
   if (state.D === 'D5' && state.P === 'P14') {
-    warnings.push('纯洁派对前异形走私者会持续审查，关系较为微妙。');
+    warnings.push('纯洁派对前异形走私者持续审查，与她的相遇关系微妙。');
   }
 
   // D9-D13 神教 + P3 流亡叛博学者
   if (['D9','D10','D11','D12','D13'].includes(state.D) && state.P === 'P3') {
-    warnings.push('机械神教对火星叛徒持敌意，开局合作需要剧情铺垫。');
+    warnings.push('机械神教对火星叛徒持敌意，相遇可能从对立或追捕开始。');
   }
 
   // ============ P24 颓废女学者(亚空间研究者) 软警告 ============
   if (state.P === 'P24') {
     // 修女会对亚空间研究持深度怀疑
     if (SISTER_JOBS.includes(state.E)) {
-      warnings.push('教会对亚空间研究持深度怀疑，与她同行须极度谨慎。');
+      warnings.push('教会对亚空间研究持深度怀疑，与她相遇须极度谨慎。');
     }
     // 不可接触者会干扰她的亚空间感知
     if (state.C === 'C4') {
-      warnings.push('你的不可接触特质会干扰她的亚空间感知，但她对此感到着迷而非排斥。');
+      warnings.push('你的不可接触特质会干扰她的亚空间感知，但她对此着迷而非排斥。');
     }
     // 审判庭外勤的同事风险
     const IQ_PROFS = ['E25','E26','E27','E28','E29'];
     if (IQ_PROFS.includes(state.E)) {
-      warnings.push('你的审判庭同事若发现她，会立即把你和她一起处决。');
+      warnings.push('你的审判庭同事若发现她，会立刻处决你们两人。');
     }
-    // D6/D7/D8/D11 推荐(不警告,这里只做反向提醒避免错配)
-    // 火星神教非正统派(D10/D11/D12/D13)对她相对宽容,无警告
   }
 
   return warnings;
@@ -1328,7 +1326,7 @@ function canProceedFromPage(page) {
     return { ok: false, message: '请填写自定义开场地点,或改选标准地点。' };
   }
   if (fields.includes('P') && state.P === 'P25' && !(state.P_CUSTOM || '').trim()) {
-    return { ok: false, message: '请填写自定义同伴的具体描述,或改选标准同伴。' };
+    return { ok: false, message: '请填写自定义命运角色的具体描述,或改选标准选项。' };
   }
   return { ok: true, message: '' };
 }
@@ -1370,9 +1368,9 @@ function loadDraftState() {
       if (!state.P) state.P = 'P0';                        // 默认独自
       // 旧 S17 自定义编号迁移到 S23
       if (state.S === 'S17' && state.S_CUSTOM) state.S = 'S23';
-      // 旧 P23 自定义同伴迁移到 P24(P19 现在是流亡星图师,不是自定义)
+      // 旧 P23 自定义命运角色迁移到 P24(P19 现在是流亡星图师,不是自定义)
       if (state.P === 'P23' && state.P_CUSTOM) state.P = 'P24';
-      // 旧 P24 自定义同伴迁移到 P25(P24 现在是颓废女学者)
+      // 旧 P24 自定义命运角色迁移到 P25(P24 现在是颓废女学者)
       if (state.P === 'P24' && state.P_CUSTOM) state.P = 'P25';
       if (typeof state.H_CUSTOM !== 'string') state.H_CUSTOM = '';
       if (typeof state.S_CUSTOM !== 'string') state.S_CUSTOM = '';
@@ -1660,8 +1658,8 @@ function makeFieldSection(field) {
     customBox.className = `wh40k-name-box${state.P === 'P25' ? ' show' : ''}`;
     customBox.innerHTML = `
       <label>
-        <span>自定义同伴（请描述身份与外貌）</span>
-        <textarea placeholder="例如：一名沉默的中年男性医师,左手装有粗糙义肢,自称从某偏远修会逃出,实则身份不明..." rows="3" style="width:100%;background:#0a0a0a;color:#e8e8ea;border:1px solid #5e4a28;padding:8px;font-family:inherit;font-size:13px;line-height:1.5;resize:vertical;box-sizing:border-box;">${escapeHtml(state.P_CUSTOM || '')}</textarea>
+        <span>自定义命运角色（请描述身份与外貌；TA 不会立刻登场，而是在剧情中合理引入）</span>
+        <textarea placeholder="例如：一位你梦中反复出现的红袍学者，自称来自欧姆巴佩；又或是一名在通缉档案上看过照片的女走私头目，传闻她与你有未了的旧账..." rows="3" style="width:100%;background:#0a0a0a;color:#e8e8ea;border:1px solid #5e4a28;padding:8px;font-family:inherit;font-size:13px;line-height:1.5;resize:vertical;box-sizing:border-box;">${escapeHtml(state.P_CUSTOM || '')}</textarea>
       </label>
     `;
     const textarea = customBox.querySelector('textarea');
