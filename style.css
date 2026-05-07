@@ -1117,70 +1117,149 @@
   flex-wrap: wrap;
   gap: 10px;
 }
-/* ===== WH40K Builder Desktop Layout Fix v5.3 ===== */
+/* ===== WH40K Builder PC 主页面布局修复 v5.3.1 ===== */
+/* 目标：电脑端取消左侧窄栏效果，让表单成为真正主页内容 */
 
-/* 让内容区不要在电脑端被压成左侧窄列 */
-#wh40k-builder-overlay .wh40k-builder-content {
-  width: 100%;
-  max-width: none;
-  box-sizing: border-box;
+/* 弹窗本体铺开，但不要贴边 */
+#wh40k-builder-overlay .wh40k-builder-modal {
+  width: min(1240px, calc(100vw - 36px)) !important;
+  max-width: none !important;
+  height: min(860px, calc(100vh - 36px)) !important;
+  max-height: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
 }
 
-/* 每一页字段区使用纵向排列，避免 D/E 两块被挤在左边 */
+/* 顶部、进度、底部固定高度，中间主内容吃满 */
+#wh40k-builder-overlay .wh40k-builder-header,
+#wh40k-builder-overlay .wh40k-builder-progress,
+#wh40k-builder-overlay .wh40k-builder-footer {
+  flex: 0 0 auto !important;
+}
+
+/* 主内容区：取消旧侧栏/分栏布局 */
+#wh40k-builder-overlay .wh40k-builder-main {
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  display: block !important;
+  grid-template-columns: none !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+  padding: 18px 22px 24px !important;
+}
+
+/* 内容本体成为主页，不再被压在左侧 */
+#wh40k-builder-overlay .wh40k-builder-content {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+
+/* 页面标题区占满宽度 */
+#wh40k-builder-overlay .wh40k-page-hero {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 18px 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* 字段区纵向排列，每个字段块占满主页宽度 */
 #wh40k-builder-overlay .wh40k-page-grid {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 22px !important;
-  width: 100% !important;
-  max-width: none !important;
-  box-sizing: border-box;
+  box-sizing: border-box !important;
 }
 
-/* 每个字段块占满宽度 */
+/* 单个字段块占满宽度 */
 #wh40k-builder-overlay .wh40k-section {
   width: 100% !important;
   max-width: none !important;
-  box-sizing: border-box;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
 }
 
-/* 选项按钮在电脑端自动铺开 */
+/* 选项区在 PC 端横向铺满 */
 #wh40k-builder-overlay .wh40k-options {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important;
-  gap: 10px 12px !important;
   width: 100% !important;
-  box-sizing: border-box;
+  max-width: none !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+  gap: 12px 14px !important;
+  box-sizing: border-box !important;
 }
 
-/* 选项按钮本身不要被压成窄条 */
+/* 选项按钮变成卡片，不再是左侧窄条 */
 #wh40k-builder-overlay .wh40k-option {
   width: 100% !important;
-  min-height: 58px;
-  box-sizing: border-box;
+  min-width: 0 !important;
+  min-height: 64px !important;
+  box-sizing: border-box !important;
   white-space: normal !important;
+  word-break: break-word !important;
 }
 
-/* 电脑端弹窗最大宽度控制 */
-@media (min-width: 900px) {
+/* 最终页也占满主区域 */
+#wh40k-builder-overlay .wh40k-final-card {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+#wh40k-builder-overlay .wh40k-final-preview {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+/* PC 宽屏：进一步提高利用率 */
+@media (min-width: 1000px) {
+  #wh40k-builder-overlay .wh40k-options {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  }
+}
+
+/* 超宽屏：让按钮别太宽，保持阅读舒服 */
+@media (min-width: 1400px) {
   #wh40k-builder-overlay .wh40k-builder-modal {
-    width: min(1180px, calc(100vw - 48px)) !important;
-    max-width: 1180px !important;
+    width: min(1320px, calc(100vw - 48px)) !important;
+  }
+
+  #wh40k-builder-overlay .wh40k-options {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
+  }
+}
+
+/* 手机端继续保持单列，不破坏你现在正常的手机显示 */
+@media (max-width: 720px) {
+  #wh40k-builder-overlay .wh40k-builder-modal {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
   }
 
   #wh40k-builder-overlay .wh40k-builder-main {
-    width: 100% !important;
-    max-width: none !important;
+    padding: 14px 12px 20px !important;
   }
-}
 
-/* 手机端保持单列舒适显示 */
-@media (max-width: 640px) {
   #wh40k-builder-overlay .wh40k-options {
     grid-template-columns: 1fr !important;
   }
 
-  #wh40k-builder-overlay .wh40k-builder-modal {
-    width: 100vw !important;
-    max-width: 100vw !important;
+  #wh40k-builder-overlay .wh40k-option {
+    min-height: 58px !important;
   }
 }
