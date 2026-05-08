@@ -354,6 +354,124 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'S') {
     if (code === 'S23') return { ok:true };
     if (a === 'A19' && !['S8','S22','S23'].includes(code)) return { ok:false, reason:'欧姆巴佩11号只允许舰内或神甫居所开场' };
+    if (a === 'A21' && !['S3','S8','S22','S23'].inclu27', 'E28', 'E29', 'E30', 'E31'];
+const MECH_PROFESSIONS = ['E33', 'E34', 'E35', 'E36', 'E37', 'E38'];
+const PSYKER_PROFESSIONS = ['E30', 'E31', 'E32'];
+const SISTER_PROFESSIONS = ['E10', 'E11'];
+const SISTER_RACES = ['C1', 'C3', 'C4', 'C6'];
+const NAVIGATOR_OK_BG = ['H4', 'H16', 'H19', 'H20'];
+const NOBLE_OK_BG = ['H2', 'H4', 'H5', 'H9', 'H18', 'H19', 'H22'];
+const KNIGHT_OK_BG = ['H4', 'H9', 'H19', 'H20'];
+const ASTARTES_FORBIDDEN_BG = ['H12', 'H14'];
+const HEAVY_AUG = ['Q6', 'Q7', 'Q8'];
+const MEDIUM_HEAVY_AUG = ['Q7', 'Q8'];
+const SELF_OWNED_SHIP_OK = ['E2', 'E14', 'E16', 'E27', 'E28', 'E29', 'E42', 'E43'];
+const NO_BORROWED_SHIP = ['E7', 'E19', 'E39', 'E40', 'E44'];
+const ASSIGNED_TO_SHIP_OK = ['E3', 'E14', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E31', 'E34', 'E35'];
+const ORG_PROFESSIONS_FOR_U12 = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E33', 'E34', 'E35', 'E36', 'E37', 'E38'];
+
+const XENOS_FATE_PERSONS = ['P8', 'P10', 'P11', 'P19', 'P26'];
+const XENOS_CONTACT_STANCES = ['D2', 'D4', 'D6', 'D8', 'D11'];
+const XENOS_CONTACT_PROFESSIONS = ['E14', 'E15', 'E16', 'E17', 'E25', 'E26', 'E27', 'E28', 'E29', 'E34', 'E36', 'E41', 'E42', 'E43'];
+const XENOS_CONTACT_ORIGINS = ['A13'];
+const XENOS_CONTACT_RESOURCES = ['K11', 'K12', 'K13'];
+const XENOS_CONTACT_SECRETS = ['L14', 'L15'];
+const XENOS_CONTACT_BONDS = ['N15'];
+const XENOS_HARD_BAN_STANCES = ['D5', 'D9'];
+const XENOS_HARD_BAN_PROFESSIONS = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24'];
+
+const ALLOWED_S_BY_PROFESSION = {
+  E1:['S1','S2','S7','S15','S17','S18'], E2:['S5','S8','S9','S17'], E3:['S7','S8','S9'], E4:['S5','S14','S17'], E5:['S15','S18'], E6:['S5','S21'], E7:['S2','S4','S11'], E8:['S5','S21'], E9:['S3','S13','S19'], E10:['S3','S13','S18','S19'], E11:['S3','S12','S13','S18'], E12:['S5','S9','S12','S17'], E13:['S7','S9','S12'], E14:['S5','S8','S9','S12','S17'], E15:['S2','S6','S9','S17'], E16:['S5','S8','S9','S15'], E17:['S1','S2','S6','S14','S17'], E18:['S10','S12','S15'], E19:['S1','S2','S14','S15','S19'], E20:['S2','S12','S17'],
+  E21:['S3','S7','S8','S9','S15','S16','S22'], E22:['S6','S7','S8','S9','S15','S16','S22'], E23:['S7','S8','S9','S10','S13','S15','S16'], E24:['S7','S8','S9','S15','S16'], E25:['S5','S8','S14','S21'], E26:['S5','S8','S16','S21'], E27:['S2','S5','S6','S8','S14','S17'], E28:['S5','S8','S14','S16','S21'], E29:['S1','S2','S8','S14','S17'], E30:['S3','S8','S13'], E31:['S5','S8','S13'], E32:['S1','S2','S6','S14','S19'], E33:['S4','S22'], E34:['S4','S8','S15','S16','S22'], E35:['S4','S15','S22'], E36:['S4','S18','S22'], E37:['S4','S16','S21','S22'], E38:['S4','S22'], E39:['S1','S2','S6','S14','S17'], E40:['S1','S2','S6','S17'], E41:['S1','S6','S9','S17'], E42:['S5','S6','S8','S9'], E43:['S6','S8','S9','S16'], E44:['S2','S4','S6','S11','S17'], E45:['S1','S2','S6','S15','S19'],
+};
+
+function isRandomCode(code) { return /^[A-Z]0$/.test(code); }
+function isMechBackground(code) { return ['H12', 'H14'].includes(code); }
+function isMechSecret(code) { const m = /^L(\d+)$/.exec(code || ''); return !!m && Number(m[1]) >= 19; }
+function professionTag(code) { if (IQ_PROFESSIONS.includes(code)) return 'iq'; if (MECH_PROFESSIONS.includes(code)) return 'mech'; return 'common'; }
+function stanceTag(code) { if (['D5','D6','D7','D8'].includes(code)) return 'iq'; if (['D9','D10','D11','D12','D13'].includes(code)) return 'mech'; return 'common'; }
+function getOptionLabel(field, code) { return OPTIONS[field]?.find(([k]) => k === code)?.[1] || code || ''; }
+function escapeHtml(text = '') { return String(text).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
+
+function getCtx() {
+  if (typeof SillyTavern === 'undefined' || typeof SillyTavern.getContext !== 'function') throw new Error('SillyTavern global not ready');
+  return SillyTavern.getContext();
+}
+function isCtxReady() { try { getCtx(); return true; } catch (_) { return false; } }
+function getCharacterName() { const ctx = getCtx(); return ctx.characters?.[ctx.characterId]?.name || ''; }
+function shouldEnableForCurrentChat() { if (!isCtxReady()) return false; const ctx = getCtx(); if (ctx.groupId || ctx.characterId == null) return false; return !TARGET_CHARACTER_NAME || getCharacterName().includes(TARGET_CHARACTER_NAME); }
+function getMetaKey(key) { return `${EXT_ID}_${key}`; }
+
+function isOptionAllowed(field, code, s = state) {
+  if (isRandomCode(code)) return { ok: true };
+  const pick = (f) => { const v = s[f]; return v && !isRandomCode(v) ? v : null; };
+  const c = pick('C'), d = pick('D'), e = pick('E'), h = pick('H'), g = pick('G'), a = pick('A'), k = pick('K'), n = pick('N'), p = pick('P'), u = pick('U'), q = pick('Q');
+  const eTag = professionTag(field === 'E' ? code : e);
+  const dTag = stanceTag(field === 'D' ? code : d);
+
+  if (field === 'C') return { ok: true };
+
+  if (field === 'A') {
+    if (code === 'A19' && e && !['E25','E26',...MECH_PROFESSIONS].includes(e)) return { ok:false, reason:'欧姆巴佩11号仅对机械神教与审判庭高层开放' };
+    if (code === 'A21' && e !== 'E21') return { ok:false, reason:'哥利亚要塞仅对死亡守望开放' };
+  }
+
+  if (field === 'D') {
+    if (dTag === 'mech' && c !== 'C7') return { ok:false, reason:'神教立场需 C7' };
+    if (dTag !== 'mech' && c === 'C7') return { ok:false, reason:'C7 需机械神教立场' };
+    if (dTag === 'iq' && e && professionTag(e) !== 'iq') return { ok:false, reason:'审判庭立场仅可由审判庭体系职业担任' };
+    if (dTag !== 'iq' && e && professionTag(e) === 'iq') return { ok:false, reason:'审判庭职业仅配审判庭立场' };
+    if (dTag === 'mech' && e && professionTag(e) !== 'mech') return { ok:false, reason:'机械神教立场仅限神教职业' };
+    if (dTag !== 'mech' && e && professionTag(e) === 'mech') return { ok:false, reason:'神教职业仅配神教立场' };
+    if (e === 'E32' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
+    if (e === 'E44' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
+  }
+
+  if (field === 'E') {
+    if (eTag === 'mech' && c !== 'C7') return { ok:false, reason:'神教职业需 C7' };
+    if (eTag !== 'mech' && c === 'C7') return { ok:false, reason:'C7 需神教职业' };
+    if (eTag === 'iq' && d && stanceTag(d) !== 'iq') return { ok:false, reason:'仅限审判庭立场' };
+    if (dTag === 'iq' && eTag !== 'iq') return { ok:false, reason:'当前为审判庭立场，仅可选择审判庭体系职业' };
+    if (dTag === 'mech' && eTag !== 'mech') return { ok:false, reason:'神教立场仅限神教职业' };
+    if (code === 'E32' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
+    if (code === 'E44' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
+    if (ASTARTES.includes(code)) { if (g !== 'G1') return { ok:false, reason:'阿斯塔特仅限男性' }; if (c !== 'C1') return { ok:false, reason:'阿斯塔特仅限正常人类' }; if (h === 'H13' || ASTARTES_FORBIDDEN_BG.includes(h)) return { ok:false, reason:'阿斯塔特出身不合法' }; }
+    if (code === 'E10') { if (g !== 'G2') return { ok:false, reason:'修女会仅限女性' }; if (!SISTER_RACES.includes(c)) return { ok:false, reason:'当前血统不可成为修女' }; }
+    if (code === 'E12' && h !== 'H25' && !NOBLE_OK_BG.includes(h)) return { ok:false, reason:'贵族通常不出身底层' };
+    if (code === 'E18' && (c === 'C6' || (h !== 'H25' && !KNIGHT_OK_BG.includes(h)))) return { ok:false, reason:'流浪骑士需贵族传承背景' };
+    if (c === 'C6' && ['E18',...ASTARTES,...MECH_PROFESSIONS].includes(code)) return { ok:false, reason:'猫人不可担任' };
+    if (c === 'C4' && [...ASTARTES,...MECH_PROFESSIONS,...PSYKER_PROFESSIONS].includes(code)) return { ok:false, reason:'不可接触者不适合' };
+    if (c === 'C5' && ['E1','E4','E7','E9','E10','E11',...ASTARTES,...IQ_PROFESSIONS,'E32',...MECH_PROFESSIONS,'E39','E40','E44'].includes(code)) return { ok:false, reason:'领航者不适合' };
+  }
+
+  if (field === 'G') { if (ASTARTES.includes(e) && code !== 'G1') return { ok:false, reason:'阿斯塔特仅限男性' }; if (e === 'E10' && code !== 'G2') return { ok:false, reason:'修女会仅限女性' }; }
+  if (field === 'H') {
+    if (c === 'C7' && !isMechBackground(code)) return { ok:false, reason:'C7 需神教背景' };
+    if (c && c !== 'C7' && isMechBackground(code)) return { ok:false, reason:'神教背景需 C7' };
+    if (code === 'H13' && ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特无法是穿越者' };
+    if (c === 'C5' && code !== 'H25' && !NAVIGATOR_OK_BG.includes(code)) return { ok:false, reason:'领航者必须出身领航者世系或贵族家族' };
+    if (e === 'E12' && code !== 'H25' && !NOBLE_OK_BG.includes(code)) return { ok:false, reason:'贵族通常不出身底层' };
+    if (e === 'E18' && code !== 'H25' && !KNIGHT_OK_BG.includes(code)) return { ok:false, reason:'流浪骑士需贵族传承背景' };
+    if (code === 'H25' && (c === 'C5' || c === 'C7' || ASTARTES.includes(e))) return { ok:false, reason:'当前路线不允许自定义出身' };
+  }
+  if (field === 'K') {
+    if (code === 'K11' && !SELF_OWNED_SHIP_OK.includes(e)) return { ok:false, reason:'该职业通常不会自有舰船' };
+    if (code === 'K12' && NO_BORROWED_SHIP.includes(e)) return { ok:false, reason:'该职业不太可能借调舰船' };
+    if (code === 'K13' && !ASSIGNED_TO_SHIP_OK.includes(e)) return { ok:false, reason:'该职业通常不在大型舰船上服役' };
+    if (c === 'C5' && ['K1','K6','K11'].includes(code)) return { ok:false, reason:'领航者不可能身无长物/背债/自有小船' };
+  }
+  if (field === 'L' && isMechSecret(code) && c !== 'C7') return { ok:false, reason:'神教秘密需 C7' };
+  if (field === 'Q') {
+    if (c === 'C5' && MEDIUM_HEAVY_AUG.includes(code)) return { ok:false, reason:'领航者身体脆弱，无法叠加重度改造' };
+    if (c === 'C4' && HEAVY_AUG.includes(code)) return { ok:false, reason:'不可接触者无法被祝圣，机械教不会为其改造' };
+    if (SISTER_PROFESSIONS.includes(e) && HEAVY_AUG.includes(code)) return { ok:false, reason:'修女会强调纯洁血肉，不接受义体' };
+    if (ASTARTES.includes(e) && ['Q3','Q5'].includes(code)) return { ok:false, reason:'阿斯塔特不应存在慢病或药瘾' };
+    if (['E1','E7','E19','E39','E44'].includes(e) && code === 'Q8') return { ok:false, reason:'该职业不可能身体大部分机械化' };
+    if (code === 'Q10' && d === 'D5') return { ok:false, reason:'纯洁派不容隐性改造' };
+  }
+  if (field === 'S') {
+    if (code === 'S23') return { ok:true };
+    if (a === 'A19' && !['S8','S22','S23'].includes(code)) return { ok:false, reason:'欧姆巴佩11号只允许舰内或神甫居所开场' };
     if (a === 'A21' && !['S3','S8','S22','S23'].includes(code)) return { ok:false, reason:'哥利亚要塞只允许圣堂/舰内/神甫居所开场' };
     if (e && ALLOWED_S_BY_PROFESSION[e] && !ALLOWED_S_BY_PROFESSION[e].includes(code)) return { ok:false, reason:'该开场地点与当前职业不合' };
   }
