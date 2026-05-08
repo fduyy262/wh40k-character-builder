@@ -1,40 +1,55 @@
-/* WH40K Character Builder v5.4 — separated style.css */
+/* WH40K Character Builder — Safe Minimal Style
+   主要样式由 index.js 注入。
+   本文件只保留极少量兜底，避免旧布局污染新版界面。
+*/
 
-/* ===== base ===== */
+:root {
+  --wh-bg-0: #100a04;
+  --wh-bg-1: #1a0f05;
+  --wh-bg-2: #241708;
+  --wh-bg-deep: #0a0604;
 
+  --wh-amber: #ffb84d;
+  --wh-amber-bright: #ffd280;
+  --wh-amber-dim: #cc7a1a;
+  --wh-amber-deep: #8a6a38;
+  --wh-amber-soft: #e0cf9a;
+
+  --wh-bronze: #c9a24b;
+  --wh-bronze-dim: #5e4a28;
+  --wh-bronze-deep: #3a2e18;
+
+  --wh-ok: #7ae07a;
+  --wh-warn: #ffcc40;
+  --wh-err: #c92030;
+  --wh-err-soft: #d94a2e;
+
+  --wh-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+  --wh-serif: "Georgia", "Times New Roman", serif;
+}
+
+/* 只保留启动按钮兜底。真正样式由 index.js 覆盖。 */
 #wh40k-builder-launcher {
-  position: fixed !important;
-  top: 64px !important;
-  right: 12px !important;
-  z-index: 10000 !important;
-  background: #140b04;
-  color: #ffb84d;
-  border: 1px solid #c9a24b;
-  padding: 8px 12px;
-  font-weight: 700;
-  box-shadow: 0 0 12px rgba(0, 0, 0, .65);
+  position: fixed;
+  top: 64px;
+  right: 12px;
+  z-index: 10000;
 }
 
+/* 防止旧浏览器/旧缓存导致弹窗层级异常 */
 #wh40k-builder-overlay {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 9999 !important;
-  display: none;
-  background: rgba(0, 0, 0, .72);
-  color: #e0cf9a;
-  font-family: ui-monospace, Menlo, Consolas, monospace;
-  overflow: hidden !important;
+  z-index: 999999;
 }
 
-#wh40k-builder-overlay.open {
-  display: block !important;
-}
-
-#wh40k-builder-overlay .wh40k-builder-modal {
-  position: relative !important;
-  width: min(1280px, calc(100vw - 32px)) !important;
-  height: calc(100vh - 32px) !important;
-  margin: 16px auto !important;
+/* 禁用旧版闪屏残留 */
+#wh40k-builder-overlay .wh40k-builder-modal.wh40k-flash::after,
+#wh40k-builder-overlay .wh40k-builder-modal.wh40k-flash-red::after,
+#wh40k-builder-overlay.wh40k-screen-flash::before,
+#wh40k-builder-overlay.wh40k-screen-flash-red::before {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+}  margin: 16px auto !important;
   background: linear-gradient(180deg, #1a0f05, #090502) !important;
   border: 1px solid #5e4a28 !important;
   box-shadow: 0 0 0 1px #2a1f10, 0 0 30px rgba(0, 0, 0, .8) !important;
