@@ -31,7 +31,7 @@ const FIELD_TITLES = {
   K: 'K. 初始资源 / 开局条件',
   L: 'L. 初始秘密 / 隐藏命运',
   N: 'N. 初始羁绊',
-  P: 'P. 命运将至的人',
+  P: 'P. 命运将至之人',
   Q: 'Q. 身体状态',
   S: 'S. 开场地点',
   U: 'U. 目标动机',
@@ -54,7 +54,7 @@ const PAGE_DESCRIPTIONS = {
   1: '// 第一节 — 您的姓名、血统、年龄、性别、外貌与身体状态。',
   2: '// 第二节 — 您的出生星界与身世背景。可在 H25 处自定义出身。',
   3: '// 第三节 — 您当前的阵营立场与职业。',
-  4: '// 第四节 — 您当前持有的资源、秘密、羁绊，以及一位命运将至的人。',
+  4: '// 第四节 — 您当前持有的资源、秘密、羁绊，以及一位命运将至之人。',
   5: '// 第五节 — 您的开场地点、目标动机与叙事节奏偏好。',
   6: '// ??_???? / [NON_STANDARD_FIELD] — 来源未知的字段；另可在底部自由补充。',
   7: '// 复核全部档案，提交至大行政官案头。',
@@ -74,7 +74,7 @@ const FIELD_DESCRIPTIONS = {
   K: '声明您当前持有的资源与起始状态。',
   L: '坦白您的初始秘密或潜伏命运。',
   N: '登记您当前的核心羁绊。',
-  P: '指定一位“命运将至的人”。此人不会在开局立刻登场，而是会在剧情发展中合理引入。',
+  P: '指定一位“命运将至之人”。此人不会在开局立刻登场，而是会在剧情发展中合理引入。',
   Q: '声明您当前的身体状况。包括隐性创伤、改造痕迹与未愈合的旧伤。',
   S: '指定您的开场地点。从具体场景中选择一个，或在 S23 处自行描述。',
   U: '声明您的核心动机。它将驱动您的中长期决策与剧情选择。',
@@ -181,39 +181,39 @@ const OPTIONS = {
     ['V4', '日常（享受帝国压抑感的琐碎与窒息细节）'], ['V5', '主线（专注推进主线剧情，少 filler）'], ['V6', '自主（AI 等你主动行动，不催进度）'],
   ],
   P: [
-    ['P0', '无（让命运自行到来）'],
-    ['P1', '一位披着红袍的净化者'],
-    ['P2', '一位永远先拔枪的人'],
-    ['P3', '一位从档案中消失的学者'],
-    ['P4', '一位被钢铁王座束缚的贵胄'],
-    ['P5', '一位尚未完成誓言的少女'],
-    ['P6', '一位戴着假面的上流窃贼'],
-    ['P7', '一位从战场活下来的老人'],
-    ['P8', '一位带着痛苦笑意的异族巫者'],
-    ['P9', '一位仍在学习看见航路的人'],
-    ['P10', '一位用猎物衡量友谊的人'],
-    ['P11', '一位血脉不该存在的海上掠影'],
-    ['P12', '一位替审判庭跑腿的人'],
-    ['P13', '一位把祷词刻进金属的人'],
-    ['P14', '一位藏在高处的矮小枪手'],
-    ['P15', '一位经营温柔陷阱的人'],
-    ['P16', '一位来自冰冷航线的走私头目'],
-    ['P17', '一位等待命令的女仆长'],
-    ['P18', '一位被星图放逐的人'],
-    ['P19', '一位从黑暗欢场逃来的异族女人'],
-    ['P20', '一位看不见却知道路的朝圣者'],
-    ['P21', '一位只相信枪与信用点的人'],
-    ['P22', '一位被知识腐蚀的女学者'],
-    ['P23', '一位带刺的蔷薇'],
-    ['P24', '一位失散在祷告声中的少女'],
-    ['P25', '一位把战甲埋进厨房的人'],
-    ['P26', '一位微笑着谈判的蓝皮异族'],
-    ['P27', '一位被继承权追赶的人'],
-    ['P28', '一位背负母名的人'],
-    ['P29', '一位离开山门的龙裔修士'],
-    ['P30', '一位背弃舰桥命令的人'],
-    ['P31', '一位在黑工坊边缘求生的人'],
-    ['P32', '自定义（手动输入命运角色描述）'],
+    ['P0', '无（没有特定的命运对象，剧情自由展开）'],
+    ['P1', '赤红净化博学者'],
+    ['P2', '赏金枪手'],
+    ['P3', '流亡叛博学者'],
+    ['P4', '骑士机甲驾驶员'],
+    ['P5', '见习修女'],
+    ['P6', '贵族怪盗'],
+    ['P7', '星界军老兵'],
+    ['P8', '黑暗灵族战巫'],
+    ['P9', '导航学徒'],
+    ['P10', '克鲁特猎手'],
+    ['P11', '人类灵族混血海盗'],
+    ['P12', '审判庭外勤助理'],
+    ['P13', '机械神教技术神甫'],
+    ['P14', '莱特林狙击手'],
+    ['P15', '伪装贵族妓院主理'],
+    ['P16', '北欧风走私头目'],
+    ['P17', '待命女仆长'],
+    ['P18', '流亡星图师'],
+    ['P19', '黑暗灵族娼妓'],
+    ['P20', '失明朝圣者'],
+    ['P21', '雇佣枪手'],
+    ['P22', '颓废女学者'],
+    ['P23', '蔷薇修女'],
+    ['P24', '失散的见习修女'],
+    ['P25', '卡米尔·阿什伯恩'],
+    ['P26', '钛族水氏族以太'],
+    ['P27', '伊克沙尼亚贵族继承人'],
+    ['P28', '马里格里斯之女'],
+    ['P29', '翡翠龙散修'],
+    ['P30', '叛逃海军军官'],
+    ['P31', '异端机械神甫学徒'],
+    ['P32', '自定义（玩家手动输入命运角色描述）'],
   ],
   J: [
     ['J1', '无主线（纯自由剧情）'], ['J2', '单主线·绯雾之下'], ['J3', '单主线·帝皇幻梦'], ['J4', '单主线·太平潮涌'], ['J5', '单主线·圣机之蚀'],
@@ -252,6 +252,16 @@ const NO_BORROWED_SHIP = ['E7', 'E19', 'E39', 'E40', 'E44'];
 const ASSIGNED_TO_SHIP_OK = ['E3', 'E14', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E31', 'E34', 'E35'];
 const ORG_PROFESSIONS_FOR_U12 = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E33', 'E34', 'E35', 'E36', 'E37', 'E38'];
 
+const XENOS_FATE_PERSONS = ['P8', 'P10', 'P11', 'P19', 'P26'];
+const XENOS_CONTACT_STANCES = ['D2', 'D4', 'D6', 'D8', 'D11'];
+const XENOS_CONTACT_PROFESSIONS = ['E14', 'E15', 'E16', 'E17', 'E25', 'E26', 'E27', 'E28', 'E29', 'E34', 'E36', 'E41', 'E42', 'E43'];
+const XENOS_CONTACT_ORIGINS = ['A13'];
+const XENOS_CONTACT_RESOURCES = ['K11', 'K12', 'K13'];
+const XENOS_CONTACT_SECRETS = ['L14', 'L15'];
+const XENOS_CONTACT_BONDS = ['N15'];
+const XENOS_HARD_BAN_STANCES = ['D5', 'D9'];
+const XENOS_HARD_BAN_PROFESSIONS = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24'];
+
 const ALLOWED_S_BY_PROFESSION = {
   E1:['S1','S2','S7','S15','S17','S18'], E2:['S5','S8','S9','S17'], E3:['S7','S8','S9'], E4:['S5','S14','S17'], E5:['S15','S18'], E6:['S5','S21'], E7:['S2','S4','S11'], E8:['S5','S21'], E9:['S3','S13','S19'], E10:['S3','S13','S18','S19'], E11:['S3','S12','S13','S18'], E12:['S5','S9','S12','S17'], E13:['S7','S9','S12'], E14:['S5','S8','S9','S12','S17'], E15:['S2','S6','S9','S17'], E16:['S5','S8','S9','S15'], E17:['S1','S2','S6','S14','S17'], E18:['S10','S12','S15'], E19:['S1','S2','S14','S15','S19'], E20:['S2','S12','S17'],
   E21:['S3','S7','S8','S9','S15','S16','S22'], E22:['S6','S7','S8','S9','S15','S16','S22'], E23:['S7','S8','S9','S10','S13','S15','S16'], E24:['S7','S8','S9','S15','S16'], E25:['S5','S8','S14','S21'], E26:['S5','S8','S16','S21'], E27:['S2','S5','S6','S8','S14','S17'], E28:['S5','S8','S14','S16','S21'], E29:['S1','S2','S8','S14','S17'], E30:['S3','S8','S13'], E31:['S5','S8','S13'], E32:['S1','S2','S6','S14','S19'], E33:['S4','S22'], E34:['S4','S8','S15','S16','S22'], E35:['S4','S15','S22'], E36:['S4','S18','S22'], E37:['S4','S16','S21','S22'], E38:['S4','S22'], E39:['S1','S2','S6','S14','S17'], E40:['S1','S2','S6','S17'], E41:['S1','S6','S9','S17'], E42:['S5','S6','S8','S9'], E43:['S6','S8','S9','S16'], E44:['S2','S4','S6','S11','S17'], E45:['S1','S2','S6','S15','S19'],
@@ -277,7 +287,7 @@ function getMetaKey(key) { return `${EXT_ID}_${key}`; }
 function isOptionAllowed(field, code, s = state) {
   if (isRandomCode(code)) return { ok: true };
   const pick = (f) => { const v = s[f]; return v && !isRandomCode(v) ? v : null; };
-  const c = pick('C'), d = pick('D'), e = pick('E'), h = pick('H'), g = pick('G'), a = pick('A'), k = pick('K'), n = pick('N'), u = pick('U'), q = pick('Q');
+  const c = pick('C'), d = pick('D'), e = pick('E'), h = pick('H'), g = pick('G'), a = pick('A'), k = pick('K'), n = pick('N'), p = pick('P'), u = pick('U'), q = pick('Q');
   const eTag = professionTag(field === 'E' ? code : e);
   const dTag = stanceTag(field === 'D' ? code : d);
 
@@ -355,6 +365,36 @@ function isOptionAllowed(field, code, s = state) {
     if (code === 'U14' && (e === 'E10' || ASTARTES.includes(e))) return { ok:false, reason:'当前职业不适合“猎艳”动机' };
   }
   if (field === 'N') { if (code === 'N1' && u === 'U2') return { ok:false, reason:'“家人仍在”与“寻亲”矛盾' }; if (code === 'N0' && u === 'U10') return { ok:false, reason:'“守护”必须有对象' }; }
+
+  const selectedP = field === 'P' ? code : p;
+  if (selectedP && XENOS_FATE_PERSONS.includes(selectedP)) {
+    const selectedD = field === 'D' ? code : d;
+    const selectedE = field === 'E' ? code : e;
+    const selectedA = field === 'A' ? code : a;
+    const selectedK = field === 'K' ? code : k;
+    const selectedL = field === 'L' ? code : state.L;
+    const selectedN = field === 'N' ? code : n;
+
+    if (XENOS_HARD_BAN_STANCES.includes(selectedD)) {
+      return { ok:false, reason:'当前立场不会容忍异形命运之人' };
+    }
+    if (XENOS_HARD_BAN_PROFESSIONS.includes(selectedE)) {
+      return { ok:false, reason:'当前职业会将其视为猎杀或审讯目标' };
+    }
+
+    const hasXenosAccess =
+      XENOS_CONTACT_STANCES.includes(selectedD) ||
+      XENOS_CONTACT_PROFESSIONS.includes(selectedE) ||
+      XENOS_CONTACT_ORIGINS.includes(selectedA) ||
+      XENOS_CONTACT_RESOURCES.includes(selectedK) ||
+      XENOS_CONTACT_SECRETS.includes(selectedL) ||
+      XENOS_CONTACT_BONDS.includes(selectedN);
+
+    if (!hasXenosAccess) {
+      return { ok:false, reason:'缺少接触异形命运之人的合理入口' };
+    }
+  }
+
   return { ok:true };
 }
 
@@ -391,7 +431,7 @@ function summaryValue(field) {
   return `${state[field]} · ${label}`;
 }
 function buildSummaryRows() {
-  return [['名字', summaryValue('B')], ['血统', summaryValue('C')], ['年龄', summaryValue('F')], ['性别', summaryValue('G')], ['外貌', summaryValue('I')], ['身体', summaryValue('Q')], ['星界', summaryValue('A')], ['背景', summaryValue('H')], ['立场', summaryValue('D')], ['职业', summaryValue('E')], ['资源', summaryValue('K')], ['秘密', summaryValue('L')], ['羁绊', summaryValue('N')], ['命运对象', summaryValue('P')], ['开场', summaryValue('S')], ['动机', summaryValue('U')], ['节奏', summaryValue('V')], ['主线', summaryValue('J')]];
+  return [['名字', summaryValue('B')], ['血统', summaryValue('C')], ['年龄', summaryValue('F')], ['性别', summaryValue('G')], ['外貌', summaryValue('I')], ['身体', summaryValue('Q')], ['星界', summaryValue('A')], ['背景', summaryValue('H')], ['立场', summaryValue('D')], ['职业', summaryValue('E')], ['资源', summaryValue('K')], ['秘密', summaryValue('L')], ['羁绊', summaryValue('N')], ['命运将至之人', summaryValue('P')], ['开场', summaryValue('S')], ['动机', summaryValue('U')], ['节奏', summaryValue('V')], ['主线', summaryValue('J')]];
 }
 
 function getRouteHintRows() {
