@@ -1117,149 +1117,189 @@
   flex-wrap: wrap;
   gap: 10px;
 }
-/* ===== WH40K Builder PC 主页面布局修复 v5.3.1 ===== */
-/* 目标：电脑端取消左侧窄栏效果，让表单成为真正主页内容 */
+/* ===== WH40K Builder Desktop Side Panel + Flash FX v5.4 ===== */
 
-/* 弹窗本体铺开，但不要贴边 */
-#wh40k-builder-overlay .wh40k-builder-modal {
-  width: min(1240px, calc(100vw - 36px)) !important;
-  max-width: none !important;
-  height: min(860px, calc(100vh - 36px)) !important;
-  max-height: none !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-/* 顶部、进度、底部固定高度，中间主内容吃满 */
-#wh40k-builder-overlay .wh40k-builder-header,
-#wh40k-builder-overlay .wh40k-builder-progress,
-#wh40k-builder-overlay .wh40k-builder-footer {
-  flex: 0 0 auto !important;
-}
-
-/* 主内容区：取消旧侧栏/分栏布局 */
-#wh40k-builder-overlay .wh40k-builder-main {
-  flex: 1 1 auto !important;
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  display: block !important;
-  grid-template-columns: none !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  box-sizing: border-box !important;
-  padding: 18px 22px 24px !important;
-}
-
-/* 内容本体成为主页，不再被压在左侧 */
-#wh40k-builder-overlay .wh40k-builder-content {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  box-sizing: border-box !important;
-}
-
-/* 页面标题区占满宽度 */
-#wh40k-builder-overlay .wh40k-page-hero {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 0 18px 0 !important;
-  box-sizing: border-box !important;
-}
-
-/* 字段区纵向排列，每个字段块占满主页宽度 */
-#wh40k-builder-overlay .wh40k-page-grid {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 22px !important;
-  box-sizing: border-box !important;
-}
-
-/* 单个字段块占满宽度 */
-#wh40k-builder-overlay .wh40k-section {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-}
-
-/* 选项区在 PC 端横向铺满 */
-#wh40k-builder-overlay .wh40k-options {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
-  gap: 12px 14px !important;
-  box-sizing: border-box !important;
-}
-
-/* 选项按钮变成卡片，不再是左侧窄条 */
-#wh40k-builder-overlay .wh40k-option {
-  width: 100% !important;
-  min-width: 0 !important;
-  min-height: 64px !important;
-  box-sizing: border-box !important;
-  white-space: normal !important;
-  word-break: break-word !important;
-}
-
-/* 最终页也占满主区域 */
-#wh40k-builder-overlay .wh40k-final-card {
-  width: 100% !important;
-  max-width: none !important;
-  box-sizing: border-box !important;
-}
-
-#wh40k-builder-overlay .wh40k-final-preview {
-  width: 100% !important;
-  max-width: none !important;
-  box-sizing: border-box !important;
-}
-
-/* PC 宽屏：进一步提高利用率 */
-@media (min-width: 1000px) {
-  #wh40k-builder-overlay .wh40k-options {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+@media (min-width: 900px) {
+  #wh40k-builder-overlay .wh40k-builder-content {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
   }
-}
 
-/* 超宽屏：让按钮别太宽，保持阅读舒服 */
-@media (min-width: 1400px) {
-  #wh40k-builder-overlay .wh40k-builder-modal {
-    width: min(1320px, calc(100vw - 48px)) !important;
+  #wh40k-builder-overlay .wh40k-content-layout {
+    display: grid !important;
+    grid-template-columns: minmax(330px, 430px) minmax(460px, 1fr) !important;
+    gap: 22px !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    align-items: start;
+  }
+
+  #wh40k-builder-overlay .wh40k-left-pane {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #wh40k-builder-overlay .wh40k-right-pane {
+    display: block !important;
+    min-height: 560px;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+    border: 1px solid rgba(201, 162, 75, 0.45);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255, 184, 77, 0.08), transparent 38%),
+      linear-gradient(180deg, rgba(20, 11, 4, 0.96), rgba(8, 5, 2, 0.96));
+    box-shadow:
+      inset 0 0 40px rgba(255, 170, 51, 0.035),
+      0 0 18px rgba(0, 0, 0, 0.55);
+    padding: 18px 18px 20px;
+    box-sizing: border-box;
+    color: #e0cf9a;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    position: sticky;
+    top: 12px;
+  }
+
+  #wh40k-builder-overlay .wh40k-page-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 22px !important;
+    width: 100% !important;
+    max-width: none !important;
   }
 
   #wh40k-builder-overlay .wh40k-options {
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
-  }
-}
-
-/* 手机端继续保持单列，不破坏你现在正常的手机显示 */
-@media (max-width: 720px) {
-  #wh40k-builder-overlay .wh40k-builder-modal {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-  }
-
-  #wh40k-builder-overlay .wh40k-builder-main {
-    padding: 14px 12px 20px !important;
-  }
-
-  #wh40k-builder-overlay .wh40k-options {
+    display: grid !important;
     grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
   }
 
   #wh40k-builder-overlay .wh40k-option {
-    min-height: 58px !important;
+    width: 100% !important;
+    min-height: 58px;
+    white-space: normal !important;
+  }
+}
+
+@media (max-width: 899px) {
+  #wh40k-builder-overlay .wh40k-content-layout {
+    display: block !important;
+  }
+
+  #wh40k-builder-overlay .wh40k-right-pane {
+    display: none !important;
+  }
+}
+
+#wh40k-builder-overlay .wh40k-side-title {
+  color: #ffb84d;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+  text-shadow: 0 0 8px rgba(255, 184, 77, 0.25);
+}
+
+#wh40k-builder-overlay .wh40k-side-subtitle {
+  color: #8a6a38;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  margin-bottom: 14px;
+  border-bottom: 1px dashed rgba(138, 106, 56, 0.55);
+  padding-bottom: 10px;
+}
+
+#wh40k-builder-overlay .wh40k-side-block {
+  border: 1px solid rgba(94, 74, 40, 0.72);
+  background: rgba(0, 0, 0, 0.18);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+#wh40k-builder-overlay .wh40k-side-block-title {
+  color: #cc7a1a;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+
+#wh40k-builder-overlay .wh40k-side-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.65;
+  border-bottom: 1px dotted rgba(94, 74, 40, 0.38);
+  padding: 3px 0;
+}
+
+#wh40k-builder-overlay .wh40k-side-row:last-child {
+  border-bottom: none;
+}
+
+#wh40k-builder-overlay .wh40k-side-key {
+  color: #8a6a38;
+}
+
+#wh40k-builder-overlay .wh40k-side-value {
+  color: #e0cf9a;
+}
+
+#wh40k-builder-overlay .wh40k-side-code {
+  color: #7ae07a;
+  font-size: 11px;
+  line-height: 1.55;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+#wh40k-builder-overlay .wh40k-side-warning {
+  color: #ffcf66;
+  line-height: 1.65;
+  font-size: 12px;
+}
+
+#wh40k-builder-overlay .wh40k-side-danger {
+  color: #c92030;
+  text-shadow: 0 0 6px rgba(200, 35, 35, 0.45);
+}
+
+#wh40k-builder-overlay .wh40k-builder-modal.wh40k-flash::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(122, 224, 122, 0.16) 48%, transparent 100%),
+    radial-gradient(circle at 50% 50%, rgba(255, 184, 77, 0.16), transparent 42%);
+  animation: wh40k-terminal-flash 360ms ease-out;
+}
+
+#wh40k-builder-overlay .wh40k-builder-modal.wh40k-flash-red::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(201, 32, 48, 0.18) 48%, transparent 100%),
+    radial-gradient(circle at 50% 50%, rgba(201, 32, 48, 0.14), transparent 42%);
+  animation: wh40k-terminal-flash 420ms ease-out;
+}
+
+@keyframes wh40k-terminal-flash {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.96);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1.02);
   }
 }

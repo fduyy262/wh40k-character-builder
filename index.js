@@ -1783,15 +1783,19 @@ function makeOptionButton(field, code, label) {
     if (isActive) btn.classList.add('conflict');
   }
 
-  btn.addEventListener('click', () => {
-    // 禁用且未选中 → 拒绝选,告知原因
-    if (!check.ok && !isActive) {
-      return;
-    }
-    state[field] = code;
-    saveDraftState();
-    render();
-  });
+btn.addEventListener('click', () => {
+  // 禁用且未选中 → 拒绝选,给红色闪屏
+  if (!check.ok && !isActive) {
+    triggerTerminalFlash('red');
+    return;
+  }
+
+  triggerTerminalFlash(field === 'J' ? 'red' : 'normal');
+
+  state[field] = code;
+  saveDraftState();
+  render();
+});
 
   return btn;
 }
@@ -1915,10 +1919,21 @@ function renderPageContent() {
     return;
   }
 
+  const layout = document.createElement('div');
+   layout.className = 'wh40k-content-layout';
+
+  const leftPane = document.createElement('div');
+   leftPane.className = 'wh40k-left-pane';
+
   const grid = document.createElement('div');
-  grid.className = 'wh40k-page-grid';
-  PAGE_FIELDS[currentPage].forEach((field) => grid.appendChild(makeFieldSection(field)));
-  content.appendChild(grid);
+   grid.className = 'wh40k-page-grid';
+   PAGE_FIELDS[currentPage].forEach((field) => grid.appendChild(makeFieldSection(field)));
+
+   leftPane.appendChild(grid);
+   layout.appendChild(leftPane);
+   layout.appendChild(makeSidePanel());
+
+   content.appendChild(layout);
 
   // 第 6 页(命运牵连/J 栏)在 J 字段之后追加全局"额外补充"文本框
   if (currentPage === 6) {
