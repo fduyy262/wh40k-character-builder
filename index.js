@@ -354,4 +354,211 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'S') {
     if (code === 'S23') return { ok:true };
     if (a === 'A19' && !['S8','S22','S23'].includes(code)) return { ok:false, reason:'欧姆巴佩11号只允许舰内或神甫居所开场' };
-    if (a === 'A21' && !['S3','S8','S22','S23'].inclu
+    if (a === 'A21' && !['S3','S8','S22','S23'].includes(code)) return { ok:false, reason:'哥利亚要塞只允许圣堂/舰内/神甫居所开场' };
+    if (e && ALLOWED_S_BY_PROFESSION[e] && !ALLOWED_S_BY_PROFESSION[e].includes(code)) return { ok:false, reason:'该开场地点与当前职业不合' };
+  }
+  if (field === 'U') {
+    if (code === 'U2' && n === 'N1') return { ok:false, reason:'“寻亲”与“家人仍在”逻辑矛盾' };
+    if (code === 'U10' && n === 'N0') return { ok:false, reason:'“守护”必须有具体守护对象' };
+    if (code === 'U6' && (d === 'D1' || stanceTag(d) === 'iq' || stanceTag(d) === 'mech')) return { ok:false, reason:'“逃亡”与当前组织立场矛盾' };
+    if (code === 'U12' && (ORG_PROFESSIONS_FOR_U12.includes(e) || c === 'C5' || c === 'C7')) return { ok:false, reason:'组织化身份不适合“漂泊”动机' };
+    if (code === 'U14' && (e === 'E10' || ASTARTES.includes(e))) return { ok:false, reason:'当前职业不适合“猎艳”动机' };
+  }
+  if (field === 'N') { if (code === 'N1' && u === 'U2') return { ok:false, reason:'“家人仍在”与“寻亲”矛盾' }; if (code === 'N0' && u === 'U10') return { ok:false, reason:'“守护”必须有对象' }; }
+
+  const selectedP = field === 'P' ? code : p;
+  if (selectedP && XENOS_FATE_PERSONS.includes(selectedP)) {
+    const selectedD = field === 'D' ? code : d;
+    const selectedE = field === 'E' ? code : e;
+    const selectedA = field === 'A' ? code : a;
+    const selectedK = field === 'K' ? code : k;
+    const selectedL = field === 'L' ? code : state.L;
+    const selectedN = field === 'N' ? code : n;
+
+    if (XENOS_HARD_BAN_STANCES.includes(selectedD)) {
+      return { ok:false, reason:'当前立场不会容忍异形命运之人' };
+    }
+    if (XENOS_HARD_BAN_PROFESSIONS.includes(selectedE)) {
+      return { ok:false, reason:'当前职业会将其视为猎杀或审讯目标' };
+    }
+
+    const hasXenosAccess =
+      XENOS_CONTACT_STANCES.includes(selectedD) ||
+      XENOS_CONTACT_PROFESSIONS.includes(selectedE) ||
+      XENOS_CONTACT_ORIGINS.includes(selectedA) ||
+      XENOS_CONTACT_RESOURCES.includes(selectedK) ||
+      XENOS_CONTACT_SECRETS.includes(selectedL) ||
+      XENOS_CONTACT_BONDS.includes(selectedN);
+
+    if (!hasXenosAccess) {
+      return { ok:false, reason:'缺少接触异形命运之人的合理入口' };
+    }
+  }
+
+  return { ok:true };
+}
+
+function getWarnings() {
+  const warnings = [];
+  for (const f of PANEL_ORDER) {
+    const check = isOptionAllowed(f, state[f]);
+    if (!check.ok) warnings.push(`${f}${state[f]?.replace(/^[A-Z]/,'')}：${check.reason}`);
+  }
+  if (state.B === 'B1' && !state.NAME.trim()) warnings.unshift('你选择了自定义名字，但还没有填写名字。');
+  if (state.H === 'H25' && !state.H_CUSTOM.trim()) warnings.unshift('你选择了自定义出身，但还没有填写内容。');
+  if (state.S === 'S23' && !state.S_CUSTOM.trim()) warnings.unshift('你选择了自定义场景，但还没有填写内容。');
+  if (state.P === 'P32' && !state.P_CUSTOM.trim()) warnings.unshift('你选择了自定义命运角色，但还没有填写内容。');
+  return warnings;
+}
+
+function buildPayload() {
+  const codes = PANEL_ORDER.map((field) => state[field]).join(' ');
+  const extra = [];
+  if (state.B === 'B1' && state.NAME.trim()) extra.push(`名字：${state.NAME.trim()}`);
+  if (state.H === 'H25' && state.H_CUSTOM.trim()) extra.push(`自定义出身：${state.H_CUSTOM.trim()}`);
+  if (state.S === 'S23' && state.S_CUSTOM.trim()) extra.push(`自定义开场地点：${state.S_CUSTOM.trim()}`);
+  if (state.P === 'P32' && state.P_CUSTOM.trim()) extra.push(`自定义命运角色：${state.P_CUSTOM.trim()}`);
+  if (state.EXTRA.trim()) extra.push(`额外补充：${state.EXTRA.trim()}`);
+  return extra.length ? `${codes}\n${extra.join('\n')}` : codes;
+}
+
+function summaryValue(field) {
+  const label = getOptionLabel(field, state[field]);
+  if (field === 'B') return state.B === 'B1' ? `B1 · ${state.NAME.trim() || '（未填写）'}` : 'B0 · 默认（{{user}}）';
+  if (field === 'H' && state.H === 'H25') return `H25 · ${state.H_CUSTOM.trim() || '（未填写）'}`;
+  if (field === 'S' && state.S === 'S23') return `S23 · ${state.S_CUSTOM.trim() || '（未填写）'}`;
+  if (field === 'P' && state.P === 'P32') return `P32 · ${state.P_CUSTOM.trim() || '（未填写）'}`;
+  return `${state[field]} · ${label}`;
+}
+function buildSummaryRows() {
+  return [['名字', summaryValue('B')], ['血统', summaryValue('C')], ['年龄', summaryValue('F')], ['性别', summaryValue('G')], ['外貌', summaryValue('I')], ['身体', summaryValue('Q')], ['星界', summaryValue('A')], ['背景', summaryValue('H')], ['立场', summaryValue('D')], ['职业', summaryValue('E')], ['资源', summaryValue('K')], ['秘密', summaryValue('L')], ['羁绊', summaryValue('N')], ['命运将至之人', summaryValue('P')], ['开场', summaryValue('S')], ['动机', summaryValue('U')], ['节奏', summaryValue('V')], ['主线', summaryValue('J')]];
+}
+
+function getRouteHintRows() {
+  if (state.C === 'C7') return [['路线','机械神教路线'], ['神学立场', getOptionLabel('D', state.D)], ['职务序列', getOptionLabel('E', state.E)], ['技术风险', isMechSecret(state.L) ? getOptionLabel('L', state.L) : '未显性建档']];
+  if (stanceTag(state.D) === 'iq' || IQ_PROFESSIONS.includes(state.E)) return [['路线','审判庭相关'], ['立场', getOptionLabel('D', state.D)], ['职务', getOptionLabel('E', state.E)], ['风险','需服从审判庭档案与保密层级']];
+  if (ASTARTES.includes(state.E)) return [['路线','阿斯塔特'], ['战团/编制', getOptionLabel('E', state.E)], ['限制','正常人类 / 男性 / 非穿越者']];
+  if (PSYKER_PROFESSIONS.includes(state.E)) return [['路线','灵能者风险'], ['身份', getOptionLabel('E', state.E)], ['监察', state.E === 'E32' ? '未登记，极高风险' : '受帝国系统控制']];
+  return [['路线','帝国公民 / 灰色边缘'], ['立场', getOptionLabel('D', state.D)], ['职业', getOptionLabel('E', state.E)], ['开场', getOptionLabel('S', state.S)], ['节奏', getOptionLabel('V', state.V)]];
+}
+
+function canProceedFromPage(page) {
+  const fields = PAGE_FIELDS[page] || [];
+  if (fields.includes('B') && state.B === 'B1' && !state.NAME.trim()) return { ok:false, message:'请先填写自定义名字，或改回默认名字。' };
+  if (fields.includes('H') && state.H === 'H25' && !state.H_CUSTOM.trim()) return { ok:false, message:'请填写自定义出身，或选择固定出身。' };
+  if (fields.includes('S') && state.S === 'S23' && !state.S_CUSTOM.trim()) return { ok:false, message:'请填写自定义开场地点，或选择固定开场地点。' };
+  if (fields.includes('P') && state.P === 'P32' && !state.P_CUSTOM.trim()) return { ok:false, message:'请填写自定义命运角色，或选择固定对象。' };
+  return { ok:true, message:'' };
+}
+
+function queryInputBox() { return document.getElementById('send_textarea') || document.querySelector('#form_sheld textarea') || document.querySelector('textarea[placeholder*="消息"]') || document.querySelector('textarea[placeholder*="message" i]'); }
+function querySendButton() { return document.querySelector('#send_but') || document.querySelector('button[title="Send"]') || document.querySelector('button[title="发送"]') || document.querySelector('.fa-paper-plane')?.closest('button'); }
+function setInputValue(text) {
+  const input = queryInputBox();
+  if (!input) return false;
+  try { input.focus(); } catch (_) {}
+  try { const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value')?.set; if (setter) setter.call(input, text); } catch (_) {}
+  try { input.value = text; } catch (_) {}
+  if (typeof jQuery === 'function') { try { jQuery(input).val(text).trigger('input').trigger('change').trigger('keyup'); } catch (_) {} }
+  try { input.dispatchEvent(new Event('input', { bubbles:true, cancelable:true })); input.dispatchEvent(new Event('change', { bubbles:true, cancelable:true })); input.dispatchEvent(new KeyboardEvent('keyup', { bubbles:true })); } catch (_) {}
+  return input.value === text;
+}
+async function copyToClipboard(text) { try { await navigator.clipboard.writeText(text); return true; } catch (_) { const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;'; document.body.appendChild(ta); ta.select(); let ok=false; try { ok=document.execCommand('copy'); } catch (_) {} document.body.removeChild(ta); return ok; } }
+
+function saveDraftState() { try { const ctx = getCtx(); ctx.chatMetadata[getMetaKey('draft')] = JSON.parse(JSON.stringify(state)); ctx.chatMetadata[getMetaKey('page')] = currentPage; ctx.saveMetadata?.(); } catch (_) {} }
+function loadDraftState() { try { const ctx = getCtx(); const saved = ctx.chatMetadata?.[getMetaKey('draft')]; const page = ctx.chatMetadata?.[getMetaKey('page')]; state = saved && typeof saved === 'object' ? { ...DEFAULT_STATE, ...saved } : { ...DEFAULT_STATE }; currentPage = typeof page === 'number' ? page : 0; } catch (_) { state = { ...DEFAULT_STATE }; currentPage = 0; } }
+async function clearDraftState() { const ctx = getCtx(); delete ctx.chatMetadata[getMetaKey('draft')]; delete ctx.chatMetadata[getMetaKey('page')]; await ctx.saveMetadata?.(); }
+async function markBuilderShown() { const ctx = getCtx(); ctx.chatMetadata[getMetaKey('shown')] = true; await ctx.saveMetadata?.(); }
+
+function resetState() { state = { ...DEFAULT_STATE }; currentPage = 0; saveDraftState(); render(); }
+function closeBuilder() { overlay?.classList.remove('open'); if (launcher) { launcher.textContent = '[⚔ 角色创建器]'; launcher.style.removeProperty('display'); } document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
+function openBuilder(forcePage = null) { if (!overlay) createOverlay(); loadDraftState(); if (typeof forcePage === 'number') currentPage = forcePage; render(); overlay.classList.add('open'); if (launcher) { launcher.textContent = '[✕ 关闭终端]'; launcher.style.setProperty('display', 'none', 'important'); } document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+
+function injectChatStyles() { return; }
+function injectBuilderEnhancementStyles() {
+  // 样式已分离到 style.css。
+  // 这里保持空函数，避免 JS 注入大段 CSS 与移动端/PC端布局互相污染。
+  return;
+}
+
+function triggerTerminalFlash(type = 'normal') {
+  // 已关闭点击闪屏效果。保留空函数，避免点击逻辑报错。
+  return;
+}
+
+function makeLauncher() { if (launcher) launcher.remove(); launcher = document.createElement('button'); launcher.id = 'wh40k-builder-launcher'; launcher.type = 'button'; launcher.textContent = '[⚔ 角色创建器]'; launcher.addEventListener('click', () => overlay?.classList.contains('open') ? closeBuilder() : openBuilder()); document.body.appendChild(launcher); }
+function createOverlay() {
+  overlay = document.createElement('div'); overlay.id = 'wh40k-builder-overlay';
+  overlay.innerHTML = `<div class="wh40k-builder-modal"><div class="wh40k-builder-header"><div><div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div><div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.4-fixed</div></div><button type="button" class="wh40k-icon-btn" data-action="close">[×]</button></div><div class="wh40k-builder-progress"></div><div class="wh40k-builder-main"><section class="wh40k-builder-content"></section></div><div class="wh40k-builder-footer"><div class="wh40k-warning-box"></div><div class="wh40k-actions"><button type="button" class="wh40k-btn" data-action="reset">[ 重置 ]</button><button type="button" class="wh40k-btn" data-action="back">&lt; 上一步</button><button type="button" class="wh40k-btn primary" data-action="next">下一步 &gt;</button></div></div></div>`;
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeBuilder(); });
+  overlay.querySelector('[data-action="close"]').addEventListener('click', closeBuilder);
+  overlay.querySelector('[data-action="reset"]').addEventListener('click', resetState);
+  overlay.querySelector('[data-action="back"]').addEventListener('click', goBack);
+  overlay.querySelector('[data-action="next"]').addEventListener('click', goNext);
+  document.body.appendChild(overlay);
+}
+
+function renderProgress() {
+  const el = overlay.querySelector('.wh40k-builder-progress'); el.innerHTML = '';
+  if (currentPage === 0) { el.innerHTML = `<div class="wh40k-progress-label">// 等 候 输 入 //</div>`; return; }
+  if (currentPage === FINAL_PAGE) { el.innerHTML = `<div class="wh40k-progress-label" style="color:#7ae07a;">// 档 案 就 绪 / 待 提 交 //</div>`; return; }
+  const total = TOTAL_PAGES - 2; const isJ = currentPage === 6;
+  el.innerHTML = `<div class="wh40k-progress-label">第 <span style="color:${isJ?'#c92030':'#ffb84d'};font-weight:700;">${currentPage}</span> / ${total} 节 · ${PAGE_TITLES[currentPage]}</div><div class="wh40k-progress-dots"></div>`;
+  const dots = el.querySelector('.wh40k-progress-dots');
+  for (let i=1;i<=total;i++) { const dot=document.createElement('button'); dot.type='button'; dot.className='wh40k-dot'; if(i===currentPage)dot.classList.add('active'); else if(i<currentPage)dot.classList.add('done'); if(i===6)dot.classList.add('anomaly'); dot.textContent=i===6?'?':String(i); dot.addEventListener('click',()=>{ if(i>currentPage){ for(let p=currentPage;p<i;p++){ const r=canProceedFromPage(p); if(!r.ok){ alert(r.message); return; } } } currentPage=i; saveDraftState(); render(); }); dots.appendChild(dot); }
+}
+
+function makeOptionButton(field, code, label) {
+  const check = isOptionAllowed(field, code); const active = state[field] === code;
+  const btn = document.createElement('button'); btn.type='button'; btn.className='wh40k-option'; if(field==='J')btn.classList.add('anomaly'); if(active)btn.classList.add('active'); if(!check.ok){ btn.classList.add('disabled'); btn.title=check.reason; }
+  btn.innerHTML = `<span class="wh40k-option-code">${escapeHtml(code)}</span><span class="wh40k-option-label">${escapeHtml(label)}</span>${!check.ok?`<span class="wh40k-option-badge">⊘ ${escapeHtml(check.reason)}</span>`:''}`;
+  btn.addEventListener('click', () => { if(!check.ok && !active){ triggerTerminalFlash('red'); return; } triggerTerminalFlash(field==='J'?'red':'normal'); state[field]=code; saveDraftState(); render(); });
+  return btn;
+}
+function makeCustomBox(field) {
+  const map = { H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'], P:['P32','P_CUSTOM','自定义命运角色'] };
+  const cfg = map[field]; if(!cfg) return null; const [code,key,title]=cfg;
+  const box = document.createElement('div'); box.className = `wh40k-custom-box ${state[field]===code?'show':''}`; box.innerHTML = `<textarea rows="4" placeholder="${title}" >${escapeHtml(state[key]||'')}</textarea>`;
+  box.querySelector('textarea').addEventListener('input', e => { state[key]=e.target.value; saveDraftState(); renderFooterWarnings(); }); return box;
+}
+function makeFieldSection(field) {
+  const wrap = document.createElement('section'); wrap.className='wh40k-section'; if(field==='J')wrap.classList.add('anomaly');
+  wrap.innerHTML = `<h3>&gt; ${escapeHtml(FIELD_TITLES[field])}</h3><div style="font-size:12px;color:#a89072;line-height:1.6;margin-bottom:10px;">${escapeHtml(FIELD_DESCRIPTIONS[field]||'')}</div>`;
+  const options = document.createElement('div'); options.className='wh40k-options'; OPTIONS[field].forEach(([c,l])=>options.appendChild(makeOptionButton(field,c,l))); wrap.appendChild(options);
+  if(field==='B'){ const box=document.createElement('div'); box.className=`wh40k-name-box ${state.B==='B1'?'show':''}`; box.innerHTML=`<input type="text" placeholder="输入角色名字" value="${escapeHtml(state.NAME)}">`; box.querySelector('input').addEventListener('input',e=>{ state.NAME=e.target.value; saveDraftState(); renderFooterWarnings(); }); wrap.appendChild(box); }
+  const custom = makeCustomBox(field); if(custom) wrap.appendChild(custom);
+  return wrap;
+}
+
+function makeSidePanel() {
+  const warnings = getWarnings(); const side=document.createElement('aside'); side.className='wh40k-right-pane';
+  side.innerHTML = `<div class="wh40k-side-title">档 案 预 览 终 端</div><div class="wh40k-side-subtitle">DATA-SLATE / LIVE REGISTRY / M41</div><div class="wh40k-side-block"><div class="wh40k-side-block-title">&gt; 当前编码</div><div class="wh40k-side-code">${escapeHtml(buildPayload())}</div></div><div class="wh40k-side-block"><div class="wh40k-side-block-title">&gt; 档案摘要</div>${buildSummaryRows().map(([k,v])=>`<div class="wh40k-side-row"><div class="wh40k-side-key">${escapeHtml(k)}</div><div class="wh40k-side-value">${escapeHtml(v)}</div></div>`).join('')}</div><div class="wh40k-side-block"><div class="wh40k-side-block-title">&gt; 路线判定</div>${getRouteHintRows().map(([k,v])=>`<div class="wh40k-side-row"><div class="wh40k-side-key">${escapeHtml(k)}</div><div class="wh40k-side-value">${escapeHtml(v)}</div></div>`).join('')}</div><div class="wh40k-side-block"><div class="wh40k-side-block-title">&gt; 系统提示</div><div class="${warnings.length?'wh40k-side-warning wh40k-side-danger':'wh40k-side-warning'}">${escapeHtml(warnings[0] || '未发现严重冲突，档案准予临时备案。')}</div></div>`;
+  return side;
+}
+
+function renderPageContent() {
+  const content = overlay.querySelector('.wh40k-builder-content'); content.innerHTML='';
+  const hero = document.createElement('div'); hero.className='wh40k-page-hero'; hero.innerHTML=`<div class="wh40k-page-title">▸ ${escapeHtml(PAGE_TITLES[currentPage])}</div><div class="wh40k-page-desc">${escapeHtml(PAGE_DESCRIPTIONS[currentPage])}</div>`; content.appendChild(hero);
+  if(currentPage===0){ const splash=document.createElement('div'); splash.className='wh40k-splash'; splash.innerHTML=`<div class="wh40k-splash-quote">等 候 输 入</div><div class="wh40k-splash-line">&gt;&gt;&gt; 请公民接入终端 · 开始登记 &lt;&lt;&lt;</div><div class="wh40k-splash-text">此终端不会即时提交。您将依次完成 6 节登记表，每节包含若干字段；全部完成后，在最终页一次性提交档案。</div><button type="button" class="wh40k-btn primary wh40k-start-btn">[ 进入登记 ]</button>`; splash.querySelector('button').addEventListener('click',()=>{currentPage=1;saveDraftState();render();}); content.appendChild(splash); return; }
+  if(currentPage===FINAL_PAGE){ const card=document.createElement('section'); card.className='wh40k-final-card'; card.innerHTML=`<div class="wh40k-final-title">最终提交</div><div class="wh40k-final-text">&gt; 以下为即将上传至大行政官案头的档案数据流。</div><pre class="wh40k-final-preview">${escapeHtml(buildPayload())}</pre><div class="wh40k-final-actions"><button type="button" class="wh40k-btn" data-action="fill-only">[ 仅写入 ]</button><button type="button" class="wh40k-btn" data-action="copy-payload">[ 复制 ]</button><button type="button" class="wh40k-btn primary" data-action="confirm-send">★ 提交档案 ★</button></div>`; card.querySelector('[data-action="fill-only"]').addEventListener('click', fillOnly); card.querySelector('[data-action="copy-payload"]').addEventListener('click', copyPayloadOnly); card.querySelector('[data-action="confirm-send"]').addEventListener('click', confirmAndSend); content.appendChild(card); return; }
+  const layout=document.createElement('div'); layout.className='wh40k-content-layout'; const left=document.createElement('div'); left.className='wh40k-left-pane'; const grid=document.createElement('div'); grid.className='wh40k-page-grid'; PAGE_FIELDS[currentPage].forEach(f=>grid.appendChild(makeFieldSection(f))); left.appendChild(grid);
+  if(currentPage===6){ const box=document.createElement('section'); box.className='wh40k-section'; box.innerHTML=`<h3>※ 额外补充（可选）</h3><textarea rows="5" placeholder="可写人物癖好、特殊背景、关键剧情提示、想锚定的 NPC 关系、想跳过的开场内容……">${escapeHtml(state.EXTRA||'')}</textarea>`; box.querySelector('textarea').addEventListener('input',e=>{state.EXTRA=e.target.value;saveDraftState();}); left.appendChild(box); }
+  layout.appendChild(left); layout.appendChild(makeSidePanel()); content.appendChild(layout);
+}
+
+function renderFooterWarnings(){ const box=overlay.querySelector('.wh40k-warning-box'); const w=getWarnings(); box.textContent = w.length ? `注意：${w[0]}` : '提示：AI会根据你的世界书规则自动纠正非法组合，并在开场叙事中给出简短解释。'; }
+function renderFooterButtons(){ const back=overlay.querySelector('[data-action="back"]'); const next=overlay.querySelector('[data-action="next"]'); back.disabled=currentPage===0; if(currentPage===FINAL_PAGE){ next.style.display='none'; } else { next.style.display=''; next.textContent=currentPage===0?'进入登记':'下一步 >'; } }
+function render(){ renderProgress(); renderPageContent(); renderFooterWarnings(); renderFooterButtons(); }
+function goBack(){ if(currentPage===0) return; currentPage--; saveDraftState(); render(); }
+function goNext(){ const r=canProceedFromPage(currentPage); if(!r.ok){ alert(r.message); return; } if(currentPage>=FINAL_PAGE) return; currentPage++; saveDraftState(); render(); }
+
+async function fillOnly(){ const payload=buildPayload(); closeBuilder(); await new Promise(r=>setTimeout(r,80)); if(!setInputValue(payload)){ const ok=await copyToClipboard(payload); alert(ok?'未能自动写入输入框。模板已复制到剪贴板。':'未能写入输入框，且剪贴板不可用。请手动复制：\n\n'+payload); } }
+async function copyPayloadOnly(){ const ok=await copyToClipboard(buildPayload()); alert(ok?'模板已复制到剪贴板。':'剪贴板不可用。'); }
+async function confirmAndSend(){ const payload=buildPayload(); closeBuilder(); await new Promise(r=>setTimeout(r,80)); if(!setInputValue(payload)){ const ok=await copyToClipboard(payload); alert(ok?'未能自动写入输入框。模板已复制到剪贴板，请手动发送。':'未能写入输入框。请手动复制：\n\n'+payload); return; } if(!AUTO_SEND_AFTER_FILL){ await markBuilderShown(); await clearDraftState(); return; } const btn=querySendButton(); if(btn){ btn.click(); await markBuilderShown(); await clearDraftState(); } else alert('模板已写入输入框，但未找到发送按钮。请手动点击发送。'); }
+
+async function maybeAutoOpen(){ if(!isCtxReady()) return; const ctx=getCtx(); if(!shouldEnableForCurrentChat()){ if(launcher) launcher.style.display='none'; return; } if(launcher) launcher.style.display=''; const chat=Array.isArray(ctx.chat)?ctx.chat:[]; const hasUser=chat.some(m=>m?.is_user===true); const shown=!!ctx.chatMetadata?.[getMetaKey('shown')]; if(AUTO_OPEN_FOR_EMPTY_CHAT && !hasUser && !shown) openBuilder(0); }
+
+function init(){ if(initialized){ maybeAutoOpen().catch?.(()=>{}); return; } if(!isCtxReady()){ setTimeout(init,400); return; } initialized=true; try{ injectBuilderEnhancementStyles(); makeLauncher(); createOverlay(); injectChatStyles(); }catch(e){ console.error(`[${EXT_ID}] failed to build DOM`, e); return; } try{ const {eventSource,event_types}=getCtx(); eventSource.on(event_types.CHAT_CHANGED,()=>maybeAutoOpen()); eventSource.on(event_types.CHAT_CREATED,()=>{ state={...DEFAULT_STATE}; currentPage=0; maybeAutoOpen(); }); }catch(e){ console.error(`[${EXT_ID}] event binding failed`, e); } maybeAutoOpen(); setTimeout(()=>maybeAutoOpen(),600); setTimeout(()=>maybeAutoOpen(),2000); }
+function boot(){ if(isCtxReady()){ try{ const {eventSource,event_types}=getCtx(); eventSource.on(event_types.APP_READY,()=>setTimeout(init,0)); }catch(_){} } setTimeout(init,300); setTimeout(init,1500); setTimeout(init,4000); }
+
+if(typeof jQuery==='function') jQuery(()=>boot()); else if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot); else boot();
