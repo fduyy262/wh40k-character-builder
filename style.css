@@ -641,3 +641,31 @@
     font-size: 12px;
   }
 }
+/* ===== PC 初始化页居中修复 ===== */
+
+/* 初始化页的“等候输入”卡片居中 */
+#wh40k-builder-overlay .wh40k-splash {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: 32px !important;
+}
+
+/* 最终提交页也居中，不要贴左边 */
+#wh40k-builder-overlay .wh40k-final-card {
+  max-width: 920px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 手机端保持原本紧凑布局 */
+@media (max-width: 899px) {
+  #wh40k-builder-overlay .wh40k-splash {
+    margin-top: 16px !important;
+  }
+
+  #wh40k-builder-overlay .wh40k-final-card {
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
