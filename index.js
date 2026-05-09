@@ -301,12 +301,21 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'D') {
     if (dTag === 'mech' && c !== 'C7') return { ok:false, reason:'神教立场需 C7' };
     if (dTag !== 'mech' && c === 'C7') return { ok:false, reason:'C7 需机械神教立场' };
-    ') return { ok:false, reason:'C7 需神教职业' };
+    // D 字段是路线切换入口：允许先选择审判庭/机械神教立场，再到 E 字段选择对应职业。
+    // 不再用当前默认职业阻塞 D5-D13；最终组合冲突由 E 字段与底部提示处理。
+    if (e === 'E32' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
+    if (e === 'E44' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
+  }
+
+  if (field === 'E') {
+    if (eTag === 'mech' && c !== 'C7') return { ok:false, reason:'神教职业需 C7' };
+    if (eTag !== 'mech' && c === 'C7') return { ok:false, reason:'C7 需神教职业' };
     if (eTag === 'iq' && d && stanceTag(d) !== 'iq') return { ok:false, reason:'仅限审判庭立场' };
     if (dTag === 'iq' && eTag !== 'iq') return { ok:false, reason:'当前为审判庭立场，仅可选择审判庭体系职业' };
     if (dTag === 'mech' && eTag !== 'mech') return { ok:false, reason:'神教立场仅限神教职业' };
     if (code === 'E32' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
-    if (code === 'E44' && dTag === 'mech') return { ok:false,特出身不合法' }; }
+    if (code === 'E44' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
+    if (ASTARTES.includes(code)) { if (g !== 'G1') return { ok:false, reason:'阿斯塔特仅限男性' }; if (c !== 'C1') return { ok:false, reason:'阿斯塔特仅限正常人类' }; if (h === 'H13' || ASTARTES_FORBIDDEN_BG.includes(h)) return { ok:false, reason:'阿斯塔特出身不合法' }; }
     if (code === 'E10') { if (g !== 'G2') return { ok:false, reason:'修女会仅限女性' }; if (!SISTER_RACES.includes(c)) return { ok:false, reason:'当前血统不可成为修女' }; }
     if (code === 'E12' && h !== 'H25' && !NOBLE_OK_BG.includes(h)) return { ok:false, reason:'贵族通常不出身底层' };
     if (code === 'E18' && (c === 'C6' || (h !== 'H25' && !KNIGHT_OK_BG.includes(h)))) return { ok:false, reason:'流浪骑士需贵族传承背景' };
@@ -465,11 +474,44 @@ function openBuilder(forcePage = null) { if (!overlay) createOverlay(); loadDraf
 
 function injectChatStyles() { return; }
 function injectBuilderEnhancementStyles() {
-  // 样式已分离到 styimportant');
+  // 样式已分离到 style.css。
+  // 这里保持空函数，避免 JS 注入大段 CSS 与移动端/PC端布局互相污染。
+  return;
+}
+
+function triggerTerminalFlash(type = 'normal') {
+  // 已关闭点击闪屏效果。保留空函数，避免点击逻辑报错。
+  return;
+}
+
+function forceShowLauncher() {
+  if (!launcher) return;
+  launcher.style.setProperty('position', 'fixed', 'important');
+  launcher.style.setProperty('top', '64px', 'important');
+  launcher.style.setProperty('right', '12px', 'important');
+  launcher.style.setProperty('z-index', '1000000', 'important');
   launcher.style.setProperty('display', 'block', 'important');
   launcher.style.setProperty('visibility', 'visible', 'important');
   launcher.style.setProperty('opacity', '1', 'important');
-  launcher.stylev class="wh40k-builder-modal"><div class="wh40k-builder-header"><div><div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div><div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.4-fixed</div></div><button type="button" class="wh40k-icon-btn" data-action="close">[×]</button></div><div class="wh40k-builder-progress"></div><div class="wh40k-builder-main"><section class="wh40k-builder-content"></section></div><div class="wh40k-builder-footer"><div class="wh40k-warning-box"></div><div class="wh40k-actions"><button type="button" class="wh40k-btn" data-action="reset">[ 重置 ]</button><button type="button" class="wh40kcurrentPage === FINAL_PAGE) { el.innerHTML = `<div class="wh40k-progress-label" style="color:#7ae07a;">// 档 案 就 绪 / 待 提 交 //</div>`; return; }
+  launcher.style.setProperty('pointer-events', 'auto', 'important');
+}
+
+function makeLauncher() { if (launcher) launcher.remove(); launcher = document.createElement('button'); launcher.id = 'wh40k-builder-launcher'; launcher.type = 'button'; launcher.textContent = '[⚔ 角色创建器]'; forceShowLauncher(); launcher.addEventListener('click', () => overlay?.classList.contains('open') ? closeBuilder() : openBuilder()); document.body.appendChild(launcher); forceShowLauncher(); }
+function createOverlay() {
+  overlay = document.createElement('div'); overlay.id = 'wh40k-builder-overlay';
+  overlay.innerHTML = `<div class="wh40k-builder-modal"><div class="wh40k-builder-header"><div><div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div><div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.4-fixed</div></div><button type="button" class="wh40k-icon-btn" data-action="close">[×]</button></div><div class="wh40k-builder-progress"></div><div class="wh40k-builder-main"><section class="wh40k-builder-content"></section></div><div class="wh40k-builder-footer"><div class="wh40k-warning-box"></div><div class="wh40k-actions"><button type="button" class="wh40k-btn" data-action="reset">[ 重置 ]</button><button type="button" class="wh40k-btn" data-action="back">&lt; 上一步</button><button type="button" class="wh40k-btn primary" data-action="next">下一步 &gt;</button></div></div></div>`;
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeBuilder(); });
+  overlay.querySelector('[data-action="close"]').addEventListener('click', closeBuilder);
+  overlay.querySelector('[data-action="reset"]').addEventListener('click', resetState);
+  overlay.querySelector('[data-action="back"]').addEventListener('click', goBack);
+  overlay.querySelector('[data-action="next"]').addEventListener('click', goNext);
+  document.body.appendChild(overlay);
+}
+
+function renderProgress() {
+  const el = overlay.querySelector('.wh40k-builder-progress'); el.innerHTML = '';
+  if (currentPage === 0) { el.innerHTML = `<div class="wh40k-progress-label">// 等 候 输 入 //</div>`; return; }
+  if (currentPage === FINAL_PAGE) { el.innerHTML = `<div class="wh40k-progress-label" style="color:#7ae07a;">// 档 案 就 绪 / 待 提 交 //</div>`; return; }
   const total = TOTAL_PAGES - 2; const isJ = currentPage === 6;
   el.innerHTML = `<div class="wh40k-progress-label">第 <span style="color:${isJ?'#c92030':'#ffb84d'};font-weight:700;">${currentPage}</span> / ${total} 节 · ${PAGE_TITLES[currentPage]}</div><div class="wh40k-progress-dots"></div>`;
   const dots = el.querySelector('.wh40k-progress-dots');
