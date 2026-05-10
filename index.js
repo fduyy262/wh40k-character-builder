@@ -206,7 +206,7 @@ const OPTIONS = {
     ['P22', '颓废女学者'],
     ['P23', '蔷薇修女'],
     ['P24', '失散的见习修女'],
-    ['P25', '隐退战斗修女'],
+    ['P25', '隐退蔷薇修女'],
     ['P26', '钛族水氏族以太'],
     ['P27', '伊克沙尼亚贵族继承人'],
     ['P28', '马里格里斯之女'],
@@ -496,46 +496,7 @@ function forceShowLauncher() {
   launcher.style.setProperty('pointer-events', 'auto', 'important');
 }
 
-function makeLauncher() {
-  if (launcher) launcher.remove();
-  launcher = document.createElement('button');
-  launcher.id = 'wh40k-builder-launcher';
-  launcher.type = 'button';
-  launcher.textContent = '[⚔ 角色创建器]';
-  forceShowLauncher();
-
-  // 统一的切换函数：开就关，关就开
-  const toggleBuilder = (e) => {
-    if (e) {
-      try { e.preventDefault(); e.stopPropagation(); } catch (_) {}
-    }
-    try {
-      if (overlay?.classList.contains('open')) {
-        closeBuilder();
-      } else {
-        openBuilder();
-      }
-    } catch (err) {
-      // 在手机端没法看 console,直接弹 alert 看是哪一步炸了
-      console.error('[wh40k] toggle failed', err);
-      alert('[WH40K 调试] 打开失败:\n' + (err && err.message ? err.message : err));
-    }
-  };
-
-  // 三重事件保险: click + touchend + pointerup
-  // 部分手机浏览器在嵌套 UI 中只有 click 会被吞掉,加 touchend / pointerup 兜底
-  launcher.addEventListener('click', toggleBuilder);
-  launcher.addEventListener('touchend', toggleBuilder, { passive: false });
-  launcher.addEventListener('pointerup', toggleBuilder);
-
-  document.body.appendChild(launcher);
-  forceShowLauncher();
-
-  // 暴露给 window,可在地址栏 javascript:WH40K_OPEN() 强制调用
-  window.WH40K_OPEN = () => openBuilder();
-  window.WH40K_CLOSE = () => closeBuilder();
-  window.WH40K_TOGGLE = () => toggleBuilder();
-}
+function makeLauncher() { if (launcher) launcher.remove(); launcher = document.createElement('button'); launcher.id = 'wh40k-builder-launcher'; launcher.type = 'button'; launcher.textContent = '[⚔ 角色创建器]'; forceShowLauncher(); launcher.addEventListener('click', () => overlay?.classList.contains('open') ? closeBuilder() : openBuilder()); document.body.appendChild(launcher); forceShowLauncher(); }
 function createOverlay() {
   overlay = document.createElement('div'); overlay.id = 'wh40k-builder-overlay';
   overlay.innerHTML = `<div class="wh40k-builder-modal"><div class="wh40k-builder-header"><div><div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div><div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.4-fixed</div></div><button type="button" class="wh40k-icon-btn" data-action="close">[×]</button></div><div class="wh40k-builder-progress"></div><div class="wh40k-builder-main"><section class="wh40k-builder-content"></section></div><div class="wh40k-builder-footer"><div class="wh40k-warning-box"></div><div class="wh40k-actions"><button type="button" class="wh40k-btn" data-action="reset">[ 重置 ]</button><button type="button" class="wh40k-btn" data-action="back">&lt; 上一步</button><button type="button" class="wh40k-btn primary" data-action="next">下一步 &gt;</button></div></div></div>`;

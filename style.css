@@ -729,3 +729,32 @@
     padding: 8px 18px !important;
   }
 }
+
+/* ===== 关键修复: 手机端底部三个按钮缺失 ===== */
+/* 
+   原因: .wh40k-builder-main 是 flex 子元素,
+   默认 min-height: auto 导致它不能小于内容高度,
+   超长内容把 Footer 挤出视口。
+   
+   解决: 强制 min-height: 0 让 main 能正确收缩,
+   同时锁定 header/progress/footer 不被挤压。
+*/
+#wh40k-builder-overlay .wh40k-builder-main {
+  min-height: 0 !important;
+}
+
+#wh40k-builder-overlay .wh40k-builder-header,
+#wh40k-builder-overlay .wh40k-builder-progress,
+#wh40k-builder-overlay .wh40k-builder-footer {
+  flex-shrink: 0 !important;
+}
+
+/* Safari/iOS 兜底: 部分老版本不支持 100dvh,用 100vh 兜底 */
+@media (max-width: 899px) {
+  #wh40k-builder-overlay .wh40k-builder-modal {
+    height: 100vh;          /* 兜底 */
+    height: 100dvh;         /* 现代浏览器优先用这个 */
+    max-height: 100vh;
+    max-height: 100dvh;
+  }
+}

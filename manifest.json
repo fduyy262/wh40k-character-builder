@@ -1,10 +1,12 @@
 {
-  "display_name": "WH40K Character Builder",
-  "loading_order": 99,
+  "display_name": "WH40K 角色创建器",
+  "loading_order": 100,
+  "requires": [],
+  "optional": [],
+  "dependencies": [],
   "js": "index.js",
   "css": "style.css",
-  "author": "OpenAI",
-  "version": "0.2.0",
-  "auto_update": false,
-  "minimum_client_version": "1.12.0"
+  "author": "user",
+  "version": "5.4",
+  "homePage": ""
 }
