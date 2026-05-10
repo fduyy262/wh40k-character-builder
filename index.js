@@ -485,16 +485,18 @@ function closeBuilder() {
 // 暴力把 overlay 和 modal 的关键样式全用内联+!important 写死
 function forceShowOverlay() {
   if (!overlay) return;
+  // 用 window.innerHeight 拿到真实可见高度,避开手机 100vh 包含 Chrome UI 的问题
+  const vh = window.innerHeight + 'px';
+  const vw = window.innerWidth + 'px';
+
   const o = overlay.style;
   o.setProperty('display', 'block', 'important');
   o.setProperty('position', 'fixed', 'important');
   o.setProperty('top', '0', 'important');
   o.setProperty('left', '0', 'important');
-  o.setProperty('right', '0', 'important');
-  o.setProperty('bottom', '0', 'important');
-  o.setProperty('width', '100vw', 'important');
-  o.setProperty('height', '100vh', 'important');
-  o.setProperty('z-index', '2147483646', 'important'); // 32位有符号 int 最大值,不可能更高
+  o.setProperty('width', vw, 'important');
+  o.setProperty('height', vh, 'important');
+  o.setProperty('z-index', '2147483646', 'important');
   o.setProperty('background', 'rgba(0,0,0,0.85)', 'important');
   o.setProperty('visibility', 'visible', 'important');
   o.setProperty('opacity', '1', 'important');
@@ -503,50 +505,60 @@ function forceShowOverlay() {
   const modal = overlay.querySelector('.wh40k-builder-modal');
   if (modal) {
     const m = modal.style;
-    m.setProperty('width', '100vw', 'important');
-    m.setProperty('height', '100vh', 'important');
-    m.setProperty('max-width', '100vw', 'important');
-    m.setProperty('max-height', '100vh', 'important');
+    m.setProperty('width', vw, 'important');
+    m.setProperty('height', vh, 'important');
+    m.setProperty('max-width', vw, 'important');
+    m.setProperty('max-height', vh, 'important');
     m.setProperty('margin', '0', 'important');
     m.setProperty('display', 'flex', 'important');
     m.setProperty('flex-direction', 'column', 'important');
     m.setProperty('overflow', 'hidden', 'important');
   }
+
+  // 关键修复: main 必须 min-height:0 才能让 footer 不被挤出
+  const main = overlay.querySelector('.wh40k-builder-main');
+  if (main) {
+    main.style.setProperty('flex', '1 1 0', 'important');
+    main.style.setProperty('min-height', '0', 'important');
+    main.style.setProperty('overflow-y', 'auto', 'important');
+  }
+
+  // 锁定 header / progress / footer 不被挤压
+  ['.wh40k-builder-header', '.wh40k-builder-progress', '.wh40k-builder-footer'].forEach(sel => {
+    const el = overlay.querySelector(sel);
+    if (el) el.style.setProperty('flex-shrink', '0', 'important');
+  });
 }
 
-// 自检: 打开 100ms 后看 overlay 真实渲染状态,异常就弹 alert
+// 视口变化时重新调整高度(地址栏出现/消失、横竖屏切换都会触发)
+let __wh40kResizeBound = false;
+function bindResizeOnce() {
+  if (__wh40kResizeBound) return;
+  __wh40kResizeBound = true;
+  const handler = () => {
+    if (overlay && overlay.classList.contains('open')) {
+      forceShowOverlay();
+    }
+  };
+  window.addEventListener('resize', handler);
+  window.addEventListener('orientationchange', handler);
+}
+
+// 自检: 仅在 overlay 真的渲染异常时打印到 console (不再弹 alert 打扰用户)
 function diagnoseOverlay() {
   if (!overlay) {
-    alert('[WH40K 诊断] overlay 元素根本不存在!');
+    console.warn('[wh40k] overlay element missing');
     return;
   }
   const rect = overlay.getBoundingClientRect();
   const cs = window.getComputedStyle(overlay);
-  const issues = [];
-  if (cs.display === 'none') issues.push('display=none');
-  if (cs.visibility === 'hidden') issues.push('visibility=hidden');
-  if (parseFloat(cs.opacity) === 0) issues.push('opacity=0');
-  if (rect.width < 50) issues.push(`宽度太小=${rect.width}`);
-  if (rect.height < 50) issues.push(`高度太小=${rect.height}`);
-
-  // 检查 overlay 上方是否有别的元素挡住中心点
-  const cx = window.innerWidth / 2;
-  const cy = window.innerHeight / 2;
-  const topEl = document.elementFromPoint(cx, cy);
-  const topInOverlay = topEl && (topEl === overlay || overlay.contains(topEl));
-
-  if (issues.length > 0 || !topInOverlay) {
-    alert(
-      '[WH40K 诊断] overlay 渲染异常:\n\n' +
-      `问题: ${issues.length ? issues.join(', ') : '(看起来正常)'}\n\n` +
-      `display: ${cs.display}\n` +
-      `position: ${cs.position}\n` +
-      `z-index: ${cs.zIndex}\n` +
-      `宽: ${rect.width}px  高: ${rect.height}px\n` +
-      `top: ${cs.top}  left: ${cs.left}\n\n` +
-      `视口中心元素: ${topEl ? topEl.tagName + (topEl.id ? '#'+topEl.id : '') + (topEl.className ? '.'+String(topEl.className).split(' ').slice(0,2).join('.') : '') : 'null'}\n` +
-      `中心点在 overlay 内部? ${topInOverlay ? '是' : '否(被挡住了!)'}`
-    );
+  if (cs.display === 'none' || rect.width < 50 || rect.height < 50) {
+    console.warn('[wh40k] overlay render issue', {
+      display: cs.display,
+      width: rect.width,
+      height: rect.height,
+      zIndex: cs.zIndex
+    });
   }
 }
 
@@ -559,6 +571,8 @@ function openBuilder(forcePage = null) {
 
   // 暴力强制可见
   forceShowOverlay();
+  // 绑定一次性的视口变化监听(地址栏出现消失会触发,自动重算高度)
+  bindResizeOnce();
 
   if (launcher) {
     launcher.textContent = '[✕ 关闭终端]';
