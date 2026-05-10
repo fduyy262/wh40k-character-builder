@@ -206,7 +206,7 @@ const OPTIONS = {
     ['P22', '颓废女学者'],
     ['P23', '蔷薇修女'],
     ['P24', '失散的见习修女'],
-    ['P25', '隐退蔷薇修女'],
+    ['P25', '隐退战斗修女'],
     ['P26', '钛族水氏族以太'],
     ['P27', '伊克沙尼亚贵族继承人'],
     ['P28', '马里格里斯之女'],
@@ -469,8 +469,37 @@ async function clearDraftState() { const ctx = getCtx(); delete ctx.chatMetadata
 async function markBuilderShown() { const ctx = getCtx(); ctx.chatMetadata[getMetaKey('shown')] = true; await ctx.saveMetadata?.(); }
 
 function resetState() { state = { ...DEFAULT_STATE }; currentPage = 0; saveDraftState(); render(); }
-function closeBuilder() { overlay?.classList.remove('open'); if (launcher) { launcher.textContent = '[⚔ 角色创建器]'; forceShowLauncher(); } document.documentElement.style.overflow = ''; document.body.style.overflow = ''; }
-function openBuilder(forcePage = null) { if (!overlay) createOverlay(); loadDraftState(); if (typeof forcePage === 'number') currentPage = forcePage; render(); overlay.classList.add('open'); if (launcher) { launcher.textContent = '[✕ 关闭终端]'; forceShowLauncher(); } document.documentElement.style.overflow = 'hidden'; document.body.style.overflow = 'hidden'; }
+function closeBuilder() { 
+  overlay?.classList.remove('open'); 
+  if (overlay) {
+    overlay.style.setProperty('display', 'none', 'important');
+  }
+  if (launcher) { 
+    launcher.textContent = '[⚔ 角色创建器]'; 
+    forceShowLauncher(); 
+  } 
+  document.documentElement.style.overflow = ''; 
+  document.body.style.overflow = ''; 
+}
+
+function openBuilder(forcePage = null) { 
+  if (!overlay) createOverlay(); 
+  loadDraftState(); 
+  if (typeof forcePage === 'number') currentPage = forcePage; 
+  render(); 
+  overlay.classList.add('open'); 
+  // 强制内联样式覆盖,应对酒馆 1.18+ 高 z-index UI 把弹窗压在底下的问题
+  overlay.style.setProperty('display', 'block', 'important');
+  overlay.style.setProperty('position', 'fixed', 'important');
+  overlay.style.setProperty('inset', '0', 'important');
+  overlay.style.setProperty('z-index', '999999', 'important');
+  if (launcher) { 
+    launcher.textContent = '[✕ 关闭终端]'; 
+    forceShowLauncher(); 
+  } 
+  document.documentElement.style.overflow = 'hidden'; 
+  document.body.style.overflow = 'hidden'; 
+}
 
 function injectChatStyles() { return; }
 function injectBuilderEnhancementStyles() {

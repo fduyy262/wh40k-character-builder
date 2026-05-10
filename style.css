@@ -730,15 +730,31 @@
   }
 }
 
-/* ===== 关键修复: 手机端底部三个按钮缺失 ===== */
+/* ====================================================== */
+/* ===== 真·关键修复 v3 (2026-05-10) ===== */
+/* ====================================================== */
 /* 
-   原因: .wh40k-builder-main 是 flex 子元素,
-   默认 min-height: auto 导致它不能小于内容高度,
-   超长内容把 Footer 挤出视口。
-   
-   解决: 强制 min-height: 0 让 main 能正确收缩,
-   同时锁定 header/progress/footer 不被挤压。
+   问题1: 酒馆 1.18.0 手机端 UI 的 z-index 比 overlay 的 9999 高,
+          导致弹窗被完全盖住,看起来像"点了没反应"。
+   解决:  把 overlay 提到 999999, 跟 launcher 同级。
+
+   问题2: .wh40k-builder-main 缺 min-height: 0,
+          flex 子元素无法正确收缩,内容超长时把 footer 挤出视口。
+   解决:  强制 min-height: 0, 锁定 header/progress/footer 不收缩。
+
+   问题3: 部分手机浏览器对 100dvh 支持不完美,加 100vh 兜底。
 */
+
+/* ===== 修复1: overlay z-index ===== */
+#wh40k-builder-overlay {
+  z-index: 999999 !important;
+}
+
+#wh40k-builder-overlay.open {
+  display: block !important;
+}
+
+/* ===== 修复2: main 能正确收缩 ===== */
 #wh40k-builder-overlay .wh40k-builder-main {
   min-height: 0 !important;
 }
@@ -749,11 +765,11 @@
   flex-shrink: 0 !important;
 }
 
-/* Safari/iOS 兜底: 部分老版本不支持 100dvh,用 100vh 兜底 */
+/* ===== 修复3: 视口高度兜底 ===== */
 @media (max-width: 899px) {
   #wh40k-builder-overlay .wh40k-builder-modal {
-    height: 100vh;          /* 兜底 */
-    height: 100dvh;         /* 现代浏览器优先用这个 */
+    height: 100vh;
+    height: 100dvh;
     max-height: 100vh;
     max-height: 100dvh;
   }
