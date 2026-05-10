@@ -108,7 +108,7 @@ const OPTIONS = {
     ['A23', '瀛洲-21（卡利亚星区外围-翡翠龙战团母星·东亚隐修封建社会）'],
   ],
   B: [['B0', '默认（{{user}}）'], ['B1', '自定义名字']],
-  C: [['C1', '正常人类'], ['C3', '虚空之子'], ['C4', '不可接触者'], ['C5', '领航者'], ['C6', '猫人'], ['C7', '机械神教培育人']],
+  C: [['C1', '正常人类'], ['C4', '不可接触者'], ['C5', '领航者'], ['C6', '猫人'], ['C7', '机械神教培育人']],
   D: [
     ['D1', '人类帝国忠诚者'], ['D2', '边缘独立者 / 灰色地带'], ['D3', '潜在混沌信徒'], ['D4', '秘密的异形同情者'],
     ['D5', '审判庭-纯洁派'], ['D6', '审判庭-激进派'], ['D7', '审判庭-占视者派'], ['D8', '审判庭-妄尊异形派'],
@@ -133,11 +133,36 @@ const OPTIONS = {
     ['H17', '边境殖民者家庭'], ['H18', '法务部家庭出身'], ['H19', '失势贵族旁支'], ['H20', '身世不明养子'], ['H21', '走私圈出身'],
     ['H22', '档案机构出身'], ['H23', '边缘废土聚落'], ['H24', '流亡者后裔'], ['H25', '自定义出身（手动输入）'],
   ],
-  I: [['I1', '丑陋至极，难以形容'], ['I2', '高大健壮，相貌普通'], ['I3', '普通身材，普通外貌'], ['I4', '身材优美，人见人爱']],
+  I: [
+    ['I1', '东亚面孔（黄皮肤，黑发，单/双眼皮）'],
+    ['I2', '欧洲面孔（白皮肤，浅色或棕色发）'],
+    ['I3', '非洲面孔（深色皮肤，深棕至黑色发）'],
+    ['I4', '中东/南亚面孔（橄榄色至深棕皮肤，黑色发）'],
+  ],
   K: [
-    ['K1', '身无长物'], ['K2', '基本温饱'], ['K3', '小有积蓄'], ['K4', '有稳定住处'], ['K5', '持有一件珍贵遗物'], ['K6', '背负债务'],
-    ['K7', '拥有一处隐秘安全屋'], ['K8', '有一名可调用的低阶随从'], ['K9', '持有一条危险情报'], ['K10', '拥有一件受限装备'],
-    ['K11', '自有小船（一艘属于你的小型船：贸易船、打捞船或走私船）'], ['K12', '借调舰船（暂时使用上级、家族或雇主的一艘船）'], ['K13', '在大舰服役（你常驻于一艘大型舰船，但船不属于你）'],
+    // 财务（互斥，可不选）
+    ['K1', '身无长物'],
+    ['K2', '基本温饱'],
+    ['K3', '小有积蓄'],
+    ['K4', '殷实（资金宽裕，能买体面装备）'],
+    ['K5', '富有（有相当数量的信用点和资产）'],
+    // 居所（互斥，可不选）
+    ['K6', '寄居 / 无固定居所'],
+    ['K7', '有稳定住处'],
+    ['K8', '拥有一处隐秘安全屋'],
+    ['K9', '拥有家族房产（家族所有，但你能使用）'],
+    // 随从（互斥，可不选）
+    ['K10', '有一名可调用的低阶随从'],
+    ['K11', '有一名忠诚老仆'],
+    // 装备（互斥，可不选）
+    ['K12', '持有一件合法武器'],
+    ['K13', '拥有一件受限装备（需许可证）'],
+    ['K14', '持有一件家传古物（武器/盔甲/圣器，有故事）'],
+    ['K15', '持有一件异形 / 异端嫌疑物'],
+    // 飞船（互斥，可不选）
+    ['K16', '自有小船（贸易船 / 打捞船 / 走私船）'],
+    ['K17', '借调舰船（暂时使用上级、家族或雇主的一艘船）'],
+    ['K18', '在大舰服役（你常驻于一艘大型舰船，但船不属于你）'],
   ],
   L: [
     ['L0', '无'], ['L1', '你持有伪造身份'], ['L2', '你忘记了一段关键记忆'], ['L3', '某个组织正在暗中标记你'], ['L4', '你曾见过不该见之物'],
@@ -153,6 +178,11 @@ const OPTIONS = {
     ['N11', '有一位行商浪人保护人'], ['N12', '有一位法务部旧识'], ['N13', '有一位行政部档案员朋友'], ['N14', '有一位海军军官联系人'], ['N15', '有一位异形或异端联系人'],
     ['N16', '有一位长期跟随你的男性机仆'], ['N17', '有一位长期跟随你的女性机仆'], ['N18', '有一位蔷薇修女会的旧识'], ['N19', '有一位普通修女会的庇护者'],
     ['N20', '有一位帝国骑士家族的熟人'], ['N21', '有一位商船上的可靠副手'], ['N22', '有一位底巢帮派中的内应'], ['N24', '有一位半异端协会导师庇护你'],
+    // ─── 亲密关系（关系开放，可被剧情发展） ───
+    ['N25', '你拥有一名契约性伴（合法登记，有合同期限）'],
+    ['N26', '你身边有一名贴身侍仆（服侍起居，关系暧昧或明确）'],
+    ['N27', '你包养着一名巢都艺人（风月场所固定的对象）'],
+    ['N28', '你蓄养一具高度仿真型机仆伴侣'],
   ],
   Q: [
     ['Q1', '健康（身体无明显问题，行动自如）'], ['Q2', '旧伤（身上有未完全愈合的伤，剧烈动作时会牵动疼痛）'], ['Q3', '慢病（长期疾病缠身，靠药维持，体力低于常人）'],
@@ -213,7 +243,6 @@ const OPTIONS = {
     ['P29', '翡翠龙散修'],
     ['P30', '叛逃海军军官'],
     ['P31', '异端机械神甫学徒'],
-    ['P32', '自定义（玩家手动输入命运角色描述）'],
   ],
   J: [
     ['J1', '无主线（纯自由剧情）'], ['J2', '单主线·绯雾之下'], ['J3', '单主线·帝皇幻梦'], ['J4', '单主线·太平潮涌'], ['J5', '单主线·圣机之蚀'],
@@ -225,9 +254,25 @@ const OPTIONS = {
 };
 
 const DEFAULT_STATE = {
-  A: 'A1', B: 'B0', C: 'C1', D: 'D1', E: 'E1', F: 'F1', G: 'G1', H: 'H1', I: 'I3', K: 'K1', L: 'L0', N: 'N0', P: 'P0', Q: 'Q1', S: 'S1', U: 'U12', V: 'V2', J: 'J1',
-  NAME: '', H_CUSTOM: '', S_CUSTOM: '', P_CUSTOM: '', EXTRA: '',
+  A: 'A1', B: 'B0', C: 'C1', D: 'D1', E: 'E1', F: 'F1', G: 'G1', H: 'H1', I: 'I1', L: 'L0', P: 'P0', Q: 'Q1', S: 'S1', U: 'U12', V: 'V2', J: 'J1',
+  K: [],  // 多选,空数组表示未选
+  N: [],  // 多选,空数组表示未选
+  NAME: '', H_CUSTOM: '', S_CUSTOM: '', EXTRA: '',
 };
+
+// K 字段分类映射(同分类内互斥)
+const K_CATEGORIES = {
+  K1:'finance', K2:'finance', K3:'finance', K4:'finance', K5:'finance',
+  K6:'housing', K7:'housing', K8:'housing', K9:'housing',
+  K10:'follower', K11:'follower',
+  K12:'gear', K13:'gear', K14:'gear', K15:'gear',
+  K16:'ship', K17:'ship', K18:'ship',
+};
+const K_MAX_PICKS = 2;
+const N_MAX_PICKS = 3;
+const INTIMATE_BONDS = ['N25', 'N26', 'N27', 'N28'];
+// K9 家族房产允许的出身
+const FAMILY_ESTATE_OK_BG = ['H1', 'H2', 'H4', 'H5', 'H9', 'H18', 'H19'];
 
 let state = { ...DEFAULT_STATE };
 let currentPage = 0;
@@ -240,7 +285,7 @@ const IQ_PROFESSIONS = ['E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31'];
 const MECH_PROFESSIONS = ['E33', 'E34', 'E35', 'E36', 'E37', 'E38'];
 const PSYKER_PROFESSIONS = ['E30', 'E31', 'E32'];
 const SISTER_PROFESSIONS = ['E10', 'E11'];
-const SISTER_RACES = ['C1', 'C3', 'C4', 'C6'];
+const SISTER_RACES = ['C1', 'C4', 'C6'];
 const NAVIGATOR_OK_BG = ['H4', 'H16', 'H19', 'H20'];
 const NOBLE_OK_BG = ['H2', 'H4', 'H5', 'H9', 'H18', 'H19', 'H22'];
 const KNIGHT_OK_BG = ['H4', 'H9', 'H19', 'H20'];
@@ -256,7 +301,8 @@ const XENOS_FATE_PERSONS = ['P8', 'P10', 'P11', 'P19', 'P26'];
 const XENOS_CONTACT_STANCES = ['D2', 'D4', 'D6', 'D8', 'D11'];
 const XENOS_CONTACT_PROFESSIONS = ['E14', 'E15', 'E16', 'E17', 'E25', 'E26', 'E27', 'E28', 'E29', 'E34', 'E36', 'E41', 'E42', 'E43'];
 const XENOS_CONTACT_ORIGINS = ['A13'];
-const XENOS_CONTACT_RESOURCES = ['K11', 'K12', 'K13'];
+// 异形资源现在是 K16(自有船)/K17(借调)/K18(在大舰); K15(异形物)也算
+const XENOS_CONTACT_RESOURCES = ['K15', 'K16', 'K17', 'K18'];
 const XENOS_CONTACT_SECRETS = ['L14', 'L15'];
 const XENOS_CONTACT_BONDS = ['N15'];
 const XENOS_HARD_BAN_STANCES = ['D5', 'D9'];
@@ -284,10 +330,20 @@ function getCharacterName() { const ctx = getCtx(); return ctx.characters?.[ctx.
 function shouldEnableForCurrentChat() { if (!isCtxReady()) return false; const ctx = getCtx(); if (ctx.groupId || ctx.characterId == null) return false; return !TARGET_CHARACTER_NAME || getCharacterName().includes(TARGET_CHARACTER_NAME); }
 function getMetaKey(key) { return `${EXT_ID}_${key}`; }
 
+// 多选辅助: 始终返回数组(兼容旧 string 格式)
+function asArray(v) {
+  if (Array.isArray(v)) return v;
+  if (v == null || v === '') return [];
+  return [v];
+}
+
 function isOptionAllowed(field, code, s = state) {
   if (isRandomCode(code)) return { ok: true };
   const pick = (f) => { const v = s[f]; return v && !isRandomCode(v) ? v : null; };
-  const c = pick('C'), d = pick('D'), e = pick('E'), h = pick('H'), g = pick('G'), a = pick('A'), k = pick('K'), n = pick('N'), p = pick('P'), u = pick('U'), q = pick('Q');
+  const c = pick('C'), d = pick('D'), e = pick('E'), h = pick('H'), g = pick('G'), a = pick('A'), p = pick('P'), u = pick('U'), q = pick('Q');
+  // K 和 N 现在是数组
+  const kArr = asArray(s.K);
+  const nArr = asArray(s.N);
   const eTag = professionTag(field === 'E' ? code : e);
   const dTag = stanceTag(field === 'D' ? code : d);
 
@@ -301,8 +357,6 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'D') {
     if (dTag === 'mech' && c !== 'C7') return { ok:false, reason:'神教立场需 C7' };
     if (dTag !== 'mech' && c === 'C7') return { ok:false, reason:'C7 需机械神教立场' };
-    // D 字段是路线切换入口：允许先选择审判庭/机械神教立场，再到 E 字段选择对应职业。
-    // 不再用当前默认职业阻塞 D5-D13；最终组合冲突由 E 字段与底部提示处理。
     if (e === 'E32' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
     if (e === 'E44' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
   }
@@ -334,44 +388,94 @@ function isOptionAllowed(field, code, s = state) {
     if (e === 'E18' && code !== 'H25' && !KNIGHT_OK_BG.includes(code)) return { ok:false, reason:'流浪骑士需贵族传承背景' };
     if (code === 'H25' && (c === 'C5' || c === 'C7' || ASTARTES.includes(e))) return { ok:false, reason:'当前路线不允许自定义出身' };
   }
+
+  // ─── K 字段(多选): 分类内互斥 + 财务联动 + 职业联动 ───
   if (field === 'K') {
-    if (code === 'K11' && !SELF_OWNED_SHIP_OK.includes(e)) return { ok:false, reason:'该职业通常不会自有舰船' };
-    if (code === 'K12' && NO_BORROWED_SHIP.includes(e)) return { ok:false, reason:'该职业不太可能借调舰船' };
-    if (code === 'K13' && !ASSIGNED_TO_SHIP_OK.includes(e)) return { ok:false, reason:'该职业通常不在大型舰船上服役' };
-    if (c === 'C5' && ['K1','K6','K11'].includes(code)) return { ok:false, reason:'领航者不可能身无长物/背债/自有小船' };
+    const cat = K_CATEGORIES[code];
+    // 分类内已有其他选项
+    const conflictInCat = kArr.find(k => k !== code && K_CATEGORIES[k] === cat);
+    if (conflictInCat) return { ok:false, reason:`同分类已选 ${conflictInCat},同类只能选一个` };
+
+    // 财务 vs 居所/装备/飞船 互斥
+    if (code === 'K1') {
+      const conflict = kArr.find(k => ['K8','K9','K13','K15','K16'].includes(k));
+      if (conflict) return { ok:false, reason:`身无长物与已选 ${conflict} 矛盾` };
+    }
+    if (['K8','K9','K13','K15','K16'].includes(code) && kArr.includes('K1')) {
+      return { ok:false, reason:'已选身无长物,无法持有此项' };
+    }
+    if (code === 'K6' && kArr.includes('K5')) return { ok:false, reason:'富有者不会寄居' };
+    if (code === 'K5' && kArr.includes('K6')) return { ok:false, reason:'寄居者不算富有' };
+
+    // K9 家族房产 vs 出身
+    if (code === 'K9' && h && !FAMILY_ESTATE_OK_BG.includes(h)) return { ok:false, reason:'当前出身没有可用家族房产' };
+
+    // 职业 vs 飞船
+    if (code === 'K16' && e && !SELF_OWNED_SHIP_OK.includes(e)) return { ok:false, reason:'该职业通常不会自有舰船' };
+    if (code === 'K17' && e && NO_BORROWED_SHIP.includes(e)) return { ok:false, reason:'该职业不太可能借调舰船' };
+    if (code === 'K18' && e && !ASSIGNED_TO_SHIP_OK.includes(e)) return { ok:false, reason:'该职业通常不在大型舰船上服役' };
+
+    // 阿斯塔特强制 K18,禁止其他飞船
+    if (ASTARTES.includes(e) && ['K16','K17'].includes(code)) return { ok:false, reason:'阿斯塔特只能在大舰服役(K18)' };
+
+    // 领航者特殊
+    if (c === 'C5' && ['K1','K6','K16'].includes(code)) return { ok:false, reason:'领航者身份不允许此项' };
+
+    // 上限校验(非取消的添加才算)
+    if (!kArr.includes(code) && kArr.length >= K_MAX_PICKS) {
+      return { ok:false, reason:`资源最多选 ${K_MAX_PICKS} 项,请先取消已选项` };
+    }
   }
+
   if (field === 'L' && isMechSecret(code) && c !== 'C7') return { ok:false, reason:'神教秘密需 C7' };
+
   if (field === 'Q') {
-    if (c === 'C5' && MEDIUM_HEAVY_AUG.includes(code)) return { ok:false, reason:'领航者身体脆弱，无法叠加重度改造' };
-    if (c === 'C4' && HEAVY_AUG.includes(code)) return { ok:false, reason:'不可接触者无法被祝圣，机械教不会为其改造' };
-    if (SISTER_PROFESSIONS.includes(e) && HEAVY_AUG.includes(code)) return { ok:false, reason:'修女会强调纯洁血肉，不接受义体' };
+    if (c === 'C5' && MEDIUM_HEAVY_AUG.includes(code)) return { ok:false, reason:'领航者身体脆弱,无法叠加重度改造' };
+    if (c === 'C4' && HEAVY_AUG.includes(code)) return { ok:false, reason:'不可接触者无法被祝圣,机械教不会为其改造' };
+    if (SISTER_PROFESSIONS.includes(e) && HEAVY_AUG.includes(code)) return { ok:false, reason:'修女会强调纯洁血肉,不接受义体' };
     if (ASTARTES.includes(e) && ['Q3','Q5'].includes(code)) return { ok:false, reason:'阿斯塔特不应存在慢病或药瘾' };
     if (['E1','E7','E19','E39','E44'].includes(e) && code === 'Q8') return { ok:false, reason:'该职业不可能身体大部分机械化' };
     if (code === 'Q10' && d === 'D5') return { ok:false, reason:'纯洁派不容隐性改造' };
   }
+
   if (field === 'S') {
     if (code === 'S23') return { ok:true };
     if (a === 'A19' && !['S8','S22','S23'].includes(code)) return { ok:false, reason:'欧姆巴佩11号只允许舰内或神甫居所开场' };
     if (a === 'A21' && !['S3','S8','S22','S23'].includes(code)) return { ok:false, reason:'哥利亚要塞只允许圣堂/舰内/神甫居所开场' };
     if (e && ALLOWED_S_BY_PROFESSION[e] && !ALLOWED_S_BY_PROFESSION[e].includes(code)) return { ok:false, reason:'该开场地点与当前职业不合' };
   }
-  if (field === 'U') {
-    if (code === 'U2' && n === 'N1') return { ok:false, reason:'“寻亲”与“家人仍在”逻辑矛盾' };
-    if (code === 'U10' && n === 'N0') return { ok:false, reason:'“守护”必须有具体守护对象' };
-    if (code === 'U6' && (d === 'D1' || stanceTag(d) === 'iq' || stanceTag(d) === 'mech')) return { ok:false, reason:'“逃亡”与当前组织立场矛盾' };
-    if (code === 'U12' && (ORG_PROFESSIONS_FOR_U12.includes(e) || c === 'C5' || c === 'C7')) return { ok:false, reason:'组织化身份不适合“漂泊”动机' };
-    if (code === 'U14' && (e === 'E10' || ASTARTES.includes(e))) return { ok:false, reason:'当前职业不适合“猎艳”动机' };
-  }
-  if (field === 'N') { if (code === 'N1' && u === 'U2') return { ok:false, reason:'“家人仍在”与“寻亲”矛盾' }; if (code === 'N0' && u === 'U10') return { ok:false, reason:'“守护”必须有对象' }; }
 
+  if (field === 'U') {
+    if (code === 'U2' && nArr.includes('N1')) return { ok:false, reason:'"寻亲"与"家人仍在"逻辑矛盾' };
+    if (code === 'U10' && nArr.length === 0) return { ok:false, reason:'"守护"必须有具体守护对象,请先选择羁绊' };
+    if (code === 'U6' && (d === 'D1' || stanceTag(d) === 'iq' || stanceTag(d) === 'mech')) return { ok:false, reason:'"逃亡"与当前组织立场矛盾' };
+    if (code === 'U12' && (ORG_PROFESSIONS_FOR_U12.includes(e) || c === 'C5' || c === 'C7')) return { ok:false, reason:'组织化身份不适合"漂泊"动机' };
+    if (code === 'U14' && (e === 'E10' || ASTARTES.includes(e))) return { ok:false, reason:'当前职业不适合"猎艳"动机' };
+  }
+
+  // ─── N 字段(多选): 亲密项与宗教誓言互斥 + 上限 ───
+  if (field === 'N') {
+    if (code === 'N1' && u === 'U2') return { ok:false, reason:'"家人仍在"与"寻亲"矛盾' };
+    // 亲密项 vs 阿斯塔特/修女会
+    if (INTIMATE_BONDS.includes(code)) {
+      if (ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特誓言禁欲,不可有亲密关系' };
+      if (SISTER_PROFESSIONS.includes(e)) return { ok:false, reason:'修女会誓言禁欲,不可有亲密关系' };
+    }
+    // 上限校验
+    if (!nArr.includes(code) && nArr.length >= N_MAX_PICKS) {
+      return { ok:false, reason:`羁绊最多选 ${N_MAX_PICKS} 项,请先取消已选项` };
+    }
+  }
+
+  // ─── P 字段(异形命运) ───
   const selectedP = field === 'P' ? code : p;
   if (selectedP && XENOS_FATE_PERSONS.includes(selectedP)) {
     const selectedD = field === 'D' ? code : d;
     const selectedE = field === 'E' ? code : e;
     const selectedA = field === 'A' ? code : a;
-    const selectedK = field === 'K' ? code : k;
+    const selectedK = field === 'K' ? [...kArr, code].filter((v,i,arr)=>arr.indexOf(v)===i) : kArr;
     const selectedL = field === 'L' ? code : state.L;
-    const selectedN = field === 'N' ? code : n;
+    const selectedN = field === 'N' ? [...nArr, code].filter((v,i,arr)=>arr.indexOf(v)===i) : nArr;
 
     if (XENOS_HARD_BAN_STANCES.includes(selectedD)) {
       return { ok:false, reason:'当前立场不会容忍异形命运之人' };
@@ -384,9 +488,9 @@ function isOptionAllowed(field, code, s = state) {
       XENOS_CONTACT_STANCES.includes(selectedD) ||
       XENOS_CONTACT_PROFESSIONS.includes(selectedE) ||
       XENOS_CONTACT_ORIGINS.includes(selectedA) ||
-      XENOS_CONTACT_RESOURCES.includes(selectedK) ||
+      selectedK.some(k => XENOS_CONTACT_RESOURCES.includes(k)) ||
       XENOS_CONTACT_SECRETS.includes(selectedL) ||
-      XENOS_CONTACT_BONDS.includes(selectedN);
+      selectedN.some(n => XENOS_CONTACT_BONDS.includes(n));
 
     if (!hasXenosAccess) {
       return { ok:false, reason:'缺少接触异形命运之人的合理入口' };
@@ -399,33 +503,51 @@ function isOptionAllowed(field, code, s = state) {
 function getWarnings() {
   const warnings = [];
   for (const f of PANEL_ORDER) {
-    const check = isOptionAllowed(f, state[f]);
-    if (!check.ok) warnings.push(`${f}${state[f]?.replace(/^[A-Z]/,'')}：${check.reason}`);
+    if (f === 'K' || f === 'N') {
+      // 多选字段: 检查每个已选项
+      const arr = asArray(state[f]);
+      for (const code of arr) {
+        const check = isOptionAllowed(f, code);
+        if (!check.ok) warnings.push(`${code}: ${check.reason}`);
+      }
+    } else {
+      const check = isOptionAllowed(f, state[f]);
+      if (!check.ok) warnings.push(`${f}${state[f]?.replace(/^[A-Z]/,'')}: ${check.reason}`);
+    }
   }
-  if (state.B === 'B1' && !state.NAME.trim()) warnings.unshift('你选择了自定义名字，但还没有填写名字。');
-  if (state.H === 'H25' && !state.H_CUSTOM.trim()) warnings.unshift('你选择了自定义出身，但还没有填写内容。');
-  if (state.S === 'S23' && !state.S_CUSTOM.trim()) warnings.unshift('你选择了自定义场景，但还没有填写内容。');
-  if (state.P === 'P32' && !state.P_CUSTOM.trim()) warnings.unshift('你选择了自定义命运角色，但还没有填写内容。');
+  if (state.B === 'B1' && !state.NAME.trim()) warnings.unshift('你选择了自定义名字,但还没有填写名字。');
+  if (state.H === 'H25' && !state.H_CUSTOM.trim()) warnings.unshift('你选择了自定义出身,但还没有填写内容。');
+  if (state.S === 'S23' && !state.S_CUSTOM.trim()) warnings.unshift('你选择了自定义场景,但还没有填写内容。');
   return warnings;
 }
 
 function buildPayload() {
-  const codes = PANEL_ORDER.map((field) => state[field]).join(' ');
+  // K/N 是数组,其他单值
+  const codes = PANEL_ORDER.map((field) => {
+    if (field === 'K' || field === 'N') {
+      const arr = asArray(state[field]);
+      return arr.length ? arr.join(' ') : `${field}0`;  // 空数组用 K0/N0 代表"无"
+    }
+    return state[field];
+  }).join(' ');
   const extra = [];
-  if (state.B === 'B1' && state.NAME.trim()) extra.push(`名字：${state.NAME.trim()}`);
-  if (state.H === 'H25' && state.H_CUSTOM.trim()) extra.push(`自定义出身：${state.H_CUSTOM.trim()}`);
-  if (state.S === 'S23' && state.S_CUSTOM.trim()) extra.push(`自定义开场地点：${state.S_CUSTOM.trim()}`);
-  if (state.P === 'P32' && state.P_CUSTOM.trim()) extra.push(`自定义命运角色：${state.P_CUSTOM.trim()}`);
-  if (state.EXTRA.trim()) extra.push(`额外补充：${state.EXTRA.trim()}`);
+  if (state.B === 'B1' && state.NAME.trim()) extra.push(`名字:${state.NAME.trim()}`);
+  if (state.H === 'H25' && state.H_CUSTOM.trim()) extra.push(`自定义出身:${state.H_CUSTOM.trim()}`);
+  if (state.S === 'S23' && state.S_CUSTOM.trim()) extra.push(`自定义开场地点:${state.S_CUSTOM.trim()}`);
+  if (state.EXTRA.trim()) extra.push(`额外补充:${state.EXTRA.trim()}`);
   return extra.length ? `${codes}\n${extra.join('\n')}` : codes;
 }
 
 function summaryValue(field) {
+  if (field === 'K' || field === 'N') {
+    const arr = asArray(state[field]);
+    if (!arr.length) return field === 'K' ? '(未选择资源)' : '(无羁绊)';
+    return arr.map(code => `${code} · ${getOptionLabel(field, code)}`).join('  /  ');
+  }
   const label = getOptionLabel(field, state[field]);
-  if (field === 'B') return state.B === 'B1' ? `B1 · ${state.NAME.trim() || '（未填写）'}` : 'B0 · 默认（{{user}}）';
-  if (field === 'H' && state.H === 'H25') return `H25 · ${state.H_CUSTOM.trim() || '（未填写）'}`;
-  if (field === 'S' && state.S === 'S23') return `S23 · ${state.S_CUSTOM.trim() || '（未填写）'}`;
-  if (field === 'P' && state.P === 'P32') return `P32 · ${state.P_CUSTOM.trim() || '（未填写）'}`;
+  if (field === 'B') return state.B === 'B1' ? `B1 · ${state.NAME.trim() || '(未填写)'}` : 'B0 · 默认({{user}})';
+  if (field === 'H' && state.H === 'H25') return `H25 · ${state.H_CUSTOM.trim() || '(未填写)'}`;
+  if (field === 'S' && state.S === 'S23') return `S23 · ${state.S_CUSTOM.trim() || '(未填写)'}`;
   return `${state[field]} · ${label}`;
 }
 function buildSummaryRows() {
@@ -442,10 +564,9 @@ function getRouteHintRows() {
 
 function canProceedFromPage(page) {
   const fields = PAGE_FIELDS[page] || [];
-  if (fields.includes('B') && state.B === 'B1' && !state.NAME.trim()) return { ok:false, message:'请先填写自定义名字，或改回默认名字。' };
-  if (fields.includes('H') && state.H === 'H25' && !state.H_CUSTOM.trim()) return { ok:false, message:'请填写自定义出身，或选择固定出身。' };
-  if (fields.includes('S') && state.S === 'S23' && !state.S_CUSTOM.trim()) return { ok:false, message:'请填写自定义开场地点，或选择固定开场地点。' };
-  if (fields.includes('P') && state.P === 'P32' && !state.P_CUSTOM.trim()) return { ok:false, message:'请填写自定义命运角色，或选择固定对象。' };
+  if (fields.includes('B') && state.B === 'B1' && !state.NAME.trim()) return { ok:false, message:'请先填写自定义名字,或改回默认名字。' };
+  if (fields.includes('H') && state.H === 'H25' && !state.H_CUSTOM.trim()) return { ok:false, message:'请填写自定义出身,或选择固定出身。' };
+  if (fields.includes('S') && state.S === 'S23' && !state.S_CUSTOM.trim()) return { ok:false, message:'请填写自定义开场地点,或选择固定开场地点。' };
   return { ok:true, message:'' };
 }
 
@@ -464,7 +585,33 @@ function setInputValue(text) {
 async function copyToClipboard(text) { try { await navigator.clipboard.writeText(text); return true; } catch (_) { const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;'; document.body.appendChild(ta); ta.select(); let ok=false; try { ok=document.execCommand('copy'); } catch (_) {} document.body.removeChild(ta); return ok; } }
 
 function saveDraftState() { try { const ctx = getCtx(); ctx.chatMetadata[getMetaKey('draft')] = JSON.parse(JSON.stringify(state)); ctx.chatMetadata[getMetaKey('page')] = currentPage; ctx.saveMetadata?.(); } catch (_) {} }
-function loadDraftState() { try { const ctx = getCtx(); const saved = ctx.chatMetadata?.[getMetaKey('draft')]; const page = ctx.chatMetadata?.[getMetaKey('page')]; state = saved && typeof saved === 'object' ? { ...DEFAULT_STATE, ...saved } : { ...DEFAULT_STATE }; currentPage = typeof page === 'number' ? page : 0; } catch (_) { state = { ...DEFAULT_STATE }; currentPage = 0; } }
+function loadDraftState() {
+  try {
+    const ctx = getCtx();
+    const saved = ctx.chatMetadata?.[getMetaKey('draft')];
+    const page = ctx.chatMetadata?.[getMetaKey('page')];
+    state = saved && typeof saved === 'object' ? { ...DEFAULT_STATE, ...saved } : { ...DEFAULT_STATE };
+    // 兼容旧版本: K/N 之前是 string,自动转成 array
+    if (typeof state.K === 'string') {
+      state.K = state.K && state.K !== 'K0' ? [state.K] : [];
+    } else if (!Array.isArray(state.K)) {
+      state.K = [];
+    }
+    if (typeof state.N === 'string') {
+      state.N = state.N && state.N !== 'N0' ? [state.N] : [];
+    } else if (!Array.isArray(state.N)) {
+      state.N = [];
+    }
+    // 兼容旧的 I3 默认值(改成 I1)
+    if (state.I === 'I3' && saved && !saved.I) state.I = 'I1';
+    // 旧的 P32 自定义如果残留,降级为 P0
+    if (state.P === 'P32') state.P = 'P0';
+    currentPage = typeof page === 'number' ? page : 0;
+  } catch (_) {
+    state = { ...DEFAULT_STATE };
+    currentPage = 0;
+  }
+}
 async function clearDraftState() { const ctx = getCtx(); delete ctx.chatMetadata[getMetaKey('draft')]; delete ctx.chatMetadata[getMetaKey('page')]; await ctx.saveMetadata?.(); }
 async function markBuilderShown() { const ctx = getCtx(); ctx.chatMetadata[getMetaKey('shown')] = true; await ctx.saveMetadata?.(); }
 
@@ -632,21 +779,72 @@ function renderProgress() {
 }
 
 function makeOptionButton(field, code, label) {
-  const check = isOptionAllowed(field, code); const active = state[field] === code;
-  const btn = document.createElement('button'); btn.type='button'; btn.className='wh40k-option'; if(field==='J')btn.classList.add('anomaly'); if(active)btn.classList.add('active'); if(!check.ok){ btn.classList.add('disabled'); btn.title=check.reason; }
-  btn.innerHTML = `<span class="wh40k-option-code">${escapeHtml(code)}</span><span class="wh40k-option-label">${escapeHtml(label)}</span>${!check.ok?`<span class="wh40k-option-badge">⊘ ${escapeHtml(check.reason)}</span>`:''}`;
-  btn.addEventListener('click', () => { if(!check.ok && !active){ triggerTerminalFlash('red'); return; } triggerTerminalFlash(field==='J'?'red':'normal'); state[field]=code; saveDraftState(); render(); });
+  const isMulti = (field === 'K' || field === 'N');
+  const arr = isMulti ? asArray(state[field]) : null;
+  const active = isMulti ? arr.includes(code) : (state[field] === code);
+  const check = isOptionAllowed(field, code);
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'wh40k-option';
+  if (field === 'J') btn.classList.add('anomaly');
+  if (active) btn.classList.add('active');
+  // 多选场景下: 已选中的项始终可点击(用于取消),未选且不允许的禁用
+  if (!check.ok && !active) {
+    btn.classList.add('disabled');
+    btn.title = check.reason;
+  }
+
+  btn.innerHTML = `<span class="wh40k-option-code">${escapeHtml(code)}</span><span class="wh40k-option-label">${escapeHtml(label)}</span>${(!check.ok && !active) ? `<span class="wh40k-option-badge">⊘ ${escapeHtml(check.reason)}</span>` : ''}`;
+
+  btn.addEventListener('click', () => {
+    if (isMulti) {
+      const cur = asArray(state[field]);
+      if (cur.includes(code)) {
+        // 已选: 取消选择
+        state[field] = cur.filter(v => v !== code);
+      } else {
+        // 未选: 检查是否允许
+        if (!check.ok) {
+          triggerTerminalFlash('red');
+          return;
+        }
+        state[field] = [...cur, code];
+      }
+      saveDraftState();
+      render();
+    } else {
+      // 单选原逻辑
+      if (!check.ok && !active) {
+        triggerTerminalFlash('red');
+        return;
+      }
+      triggerTerminalFlash(field === 'J' ? 'red' : 'normal');
+      state[field] = code;
+      saveDraftState();
+      render();
+    }
+  });
   return btn;
 }
 function makeCustomBox(field) {
-  const map = { H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'], P:['P32','P_CUSTOM','自定义命运角色'] };
+  const map = { H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'] };
   const cfg = map[field]; if(!cfg) return null; const [code,key,title]=cfg;
   const box = document.createElement('div'); box.className = `wh40k-custom-box ${state[field]===code?'show':''}`; box.innerHTML = `<textarea rows="4" placeholder="${title}" >${escapeHtml(state[key]||'')}</textarea>`;
   box.querySelector('textarea').addEventListener('input', e => { state[key]=e.target.value; saveDraftState(); renderFooterWarnings(); }); return box;
 }
 function makeFieldSection(field) {
   const wrap = document.createElement('section'); wrap.className='wh40k-section'; if(field==='J')wrap.classList.add('anomaly');
-  wrap.innerHTML = `<h3>&gt; ${escapeHtml(FIELD_TITLES[field])}</h3><div style="font-size:12px;color:#a89072;line-height:1.6;margin-bottom:10px;">${escapeHtml(FIELD_DESCRIPTIONS[field]||'')}</div>`;
+  // 多选字段加额外提示
+  let multiHint = '';
+  if (field === 'K') {
+    const picked = asArray(state.K).length;
+    multiHint = `<div style="font-size:11px;color:#ffb84d;margin-bottom:6px;">[ 多选 · 已选 ${picked} / ${K_MAX_PICKS} 项 · 同分类内互斥 ]</div>`;
+  } else if (field === 'N') {
+    const picked = asArray(state.N).length;
+    multiHint = `<div style="font-size:11px;color:#ffb84d;margin-bottom:6px;">[ 多选 · 已选 ${picked} / ${N_MAX_PICKS} 项 · 再次点击可取消 ]</div>`;
+  }
+  wrap.innerHTML = `<h3>&gt; ${escapeHtml(FIELD_TITLES[field])}</h3><div style="font-size:12px;color:#a89072;line-height:1.6;margin-bottom:10px;">${escapeHtml(FIELD_DESCRIPTIONS[field]||'')}</div>${multiHint}`;
   const options = document.createElement('div'); options.className='wh40k-options'; OPTIONS[field].forEach(([c,l])=>options.appendChild(makeOptionButton(field,c,l))); wrap.appendChild(options);
   if(field==='B'){ const box=document.createElement('div'); box.className=`wh40k-name-box ${state.B==='B1'?'show':''}`; box.innerHTML=`<input type="text" placeholder="输入角色名字" value="${escapeHtml(state.NAME)}">`; box.querySelector('input').addEventListener('input',e=>{ state.NAME=e.target.value; saveDraftState(); renderFooterWarnings(); }); wrap.appendChild(box); }
   const custom = makeCustomBox(field); if(custom) wrap.appendChild(custom);
