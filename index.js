@@ -469,36 +469,106 @@ async function clearDraftState() { const ctx = getCtx(); delete ctx.chatMetadata
 async function markBuilderShown() { const ctx = getCtx(); ctx.chatMetadata[getMetaKey('shown')] = true; await ctx.saveMetadata?.(); }
 
 function resetState() { state = { ...DEFAULT_STATE }; currentPage = 0; saveDraftState(); render(); }
-function closeBuilder() { 
-  overlay?.classList.remove('open'); 
+function closeBuilder() {
+  overlay?.classList.remove('open');
   if (overlay) {
     overlay.style.setProperty('display', 'none', 'important');
   }
-  if (launcher) { 
-    launcher.textContent = '[⚔ 角色创建器]'; 
-    forceShowLauncher(); 
-  } 
-  document.documentElement.style.overflow = ''; 
-  document.body.style.overflow = ''; 
+  if (launcher) {
+    launcher.textContent = '[⚔ 角色创建器]';
+    forceShowLauncher();
+  }
+  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
 }
 
-function openBuilder(forcePage = null) { 
-  if (!overlay) createOverlay(); 
-  loadDraftState(); 
-  if (typeof forcePage === 'number') currentPage = forcePage; 
-  render(); 
-  overlay.classList.add('open'); 
-  // 强制内联样式覆盖,应对酒馆 1.18+ 高 z-index UI 把弹窗压在底下的问题
-  overlay.style.setProperty('display', 'block', 'important');
-  overlay.style.setProperty('position', 'fixed', 'important');
-  overlay.style.setProperty('inset', '0', 'important');
-  overlay.style.setProperty('z-index', '999999', 'important');
-  if (launcher) { 
-    launcher.textContent = '[✕ 关闭终端]'; 
-    forceShowLauncher(); 
-  } 
-  document.documentElement.style.overflow = 'hidden'; 
-  document.body.style.overflow = 'hidden'; 
+// 暴力把 overlay 和 modal 的关键样式全用内联+!important 写死
+function forceShowOverlay() {
+  if (!overlay) return;
+  const o = overlay.style;
+  o.setProperty('display', 'block', 'important');
+  o.setProperty('position', 'fixed', 'important');
+  o.setProperty('top', '0', 'important');
+  o.setProperty('left', '0', 'important');
+  o.setProperty('right', '0', 'important');
+  o.setProperty('bottom', '0', 'important');
+  o.setProperty('width', '100vw', 'important');
+  o.setProperty('height', '100vh', 'important');
+  o.setProperty('z-index', '2147483646', 'important'); // 32位有符号 int 最大值,不可能更高
+  o.setProperty('background', 'rgba(0,0,0,0.85)', 'important');
+  o.setProperty('visibility', 'visible', 'important');
+  o.setProperty('opacity', '1', 'important');
+  o.setProperty('pointer-events', 'auto', 'important');
+
+  const modal = overlay.querySelector('.wh40k-builder-modal');
+  if (modal) {
+    const m = modal.style;
+    m.setProperty('width', '100vw', 'important');
+    m.setProperty('height', '100vh', 'important');
+    m.setProperty('max-width', '100vw', 'important');
+    m.setProperty('max-height', '100vh', 'important');
+    m.setProperty('margin', '0', 'important');
+    m.setProperty('display', 'flex', 'important');
+    m.setProperty('flex-direction', 'column', 'important');
+    m.setProperty('overflow', 'hidden', 'important');
+  }
+}
+
+// 自检: 打开 100ms 后看 overlay 真实渲染状态,异常就弹 alert
+function diagnoseOverlay() {
+  if (!overlay) {
+    alert('[WH40K 诊断] overlay 元素根本不存在!');
+    return;
+  }
+  const rect = overlay.getBoundingClientRect();
+  const cs = window.getComputedStyle(overlay);
+  const issues = [];
+  if (cs.display === 'none') issues.push('display=none');
+  if (cs.visibility === 'hidden') issues.push('visibility=hidden');
+  if (parseFloat(cs.opacity) === 0) issues.push('opacity=0');
+  if (rect.width < 50) issues.push(`宽度太小=${rect.width}`);
+  if (rect.height < 50) issues.push(`高度太小=${rect.height}`);
+
+  // 检查 overlay 上方是否有别的元素挡住中心点
+  const cx = window.innerWidth / 2;
+  const cy = window.innerHeight / 2;
+  const topEl = document.elementFromPoint(cx, cy);
+  const topInOverlay = topEl && (topEl === overlay || overlay.contains(topEl));
+
+  if (issues.length > 0 || !topInOverlay) {
+    alert(
+      '[WH40K 诊断] overlay 渲染异常:\n\n' +
+      `问题: ${issues.length ? issues.join(', ') : '(看起来正常)'}\n\n` +
+      `display: ${cs.display}\n` +
+      `position: ${cs.position}\n` +
+      `z-index: ${cs.zIndex}\n` +
+      `宽: ${rect.width}px  高: ${rect.height}px\n` +
+      `top: ${cs.top}  left: ${cs.left}\n\n` +
+      `视口中心元素: ${topEl ? topEl.tagName + (topEl.id ? '#'+topEl.id : '') + (topEl.className ? '.'+String(topEl.className).split(' ').slice(0,2).join('.') : '') : 'null'}\n` +
+      `中心点在 overlay 内部? ${topInOverlay ? '是' : '否(被挡住了!)'}`
+    );
+  }
+}
+
+function openBuilder(forcePage = null) {
+  if (!overlay) createOverlay();
+  loadDraftState();
+  if (typeof forcePage === 'number') currentPage = forcePage;
+  render();
+  overlay.classList.add('open');
+
+  // 暴力强制可见
+  forceShowOverlay();
+
+  if (launcher) {
+    launcher.textContent = '[✕ 关闭终端]';
+    forceShowLauncher();
+  }
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+
+  // 100ms 后自检
+  setTimeout(diagnoseOverlay, 150);
 }
 
 function injectChatStyles() { return; }
