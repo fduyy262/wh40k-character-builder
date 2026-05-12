@@ -269,7 +269,7 @@ const K_CATEGORIES = {
   K16:'ship', K17:'ship', K18:'ship',
 };
 const K_MAX_PICKS = 2;
-const N_MAX_PICKS = 3;
+const N_MAX_PICKS = 2;
 const INTIMATE_BONDS = ['N25', 'N26', 'N27', 'N28'];
 // K9 家族房产允许的出身
 const FAMILY_ESTATE_OK_BG = ['H1', 'H2', 'H4', 'H5', 'H9', 'H18', 'H19'];
@@ -453,19 +453,33 @@ function isOptionAllowed(field, code, s = state) {
     if (code === 'U14' && (e === 'E10' || ASTARTES.includes(e))) return { ok:false, reason:'当前职业不适合"猎艳"动机' };
   }
 
-  // ─── N 字段(多选): 亲密项与宗教誓言互斥 + 上限 ───
-  if (field === 'N') {
-    if (code === 'N1' && u === 'U2') return { ok:false, reason:'"家人仍在"与"寻亲"矛盾' };
-    // 亲密项 vs 阿斯塔特/修女会
-    if (INTIMATE_BONDS.includes(code)) {
-      if (ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特誓言禁欲,不可有亲密关系' };
-      if (SISTER_PROFESSIONS.includes(e)) return { ok:false, reason:'修女会誓言禁欲,不可有亲密关系' };
-    }
-    // 上限校验
-    if (!nArr.includes(code) && nArr.length >= N_MAX_PICKS) {
-      return { ok:false, reason:`羁绊最多选 ${N_MAX_PICKS} 项,请先取消已选项` };
-    }
+// ─── N 字段(多选): N0互斥 + 亲密项与宗教誓言互斥 + 上限 ───
+if (field === 'N') {
+  // N0 = 无羁绊。永远允许点击，因为点击它会清空其他羁绊
+  if (code === 'N0') {
+    return { ok:true };
   }
+
+  // 如果已经选择 N0，则禁止再选其他羁绊
+  if (nArr.includes('N0')) {
+    return { ok:false, reason:'已选择“无羁绊”，不能再选择其他羁绊' };
+  }
+
+  if (code === 'N1' && u === 'U2') {
+    return { ok:false, reason:'"家人仍在"与"寻亲"矛盾' };
+  }
+
+  // 亲密项 vs 阿斯塔特/修女会
+  if (INTIMATE_BONDS.includes(code)) {
+    if (ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特誓言禁欲,不可有亲密关系' };
+    if (SISTER_PROFESSIONS.includes(e)) return { ok:false, reason:'修女会誓言禁欲,不可有亲密关系' };
+  }
+
+  // 上限校验
+  if (!nArr.includes(code) && nArr.length >= N_MAX_PICKS) {
+    return { ok:false, reason:`羁绊最多选 ${N_MAX_PICKS} 项,请先取消已选项` };
+  }
+}
 
   // ─── P 字段(异形命运) ───
   const selectedP = field === 'P' ? code : p;
@@ -653,7 +667,7 @@ function forceShowOverlay() {
   // 关键：PC端不再全屏，而是居中小窗口；手机端仍然全屏，避免太挤
   o.setProperty('align-items', 'center', 'important');
   o.setProperty('justify-content', 'center', 'important');
-  o.setProperty('padding', isMobile ? '0' : '24px', 'important');
+  o.setProperty('padding', isMobile ? '0' : '16px', 'important');
   o.setProperty('box-sizing', 'border-box', 'important');
 
   const modal = overlay.querySelector('.wh40k-builder-modal');
@@ -668,11 +682,10 @@ function forceShowOverlay() {
       m.setProperty('border-radius', '0', 'important');
     } else {
       // 想再小一点，就把 88vw / 86vh 改成 82vw / 80vh
-      m.setProperty('width', 'min(1480px, 88vw)', 'important');
-      m.setProperty('height', 'min(860px, 86vh)', 'important');
-      m.setProperty('max-width', '1480px', 'important');
-      m.setProperty('max-height', '860px', 'important');
-      m.setProperty('border-radius', '10px', 'important');
+      m.setProperty('width', 'min(1680px, 94vw)', 'important');
+      m.setProperty('height', 'min(920px, 90vh)', 'important');
+      m.setProperty('max-width', '1680px', 'important');
+      m.setProperty('max-height', '920px', 'important');
     }
 
     m.setProperty('margin', '0', 'important');
@@ -815,34 +828,63 @@ function makeOptionButton(field, code, label) {
 
   btn.innerHTML = `<span class="wh40k-option-code">${escapeHtml(code)}</span><span class="wh40k-option-label">${escapeHtml(label)}</span>${(!check.ok && !active) ? `<span class="wh40k-option-badge">⊘ ${escapeHtml(check.reason)}</span>` : ''}`;
 
-  btn.addEventListener('click', () => {
-    if (isMulti) {
-      const cur = asArray(state[field]);
-      if (cur.includes(code)) {
-        // 已选: 取消选择
-        state[field] = cur.filter(v => v !== code);
+btn.addEventListener('click', () => {
+  if (isMulti) {
+    const cur = asArray(state[field]);
+
+    // N0 = 无羁绊：点击后清空其他 N，只保留 N0；再次点击则取消 N0
+    if (field === 'N' && code === 'N0') {
+      state.N = cur.includes('N0') ? [] : ['N0'];
+      saveDraftState();
+      render();
+      return;
+    }
+
+    // N 字段：选择其他羁绊时，自动移除 N0
+    if (field === 'N') {
+      const cleaned = cur.filter(v => v !== 'N0');
+
+      if (cleaned.includes(code)) {
+        state.N = cleaned.filter(v => v !== code);
       } else {
-        // 未选: 检查是否允许
         if (!check.ok) {
           triggerTerminalFlash('red');
           return;
         }
-        state[field] = [...cur, code];
+        state.N = [...cleaned, code];
       }
+
       saveDraftState();
       render();
+      return;
+    }
+
+    // 其他多选字段，例如 K，保持原逻辑
+    if (cur.includes(code)) {
+      state[field] = cur.filter(v => v !== code);
     } else {
-      // 单选原逻辑
-      if (!check.ok && !active) {
+      if (!check.ok) {
         triggerTerminalFlash('red');
         return;
       }
-      triggerTerminalFlash(field === 'J' ? 'red' : 'normal');
-      state[field] = code;
-      saveDraftState();
-      render();
+      state[field] = [...cur, code];
     }
-  });
+
+    saveDraftState();
+    render();
+  } else {
+    // 单选项逻辑
+    if (!check.ok && !active) {
+      triggerTerminalFlash('red');
+      return;
+    }
+
+    triggerTerminalFlash(field === 'J' ? 'red' : 'normal');
+    state[field] = code;
+    saveDraftState();
+    render();
+  }
+});
   return btn;
 }
 function makeCustomBox(field) {

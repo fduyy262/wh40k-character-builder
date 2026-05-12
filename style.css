@@ -774,3 +774,43 @@
     max-height: 100dvh;
   }
 }
+/* ===== 选项卡片垂直居中修复 ===== */
+
+#wh40k-builder-overlay .wh40k-option {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+
+  min-height: 54px !important;
+  padding: 0 18px !important;
+  gap: 10px !important;
+
+  text-align: left !important;
+  line-height: 1.25 !important;
+  box-sizing: border-box !important;
+}
+
+#wh40k-builder-overlay .wh40k-option-code {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  flex: 0 0 auto !important;
+  margin-right: 0 !important;
+  line-height: 1 !important;
+}
+
+#wh40k-builder-overlay .wh40k-option-label {
+  display: flex !important;
+  align-items: center !important;
+
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  line-height: 1.25 !important;
+}
+
+#wh40k-builder-overlay .wh40k-option-badge {
+  margin-left: 8px !important;
+  margin-top: 0 !important;
+  line-height: 1.2 !important;
+}
