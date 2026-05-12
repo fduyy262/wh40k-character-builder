@@ -632,37 +632,56 @@ function closeBuilder() {
 // 暴力把 overlay 和 modal 的关键样式全用内联+!important 写死
 function forceShowOverlay() {
   if (!overlay) return;
-  // 用 window.innerHeight 拿到真实可见高度,避开手机 100vh 包含 Chrome UI 的问题
-  const vh = window.innerHeight + 'px';
-  const vw = window.innerWidth + 'px';
+
+  const vh = window.innerHeight;
+  const vw = window.innerWidth;
+  const isMobile = vw <= 768;
 
   const o = overlay.style;
-  o.setProperty('display', 'block', 'important');
+  o.setProperty('display', 'flex', 'important');
   o.setProperty('position', 'fixed', 'important');
   o.setProperty('top', '0', 'important');
   o.setProperty('left', '0', 'important');
-  o.setProperty('width', vw, 'important');
-  o.setProperty('height', vh, 'important');
+  o.setProperty('width', '100vw', 'important');
+  o.setProperty('height', `${vh}px`, 'important');
   o.setProperty('z-index', '2147483646', 'important');
-  o.setProperty('background', 'rgba(0,0,0,0.85)', 'important');
+  o.setProperty('background', 'rgba(0,0,0,0.82)', 'important');
   o.setProperty('visibility', 'visible', 'important');
   o.setProperty('opacity', '1', 'important');
   o.setProperty('pointer-events', 'auto', 'important');
 
+  // 关键：PC端不再全屏，而是居中小窗口；手机端仍然全屏，避免太挤
+  o.setProperty('align-items', 'center', 'important');
+  o.setProperty('justify-content', 'center', 'important');
+  o.setProperty('padding', isMobile ? '0' : '24px', 'important');
+  o.setProperty('box-sizing', 'border-box', 'important');
+
   const modal = overlay.querySelector('.wh40k-builder-modal');
   if (modal) {
     const m = modal.style;
-    m.setProperty('width', vw, 'important');
-    m.setProperty('height', vh, 'important');
-    m.setProperty('max-width', vw, 'important');
-    m.setProperty('max-height', vh, 'important');
+
+    if (isMobile) {
+      m.setProperty('width', '100vw', 'important');
+      m.setProperty('height', `${vh}px`, 'important');
+      m.setProperty('max-width', '100vw', 'important');
+      m.setProperty('max-height', `${vh}px`, 'important');
+      m.setProperty('border-radius', '0', 'important');
+    } else {
+      // 想再小一点，就把 88vw / 86vh 改成 82vw / 80vh
+      m.setProperty('width', 'min(1480px, 88vw)', 'important');
+      m.setProperty('height', 'min(860px, 86vh)', 'important');
+      m.setProperty('max-width', '1480px', 'important');
+      m.setProperty('max-height', '860px', 'important');
+      m.setProperty('border-radius', '10px', 'important');
+    }
+
     m.setProperty('margin', '0', 'important');
     m.setProperty('display', 'flex', 'important');
     m.setProperty('flex-direction', 'column', 'important');
     m.setProperty('overflow', 'hidden', 'important');
+    m.setProperty('box-sizing', 'border-box', 'important');
   }
 
-  // 关键修复: main 必须 min-height:0 才能让 footer 不被挤出
   const main = overlay.querySelector('.wh40k-builder-main');
   if (main) {
     main.style.setProperty('flex', '1 1 0', 'important');
@@ -670,7 +689,6 @@ function forceShowOverlay() {
     main.style.setProperty('overflow-y', 'auto', 'important');
   }
 
-  // 锁定 header / progress / footer 不被挤压
   ['.wh40k-builder-header', '.wh40k-builder-progress', '.wh40k-builder-footer'].forEach(sel => {
     const el = overlay.querySelector(sel);
     if (el) el.style.setProperty('flex-shrink', '0', 'important');
