@@ -269,7 +269,8 @@ const K_CATEGORIES = {
 };
 const K_MAX_PICKS = 2;
 const N_MAX_PICKS = 3;
-const INTIMATE_BONDS = ['N25', 'N26', 'N27'];
+const INTIMATE_BONDS = ['N26', 'N27', 'N28'];
+const INTIMATE_MAX_PICKS = 1;
 // K9 家族房产允许的出身
 const FAMILY_ESTATE_OK_BG = ['H1', 'H2', 'H4', 'H5', 'H9', 'H18', 'H19'];
 
@@ -296,7 +297,7 @@ const NO_BORROWED_SHIP = ['E7', 'E19', 'E39', 'E40', 'E44'];
 const ASSIGNED_TO_SHIP_OK = ['E3', 'E14', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E31', 'E34', 'E35'];
 const ORG_PROFESSIONS_FOR_U12 = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E33', 'E34', 'E35', 'E36', 'E37', 'E38'];
 
-const XENOS_FATE_PERSONS = ['P8', 'P10', 'P11', 'P19', 'P26'];
+const XENOS_FATE_PERSONS = ['P8', 'P10', 'P11', 'P17', 'P19', 'P26'];
 const XENOS_CONTACT_STANCES = ['D2', 'D4', 'D6', 'D8', 'D11'];
 const XENOS_CONTACT_PROFESSIONS = ['E14', 'E15', 'E16', 'E17', 'E25', 'E26', 'E27', 'E28', 'E29', 'E34', 'E36', 'E41', 'E42', 'E43'];
 const XENOS_CONTACT_ORIGINS = ['A13'];
@@ -472,6 +473,11 @@ if (field === 'N') {
   if (INTIMATE_BONDS.includes(code)) {
     if (ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特誓言禁欲,不可有亲密关系' };
     if (SISTER_PROFESSIONS.includes(e)) return { ok:false, reason:'修女会誓言禁欲,不可有亲密关系' };
+    // 亲密关系子限制:最多 1 项
+    const currentIntimate = nArr.filter(x => INTIMATE_BONDS.includes(x));
+    if (!nArr.includes(code) && currentIntimate.length >= INTIMATE_MAX_PICKS) {
+      return { ok:false, reason:`亲密关系最多选 ${INTIMATE_MAX_PICKS} 项,请先取消已选的亲密关系` };
+    }
   }
 
   // 上限校验
@@ -919,7 +925,14 @@ function makeSidePanel() {
 function renderPageContent() {
   const content = overlay.querySelector('.wh40k-builder-content'); content.innerHTML='';
   const hero = document.createElement('div'); hero.className='wh40k-page-hero'; hero.innerHTML=`<div class="wh40k-page-title">▸ ${escapeHtml(PAGE_TITLES[currentPage])}</div><div class="wh40k-page-desc">${escapeHtml(PAGE_DESCRIPTIONS[currentPage])}</div>`; content.appendChild(hero);
-  if(currentPage===0){ const splash=document.createElement('div'); splash.className='wh40k-splash'; splash.innerHTML=`<div class="wh40k-splash-quote">等 候 输 入</div><div class="wh40k-splash-line">&gt;&gt;&gt; 请公民接入终端 · 开始登记 &lt;&lt;&lt;</div><div class="wh40k-splash-text">此终端不会即时提交。您将依次完成 6 节登记表，每节包含若干字段；全部完成后，在最终页一次性提交档案。</div><button type="button" class="wh40k-btn primary wh40k-start-btn">[ 进入登记 ]</button>`; splash.querySelector('button').addEventListener('click',()=>{currentPage=1;saveDraftState();render();}); content.appendChild(splash); return; }
+  if(currentPage===0){
+    const notice=document.createElement('div');
+    notice.style.cssText=`text-align:left;color:#cc7a1a;font-size:13px;letter-spacing:0.06em;margin:0 auto 24px;line-height:2.2;border:1px dashed #5e4a28;padding:18px 26px;background:rgba(255,170,51,0.02);max-width:600px;font-family:ui-monospace,Menlo,Consolas,monospace;`;
+    notice.innerHTML=`<div style="text-align:center;font-size:11px;letter-spacing:0.35em;margin-bottom:14px;color:#8a6a38;">—  登  记  须  知  —</div>&gt; 您正在执行 ITM-Civ Reg v5.4 标准登记程序。<br>&gt; 请如实填写以下字段,登记完成后档案将上传至内务部万世存档。<br>&gt; 抗拒、延误或不实者,以《未授权之存在》论处。<br>&gt; 系统当前运行状态:<span style="color:#7ae07a;">稳定</span>。<br>&gt; 系统当前运行状态:<span style="color:#c92030;">[已修正]</span>。<br>&gt; 请进入登记。`;
+    content.appendChild(notice);
+    const splash=document.createElement('div'); splash.className='wh40k-splash'; splash.innerHTML=`<div class="wh40k-splash-quote">等 候 输 入</div><div class="wh40k-splash-line">&gt;&gt;&gt; 请公民接入终端 · 开始登记 &lt;&lt;&lt;</div><div class="wh40k-splash-text">此终端不会即时提交。您将依次完成 6 节登记表，每节包含若干字段；全部完成后，在最终页一次性提交档案。</div><button type="button" class="wh40k-btn primary wh40k-start-btn">[ 进入登记 ]</button>`; splash.querySelector('button').addEventListener('click',()=>{currentPage=1;saveDraftState();render();}); content.appendChild(splash);
+    return;
+  }
   if(currentPage===FINAL_PAGE){ const card=document.createElement('section'); card.className='wh40k-final-card'; card.innerHTML=`<div class="wh40k-final-title">最终提交</div><div class="wh40k-final-text">&gt; 以下为即将上传至大行政官案头的档案数据流。</div><pre class="wh40k-final-preview">${escapeHtml(buildPayload())}</pre><div class="wh40k-final-actions"><button type="button" class="wh40k-btn" data-action="fill-only">[ 仅写入 ]</button><button type="button" class="wh40k-btn" data-action="copy-payload">[ 复制 ]</button><button type="button" class="wh40k-btn primary" data-action="confirm-send">★ 提交档案 ★</button></div>`; card.querySelector('[data-action="fill-only"]').addEventListener('click', fillOnly); card.querySelector('[data-action="copy-payload"]').addEventListener('click', copyPayloadOnly); card.querySelector('[data-action="confirm-send"]').addEventListener('click', confirmAndSend); content.appendChild(card); return; }
   const layout=document.createElement('div'); layout.className='wh40k-content-layout'; const left=document.createElement('div'); left.className='wh40k-left-pane'; const grid=document.createElement('div'); grid.className='wh40k-page-grid'; PAGE_FIELDS[currentPage].forEach(f=>grid.appendChild(makeFieldSection(f))); left.appendChild(grid);
   if(currentPage===6){ const box=document.createElement('section'); box.className='wh40k-section'; box.innerHTML=`<h3>※ 额外补充（可选）</h3><textarea rows="5" placeholder="可写人物癖好、特殊背景、关键剧情提示、想锚定的 NPC 关系、想跳过的开场内容……">${escapeHtml(state.EXTRA||'')}</textarea>`; box.querySelector('textarea').addEventListener('input',e=>{state.EXTRA=e.target.value;saveDraftState();}); left.appendChild(box); }
