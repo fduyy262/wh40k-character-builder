@@ -561,27 +561,9 @@ function isOptionAllowed(field, code, s = state) {
 
   // ─── M 字段:灵能等级(条件性) ───
   if (field === 'M') {
-    // 无知者根本不能有 M
+    // 唯一硬封禁:不可接触者灵魂缺位,不可能有灵能等级(世界观底层规则,非强度限制)
     if (c === 'C2') return { ok:false, reason:'无知者灵魂缺位,无灵能等级' };
-    // 职业锁定等级区间
-    if (e === 'E30' && !['M2','M3','M4'].includes(code)) {
-      return { ok:false, reason:'受批准灵能者等级区间:柔(M2)/约塔(M3)/卡帕(M4)' };
-    }
-    if (e === 'E31' && !['M3','M4','M5'].includes(code)) {
-      return { ok:false, reason:'星语者必须够强以跨星通讯:约塔(M3)/卡帕(M4)/贝塔(M5)' };
-    }
-    // E32 未登记灵能者:开放所有 M 等级(高等级 alpha 通常意味着藏得很深或刚刚觉醒)
-    if (e === 'E26' && !['M0','M1','M2','M3'].includes(code)) {
-      return { ok:false, reason:'神秘学者可选灵能等级:缪(M0)/派(M1)/柔(M2)/约塔(M3),更高会被监正局重点监控' };
-    }
-    if (c === 'C3' && !['M2','M3','M4','M5'].includes(code)) {
-      return { ok:false, reason:'领航者等级区间:柔(M2)/约塔(M3)/卡帕(M4)/贝塔(M5)' };
-    }
-    // M6 阿尔法:极度罕见,只允许 E32(未登记的隐藏 alpha)或 E26(神秘学者研究目标)/激进派立场
-    if (code === 'M6') {
-      const allowed = e === 'E32' || e === 'E26' || ['D6','D7','D8'].includes(d);
-      if (!allowed) return { ok:false, reason:'阿尔法级灵能者需未登记身份(E32)、神秘学者(E26)或激进派立场支撑' };
-    }
+    // 其他职业/血统的强度限制全部开放:玩家自行选择,AI 按设定演绎后果
   }
 
   // ─── W 字段:主流派(条件性) ───
