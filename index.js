@@ -108,14 +108,14 @@ const OPTIONS = {
     ['A23', '瀛洲-21（卡利亚星区外围-翡翠龙战团母星·东亚隐修封建社会）'],
   ],
   B: [['B0', '默认（{{user}}）'], ['B1', '自定义名字']],
-  C: [['C1', '正常人类'], ['C4', '不可接触者'], ['C5', '领航者'], ['C6', '猫人'], ['C7', '机械神教培育人']],
+  C: [['C1', '正常人类'], ['C2', '不可接触者'], ['C3', '领航者'], ['C4', '猫人'], ['C5', '机械神教培育人']],
   D: [
     ['D1', '人类帝国忠诚者'], ['D2', '边缘独立者 / 灰色地带'], ['D3', '潜在混沌信徒'], ['D4', '秘密的异形同情者'],
     ['D5', '审判庭-纯洁派'], ['D6', '审判庭-激进派'], ['D7', '审判庭-占视者派'], ['D8', '审判庭-妄尊异形派'],
     ['D9', '机械神教-火星正统派'], ['D10', '机械神教-探索者派'], ['D11', '机械神教-异形博学派'], ['D12', '机械神教-莫伊雷分裂派'], ['D13', '机械神教-考尔派'],
   ],
   E: [
-    ['E1', '帝国卫队士兵'], ['E2', '帝国商船船长'], ['E3', '帝国海军军官'], ['E4', '法务部预备员'], ['E5', '医护员'], ['E6', '行政书吏'],
+    ['E1', '星界军士兵'], ['E2', '帝国商船船长'], ['E3', '帝国海军军官'], ['E4', '法务部预备员'], ['E5', '医护员'], ['E6', '行政书吏'],
     ['E7', '铸造厂劳工'], ['E8', '星区学院学者'], ['E9', '帝国教会牧师'], ['E10', '修女会成员'], ['E11', '蔷薇修女会侍从'],
     ['E12', '帝国贵族'], ['E13', '贵族家族护卫'], ['E14', '行商浪人家族继承人'], ['E15', '虚空掮客'], ['E16', '虚空打捞者'],
     ['E17', '赏金猎人'], ['E18', '流浪骑士（侍从级机甲）'], ['E19', '无业流民'], ['E20', '性工作者'],
@@ -248,7 +248,7 @@ const OPTIONS = {
     ['J6', '双主线·绯雾之下 + 帝皇幻梦'], ['J7', '双主线·绯雾之下 + 太平潮涌'], ['J8', '双主线·绯雾之下 + 圣机之蚀'], ['J9', '双主线·帝皇幻梦 + 太平潮涌'],
     ['J10', '双主线·帝皇幻梦 + 圣机之蚀'], ['J11', '双主线·太平潮涌 + 圣机之蚀'], ['J12', '三主线·绯雾之下 + 帝皇幻梦 + 太平潮涌'],
     ['J13', '三主线·绯雾之下 + 帝皇幻梦 + 圣机之蚀'], ['J14', '三主线·绯雾之下 + 太平潮涌 + 圣机之蚀'], ['J15', '三主线·帝皇幻梦 + 太平潮涌 + 圣机之蚀'],
-    ['J16', '四主线·绯雾之下 + 帝皇幻梦 + 太平潮涌 + 圣机之蚀'],
+    ['J16', '四主线·绯雾之下 + 帝皇幻梦 + 太平潮涌 + 圣机之蚀（危险！不稳定！）'],
   ],
 };
 
@@ -451,6 +451,17 @@ function isOptionAllowed(field, code, s = state) {
     if (code === 'U6' && (d === 'D1' || stanceTag(d) === 'iq' || stanceTag(d) === 'mech')) return { ok:false, reason:'"逃亡"与当前组织立场矛盾' };
     if (code === 'U12' && (ORG_PROFESSIONS_FOR_U12.includes(e) || c === 'C5' || c === 'C7')) return { ok:false, reason:'组织化身份不适合"漂泊"动机' };
     if (code === 'U14' && (e === 'E10' || ASTARTES.includes(e))) return { ok:false, reason:'当前职业不适合"猎艳"动机' };
+    // 阿斯塔特额外动机限制
+    if (ASTARTES.includes(e)) {
+      const astartesReasons = {
+        U2: '阿斯塔特入会即抹除原生家庭记忆,不会"寻亲"',
+        U4: '阿斯塔特无个人财产,"财富"动机不适用',
+        U9: '阿斯塔特靠战功晋升,"野心"动机不适用',
+        U12: '阿斯塔特受战团誓约约束,"漂泊"等同叛教',
+        U13: '阿斯塔特无常人作息,"安分"动机不适用'
+      };
+      if (astartesReasons[code]) return { ok:false, reason: astartesReasons[code] };
+    }
   }
 
 // ─── N 字段(多选): N0互斥 + 亲密项与宗教誓言互斥 + 上限 ───
@@ -634,7 +645,7 @@ function loadDraftState() {
 async function clearDraftState() { const ctx = getCtx(); delete ctx.chatMetadata[getMetaKey('draft')]; delete ctx.chatMetadata[getMetaKey('page')]; await ctx.saveMetadata?.(); }
 async function markBuilderShown() { const ctx = getCtx(); ctx.chatMetadata[getMetaKey('shown')] = true; await ctx.saveMetadata?.(); }
 
-function resetState() { state = { ...DEFAULT_STATE }; currentPage = 0; saveDraftState(); render(); }
+function resetState() { state = { ...DEFAULT_STATE }; currentPage = 0; saveDraftState(); render(); scrollPanelsToTop(); }
 function closeBuilder() {
   overlay?.classList.remove('open');
   if (overlay) {
@@ -782,6 +793,11 @@ function triggerTerminalFlash(type = 'normal') {
 
 function forceShowLauncher() {
   if (!launcher) return;
+  // 如果用户已经选择隐藏,则不强制显示
+  if (localStorage.getItem('wh40k-launcher-hidden') === '1') {
+    launcher.style.setProperty('display', 'none', 'important');
+    return;
+  }
   launcher.style.setProperty('position', 'fixed', 'important');
   launcher.style.setProperty('top', '64px', 'important');
   launcher.style.setProperty('right', '12px', 'important');
@@ -792,7 +808,93 @@ function forceShowLauncher() {
   launcher.style.setProperty('pointer-events', 'auto', 'important');
 }
 
-function makeLauncher() { if (launcher) launcher.remove(); launcher = document.createElement('button'); launcher.id = 'wh40k-builder-launcher'; launcher.type = 'button'; launcher.textContent = '[⚔ 角色创建器]'; forceShowLauncher(); launcher.addEventListener('click', () => overlay?.classList.contains('open') ? closeBuilder() : openBuilder()); document.body.appendChild(launcher); forceShowLauncher(); }
+function hideLauncher() {
+  if (!launcher) return;
+  localStorage.setItem('wh40k-launcher-hidden', '1');
+  launcher.style.setProperty('display', 'none', 'important');
+}
+
+function showLauncher() {
+  localStorage.removeItem('wh40k-launcher-hidden');
+  if (launcher) forceShowLauncher();
+}
+
+// 暴露恢复入口到全局,PC玩家可在浏览器控制台输入 wh40kShowLauncher() 恢复
+window.wh40kShowLauncher = showLauncher;
+window.wh40kHideLauncher = hideLauncher;
+
+// URL Hash 触发恢复——手机端用户可在地址栏添加 #wh40k-show 刷新页面恢复
+function checkHashTrigger() {
+  if (location.hash === '#wh40k-show') {
+    showLauncher();
+    // 清除 hash,避免反复触发
+    history.replaceState(null, '', location.pathname + location.search);
+    setTimeout(() => alert('角色创建器入口已恢复。'), 100);
+  }
+}
+checkHashTrigger();
+window.addEventListener('hashchange', checkHashTrigger);
+
+function makeLauncher() {
+  if (launcher) launcher.remove();
+  launcher = document.createElement('button');
+  launcher.id = 'wh40k-builder-launcher';
+  launcher.type = 'button';
+  launcher.textContent = '[⚔ 角色创建器]';
+  launcher.title = '左键/点击 打开 · 右键/长按 隐藏';
+  forceShowLauncher();
+
+  // 左键/点击:打开/关闭
+  launcher.addEventListener('click', (e) => {
+    // 如果是长按触发的"伪 click",忽略
+    if (launcher._longPressTriggered) {
+      launcher._longPressTriggered = false;
+      e.preventDefault();
+      return;
+    }
+    overlay?.classList.contains('open') ? closeBuilder() : openBuilder();
+  });
+
+  // PC端:右键隐藏
+  launcher.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    promptHideLauncher();
+  });
+
+  // 移动端:长按 600ms 隐藏
+  let longPressTimer = null;
+  launcher.addEventListener('touchstart', (e) => {
+    longPressTimer = setTimeout(() => {
+      launcher._longPressTriggered = true;
+      promptHideLauncher();
+    }, 600);
+  }, { passive: true });
+
+  launcher.addEventListener('touchend', () => {
+    if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+  });
+
+  launcher.addEventListener('touchmove', () => {
+    if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+  });
+
+  launcher.addEventListener('touchcancel', () => {
+    if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+  });
+
+  document.body.appendChild(launcher);
+  forceShowLauncher();
+}
+
+function promptHideLauncher() {
+  const isMobile = window.innerWidth <= 768;
+  const recoverHint = isMobile
+    ? '隐藏后如需恢复,请在浏览器地址栏当前网址末尾添加:\n#wh40k-show\n然后刷新页面即可恢复。'
+    : '隐藏后如需恢复,请在浏览器控制台(F12)输入:\nwh40kShowLauncher()\n然后回车。\n\n或在地址栏当前网址末尾添加 #wh40k-show 后刷新页面。';
+  if (confirm('确认隐藏角色创建器入口?\n\n' + recoverHint)) {
+    hideLauncher();
+  }
+}
 function createOverlay() {
   overlay = document.createElement('div'); overlay.id = 'wh40k-builder-overlay';
   overlay.innerHTML = `<div class="wh40k-builder-modal"><div class="wh40k-builder-header"><div><div class="wh40k-builder-title">帝国公民登记终端 · #40K-PLUS</div><div class="wh40k-builder-subtitle">帝国内务部 / 公民登记-v5.4-fixed</div></div><button type="button" class="wh40k-icon-btn" data-action="close">[×]</button></div><div class="wh40k-builder-progress"></div><div class="wh40k-builder-main"><section class="wh40k-builder-content"></section></div><div class="wh40k-builder-footer"><div class="wh40k-warning-box"></div><div class="wh40k-actions"><button type="button" class="wh40k-btn" data-action="reset">[ 重置 ]</button><button type="button" class="wh40k-btn" data-action="back">&lt; 上一步</button><button type="button" class="wh40k-btn primary" data-action="next">下一步 &gt;</button></div></div></div>`;
@@ -811,7 +913,7 @@ function renderProgress() {
   const total = TOTAL_PAGES - 2; const isJ = currentPage === 6;
   el.innerHTML = `<div class="wh40k-progress-label">第 <span style="color:${isJ?'#c92030':'#ffb84d'};font-weight:700;">${currentPage}</span> / ${total} 节 · ${PAGE_TITLES[currentPage]}</div><div class="wh40k-progress-dots"></div>`;
   const dots = el.querySelector('.wh40k-progress-dots');
-  for (let i=1;i<=total;i++) { const dot=document.createElement('button'); dot.type='button'; dot.className='wh40k-dot'; if(i===currentPage)dot.classList.add('active'); else if(i<currentPage)dot.classList.add('done'); if(i===6)dot.classList.add('anomaly'); dot.textContent=i===6?'?':String(i); dot.addEventListener('click',()=>{ if(i>currentPage){ for(let p=currentPage;p<i;p++){ const r=canProceedFromPage(p); if(!r.ok){ alert(r.message); return; } } } currentPage=i; saveDraftState(); render(); }); dots.appendChild(dot); }
+  for (let i=1;i<=total;i++) { const dot=document.createElement('button'); dot.type='button'; dot.className='wh40k-dot'; if(i===currentPage)dot.classList.add('active'); else if(i<currentPage)dot.classList.add('done'); if(i===6)dot.classList.add('anomaly'); dot.textContent=i===6?'?':String(i); dot.addEventListener('click',()=>{ if(i>currentPage){ for(let p=currentPage;p<i;p++){ const r=canProceedFromPage(p); if(!r.ok){ alert(r.message); return; } } } currentPage=i; saveDraftState(); render(); scrollPanelsToTop(); }); dots.appendChild(dot); }
 }
 
 function makeOptionButton(field, code, label) {
@@ -925,7 +1027,7 @@ function makeSidePanel() {
 function renderPageContent() {
   const content = overlay.querySelector('.wh40k-builder-content'); content.innerHTML='';
   const hero = document.createElement('div'); hero.className='wh40k-page-hero'; hero.innerHTML=`<div class="wh40k-page-title">▸ ${escapeHtml(PAGE_TITLES[currentPage])}</div><div class="wh40k-page-desc">${escapeHtml(PAGE_DESCRIPTIONS[currentPage])}</div>`; content.appendChild(hero);
-if(currentPage===0){ const splash=document.createElement('div'); splash.className='wh40k-splash'; splash.innerHTML=`<div class="wh40k-splash-quote">等 候 输 入</div><div class="wh40k-splash-line">&gt;&gt;&gt; 请公民接入终端 · 开始登记 &lt;&lt;&lt;</div><div class="wh40k-splash-text">此终端不会即时提交。您将依次完成 6 节登记表，每节包含若干字段；全部完成后，在最终页一次性提交档案。</div><button type="button" class="wh40k-btn primary wh40k-start-btn">[ 进入登记 ]</button>`; splash.querySelector('button').addEventListener('click',()=>{currentPage=1;saveDraftState();render();}); content.appendChild(splash); return; }
+if(currentPage===0){ const splash=document.createElement('div'); splash.className='wh40k-splash'; splash.innerHTML=`<div class="wh40k-splash-quote">等 候 输 入</div><div class="wh40k-splash-line">&gt;&gt;&gt; 请公民接入终端 · 开始登记 &lt;&lt;&lt;</div><div class="wh40k-splash-text">此终端不会即时提交。您将依次完成 6 节登记表，每节包含若干字段；全部完成后，在最终页一次性提交档案。</div><button type="button" class="wh40k-btn primary wh40k-start-btn">[ 进入登记 ]</button>`; splash.querySelector('button').addEventListener('click',()=>{currentPage=1;saveDraftState();render();scrollPanelsToTop();}); content.appendChild(splash); return; }
   if(currentPage===FINAL_PAGE){ const card=document.createElement('section'); card.className='wh40k-final-card'; card.innerHTML=`<div class="wh40k-final-title">最终提交</div><div class="wh40k-final-text">&gt; 以下为即将上传至大行政官案头的档案数据流。</div><pre class="wh40k-final-preview">${escapeHtml(buildPayload())}</pre><div class="wh40k-final-actions"><button type="button" class="wh40k-btn" data-action="fill-only">[ 仅写入 ]</button><button type="button" class="wh40k-btn" data-action="copy-payload">[ 复制 ]</button><button type="button" class="wh40k-btn primary" data-action="confirm-send">★ 提交档案 ★</button></div>`; card.querySelector('[data-action="fill-only"]').addEventListener('click', fillOnly); card.querySelector('[data-action="copy-payload"]').addEventListener('click', copyPayloadOnly); card.querySelector('[data-action="confirm-send"]').addEventListener('click', confirmAndSend); content.appendChild(card); return; }
   const layout=document.createElement('div'); layout.className='wh40k-content-layout'; const left=document.createElement('div'); left.className='wh40k-left-pane'; const grid=document.createElement('div'); grid.className='wh40k-page-grid'; PAGE_FIELDS[currentPage].forEach(f=>grid.appendChild(makeFieldSection(f))); left.appendChild(grid);
   if(currentPage===6){ const box=document.createElement('section'); box.className='wh40k-section'; box.innerHTML=`<h3>※ 额外补充（可选）</h3><textarea rows="5" placeholder="可写人物癖好、特殊背景、关键剧情提示、想锚定的 NPC 关系、想跳过的开场内容……">${escapeHtml(state.EXTRA||'')}</textarea>`; box.querySelector('textarea').addEventListener('input',e=>{state.EXTRA=e.target.value;saveDraftState();}); left.appendChild(box); }
@@ -935,8 +1037,31 @@ if(currentPage===0){ const splash=document.createElement('div'); splash.classNam
 function renderFooterWarnings(){ const box=overlay.querySelector('.wh40k-warning-box'); const w=getWarnings(); box.textContent = w.length ? `注意：${w[0]}` : '提示：AI会根据你的世界书规则自动纠正非法组合，并在开场叙事中给出简短解释。'; }
 function renderFooterButtons(){ const back=overlay.querySelector('[data-action="back"]'); const next=overlay.querySelector('[data-action="next"]'); back.disabled=currentPage===0; if(currentPage===FINAL_PAGE){ next.style.display='none'; } else { next.style.display=''; next.textContent=currentPage===0?'进入登记':'下一步 >'; } }
 function render(){ renderProgress(); renderPageContent(); renderFooterWarnings(); renderFooterButtons(); }
-function goBack(){ if(currentPage===0) return; currentPage--; saveDraftState(); render(); }
-function goNext(){ const r=canProceedFromPage(currentPage); if(!r.ok){ alert(r.message); return; } if(currentPage>=FINAL_PAGE) return; currentPage++; saveDraftState(); render(); }
+
+// 切换页面时,把所有可滚动面板复位到顶部,防止玩家漏看新页面顶部的选项
+// 只在"切换页面"时调用,不在"选项更改"时调用
+function scrollPanelsToTop() {
+  if (!overlay) return;
+  // 用 rAF 确保 DOM 已经完成布局
+  requestAnimationFrame(() => {
+    const selectors = [
+      '.wh40k-builder-content',
+      '.wh40k-builder-main',
+      '.wh40k-left-pane',
+      '.wh40k-right-pane'
+    ];
+    selectors.forEach(sel => {
+      const el = overlay.querySelector(sel);
+      if (el && typeof el.scrollTop === 'number') {
+        el.scrollTop = 0;
+      }
+    });
+    // 兜底:overlay自身如果也滚动了,一并复位
+    if (typeof overlay.scrollTop === 'number') overlay.scrollTop = 0;
+  });
+}
+function goBack(){ if(currentPage===0) return; currentPage--; saveDraftState(); render(); scrollPanelsToTop(); }
+function goNext(){ const r=canProceedFromPage(currentPage); if(!r.ok){ alert(r.message); return; } if(currentPage>=FINAL_PAGE) return; currentPage++; saveDraftState(); render(); scrollPanelsToTop(); }
 
 async function fillOnly(){ const payload=buildPayload(); closeBuilder(); await new Promise(r=>setTimeout(r,80)); if(!setInputValue(payload)){ const ok=await copyToClipboard(payload); alert(ok?'未能自动写入输入框。模板已复制到剪贴板。':'未能写入输入框，且剪贴板不可用。请手动复制：\n\n'+payload); } }
 async function copyPayloadOnly(){ const ok=await copyToClipboard(buildPayload()); alert(ok?'模板已复制到剪贴板。':'剪贴板不可用。'); }
