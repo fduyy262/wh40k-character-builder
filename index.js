@@ -570,9 +570,7 @@ function isOptionAllowed(field, code, s = state) {
     if (e === 'E31' && !['M3','M4','M5'].includes(code)) {
       return { ok:false, reason:'星语者必须够强以跨星通讯:约塔(M3)/卡帕(M4)/贝塔(M5)' };
     }
-    if (e === 'E32' && !['M1','M2','M3'].includes(code)) {
-      return { ok:false, reason:'未登记灵能者:高等级早已被察觉,仅限派(M1)/柔(M2)/约塔(M3)' };
-    }
+    // E32 未登记灵能者:开放所有 M 等级(高等级 alpha 通常意味着藏得很深或刚刚觉醒)
     if (e === 'E26' && !['M0','M1','M2','M3'].includes(code)) {
       return { ok:false, reason:'神秘学者可选灵能等级:缪(M0)/派(M1)/柔(M2)/约塔(M3),更高会被监正局重点监控' };
     }
