@@ -1178,14 +1178,23 @@ window.wh40kHideLauncher = hideLauncher;
 // URL Hash 触发恢复——手机端用户可在地址栏添加 #wh40k-show 刷新页面恢复
 function checkHashTrigger() {
   if (location.hash === '#wh40k-show') {
-    showLauncher();
+    // 直接清除存储,不依赖 launcher 是否已创建
+    localStorage.removeItem('wh40k-launcher-hidden');
     // 清除 hash,避免反复触发
     history.replaceState(null, '', location.pathname + location.search);
-    setTimeout(() => alert('角色创建器入口已恢复。'), 100);
+    // 若 launcher 已存在,立刻显示;若尚未创建,清除存储后再次创建时会自动可见
+    if (launcher) forceShowLauncher();
+    setTimeout(() => alert('角色创建器入口已恢复。如未立即显示,请再次刷新页面。'), 100);
   }
 }
 checkHashTrigger();
 window.addEventListener('hashchange', checkHashTrigger);
+// 页面完全加载后再次检测,防止脚本加载时序导致首次检测失效
+window.addEventListener('load', checkHashTrigger);
+// DOM ready 时再检测一次(SillyTavern扩展加载时机不固定)
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', checkHashTrigger);
+}
 
 function makeLauncher() {
   if (launcher) launcher.remove();
