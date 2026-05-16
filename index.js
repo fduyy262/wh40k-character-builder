@@ -116,7 +116,7 @@ const OPTIONS = {
     ['A23', '瀛洲-21（卡利亚星区外围-翡翠龙战团母星·东亚隐修封建社会）'],
   ],
   B: [['B0', '默认（{{user}}）'], ['B1', '自定义名字']],
-  C: [['C1', '正常人类'], ['C2', '不可接触者'], ['C3', '领航者'], ['C4', '猫人'], ['C5', '机械神教培育人']],
+  C: [['C1', '正常人类'], ['C2', '不可接触者'], ['C3', '领航者'], ['C4', '猫人'], ['C5', '机械神教培育人'], ['C6', '自定义种族（手动输入）']],
   D: [
     ['D1', '人类帝国忠诚者'], ['D2', '边缘独立者 / 灰色地带'], ['D3', '潜在混沌信徒'], ['D4', '秘密的异形同情者'],
     ['D5', '审判庭-纯洁派'], ['D6', '审判庭-激进派'], ['D7', '审判庭-占视者派'], ['D8', '审判庭-妄尊异形派'],
@@ -300,7 +300,7 @@ const DEFAULT_STATE = {
   M: '',  // 灵能等级 M0-M6
   W: '',  // 主流派 W1-W8
   T: 'T0',  // 副流派 T0(无)~T7,M3 起开放
-  NAME: '', H_CUSTOM: '', S_CUSTOM: '', EXTRA: '',
+  NAME: '', H_CUSTOM: '', S_CUSTOM: '', C_CUSTOM: '', EXTRA: '',
   E21_CHAPTER: '',  // 死亡守望母战团代码（仅 E21 时有意义）
 };
 
@@ -762,6 +762,7 @@ function getWarnings() {
   if (state.B === 'B1' && !state.NAME.trim()) warnings.unshift('你选择了自定义名字,但还没有填写名字。');
   if (state.H === 'H25' && !state.H_CUSTOM.trim()) warnings.unshift('你选择了自定义出身,但还没有填写内容。');
   if (state.S === 'S23' && !state.S_CUSTOM.trim()) warnings.unshift('你选择了自定义场景,但还没有填写内容。');
+  if (state.C === 'C6' && !state.C_CUSTOM.trim()) warnings.unshift('你选择了自定义种族,但还没有填写内容。');
   if ((state.E === 'E21' || state.E === 'E24') && !state.E21_CHAPTER) warnings.unshift('阿斯塔特修士需指定母战团/基因种子来源。');
   return warnings;
 }
@@ -848,6 +849,7 @@ function buildPayload() {
   }).join(' ');
   const extra = [];
   if (state.B === 'B1' && state.NAME.trim()) extra.push(`名字:${state.NAME.trim()}`);
+  if (state.C === 'C6' && state.C_CUSTOM.trim()) extra.push(`自定义种族:${state.C_CUSTOM.trim()}`);
   if (state.H === 'H25' && state.H_CUSTOM.trim()) extra.push(`自定义出身:${state.H_CUSTOM.trim()}`);
   if (state.S === 'S23' && state.S_CUSTOM.trim()) extra.push(`自定义开场地点:${state.S_CUSTOM.trim()}`);
   if ((state.E === 'E21' || state.E === 'E24') && state.E21_CHAPTER) {
@@ -878,6 +880,7 @@ function summaryValue(field) {
   }
   const label = getOptionLabel(field, state[field]);
   if (field === 'B') return state.B === 'B1' ? `B1 · ${state.NAME.trim() || '(未填写)'}` : 'B0 · 默认({{user}})';
+  if (field === 'C' && state.C === 'C6') return `C6 · ${state.C_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'H' && state.H === 'H25') return `H25 · ${state.H_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'S' && state.S === 'S23') return `S23 · ${state.S_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'E' && (state.E === 'E21' || state.E === 'E24')) {
@@ -933,6 +936,7 @@ function getRouteHintRows() {
 function canProceedFromPage(page) {
   const fields = PAGE_FIELDS[page] || [];
   if (fields.includes('B') && state.B === 'B1' && !state.NAME.trim()) return { ok:false, message:'请先填写自定义名字,或改回默认名字。' };
+  if (fields.includes('C') && state.C === 'C6' && !state.C_CUSTOM.trim()) return { ok:false, message:'请填写自定义种族,或选择固定血统。' };
   if (fields.includes('H') && state.H === 'H25' && !state.H_CUSTOM.trim()) return { ok:false, message:'请填写自定义出身,或选择固定出身。' };
   if (fields.includes('S') && state.S === 'S23' && !state.S_CUSTOM.trim()) return { ok:false, message:'请填写自定义开场地点,或选择固定开场地点。' };
   if (fields.includes('E') && (state.E === 'E21' || state.E === 'E24') && !state.E21_CHAPTER) return { ok:false, message:'请为阿斯塔特修士选择母战团/基因种子来源,或改选其他职业。' };
@@ -1370,7 +1374,7 @@ btn.addEventListener('click', () => {
   return btn;
 }
 function makeCustomBox(field) {
-  const map = { H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'] };
+  const map = { C:['C6','C_CUSTOM','自定义种族(描述外观、特征、能力倾向等,AI 会按你的描述演绎)'], H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'] };
   const cfg = map[field]; if(!cfg) return null; const [code,key,title]=cfg;
   const box = document.createElement('div'); box.className = `wh40k-custom-box ${state[field]===code?'show':''}`; box.innerHTML = `<textarea rows="4" placeholder="${title}" >${escapeHtml(state[key]||'')}</textarea>`;
   box.querySelector('textarea').addEventListener('input', e => { state[key]=e.target.value; saveDraftState(); renderFooterWarnings(); }); return box;
