@@ -3,14 +3,14 @@ const TARGET_CHARACTER_NAME = '';
 const AUTO_OPEN_FOR_EMPTY_CHAT = true;
 const AUTO_SEND_AFTER_FILL = true;
 
-const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'N', 'P', 'Q', 'S', 'U', 'V', 'J'];
+const PANEL_ORDER = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'N', 'P', 'Q', 'S', 'U', 'V', 'TH', 'J'];
 const PAGE_FIELDS = [
   [],
   ['B', 'C', 'F', 'G', 'I', 'Q'],
   ['A', 'H'],
   ['D', 'E'],
   ['K', 'L', 'N', 'P'],
-  ['S', 'U', 'V'],
+  ['S', 'U', 'V', 'TH'],
   ['J'],
   [],
 ];
@@ -36,6 +36,7 @@ const FIELD_TITLES = {
   S: 'S. 开场地点',
   U: 'U. 目标动机',
   V: 'V. 叙事节奏偏好',
+  TH: 'TH. 帝皇形象',
   // ─── 灵能档案字段(条件性,仅 E30/E31/E32 或 C3 触发) ───
   M: 'M. 灵能等级 / Psy Rating',
   W: 'W. 主流派 / Primary Discipline',
@@ -83,6 +84,7 @@ const FIELD_DESCRIPTIONS = {
   S: '指定您的开场地点。从具体场景中选择一个，或在 S23 处自行描述。',
   U: '声明您的核心动机。它将驱动您的中长期决策与剧情选择。',
   V: '声明您偏好的叙事节奏。本字段不影响世界规则，仅作风格调音。',
+  TH: '声明您心中帝皇的具体形象。这是个人化的内心认知,祈祷、默想、临终一念等场景将按此意象演绎。AI 不会强加"祂应该如何"——这是您与至高之间的私密。',
   // ─── 灵能档案字段(条件性,仅 E30/E31/E32 或 C3 触发) ───
   M: '黑舰评定的灵能等级。等级决定您能调动的亚空间能量上限,也决定您在审判庭档案中的危险分级。',
   W: '您最熟练的灵能流派。流派决定您日常释放的能力风格,也决定您与亚空间何种实体最易共振。',
@@ -128,9 +130,10 @@ const OPTIONS = {
     ['E12', '帝国贵族'], ['E13', '贵族家族护卫'], ['E14', '行商浪人家族继承人'], ['E15', '虚空掮客'], ['E16', '虚空打捞者'],
     ['E17', '赏金猎人'], ['E18', '流浪骑士（侍从级机甲）'], ['E19', '无业流民'], ['E20', '性工作者'],
     ['E21', '死亡守望修士'], ['E22', '沉海誓约侦察兵'], ['E23', '翡翠龙战团修士'], ['E24', '初创子团修士'],
-    ['E25', '审判庭侍从'], ['E26', '审判庭神秘学者'], ['E27', '审判庭调查员'], ['E28', '审判官助理'], ['E29', '审判庭刺客契约人'], ['E30', '受批准灵能者'], ['E31', '星语者'], ['E32', '未登记灵能者'],
-    ['E33', '机械神教初级神甫'], ['E34', '机械神教探索队正式成员'], ['E35', '护教军游侠'], ['E36', '遗传学探索者'], ['E37', '高阶考古学僧'], ['E38', '技术监工'],
-    ['E39', '巢都帮派成员'], ['E40', '锯齿小子初级成员'], ['E41', '黑市情报贩子'], ['E42', '走私者'], ['E43', '冷交易走私人'], ['E44', '黑工坊学徒'], ['E45', '变体收容者'],
+    ['E25', '风暴忠嗣军'],
+    ['E26', '审判庭侍从'], ['E27', '审判庭神秘学者'], ['E28', '审判庭调查员'], ['E29', '审判官助理'], ['E30', '审判庭刺客契约人'], ['E31', '受批准灵能者'], ['E32', '星语者'], ['E33', '未登记灵能者'],
+    ['E34', '机械神教初级神甫'], ['E35', '机械神教探索队正式成员'], ['E36', '护教军游侠'], ['E37', '遗传学探索者'], ['E38', '高阶考古学僧'], ['E39', '技术监工'],
+    ['E40', '巢都帮派成员'], ['E41', '锯齿小子初级成员'], ['E42', '黑市情报贩子'], ['E43', '走私者'], ['E44', '冷交易走私人'], ['E45', '黑工坊学徒'], ['E46', '变体收容者'],
   ],
   F: [['F1', '青年'], ['F2', '壮年'], ['F3', '中年'], ['F4', '年长']],
   G: [['G1', '男'], ['G2', '女'], ['G3', '模糊/不明']],
@@ -171,6 +174,22 @@ const OPTIONS = {
     ['K16', '自有小船（贸易船 / 打捞船 / 走私船）'],
     ['K17', '借调舰船（暂时使用上级、家族或雇主的一艘船）'],
     ['K18', '在大舰服役（你常驻于一艘大型舰船，但船不属于你）'],
+    // 居所（同类互斥，新增）
+    ['K19', '集体宿舍 / 组织舱位（营房、修女舱位、神甫宿舍、黑舰舱位等；身份在职才有，离职即失）'],
+    // 随从（同类互斥，新增）
+    ['K20', '武装侍卫 / 个人保镖（一名训练有素的护卫，按时领薪或由家族编派；忠诚取决于报酬来源）'],
+    ['K21', '学徒 / 见习（一名跟随你学习的年轻人，可分担琐务但能力有限）'],
+    ['K22', '签约打手（按次或按月付费的雇佣打手，关系冷淡但执行力可靠；不是朋友，是工具）'],
+    ['K23', '债奴（一名因债务被法律绑定服侍你的人；恨你，但无法离开）'],
+    // 装备（同类互斥，新增）
+    ['K24', '专业工具套装（具体类型按职业自动判定：医疗箱 / 修械套件 / 锁匠工具 / 法务文具 / 化学试剂等）'],
+    ['K25', '个人防护装备（轻型护甲 / 防弹布 / 加固外衣；非战场级，但能挡刀和远距离冷枪）'],
+    // 凭证 / 通行权（同类互斥，新类别 id）
+    ['K26', '合法身份与基本通行证（标准星籍 ID，能合法走街过卡、申请普通工作、入住公共旅店）'],
+    ['K27', '黑户 / 无证（你不在任何官方档案里——这意味着自由，也意味着每个检查站都是赌博）'],
+    ['K28', '教会侍从凭证（任何国教子机构的低阶身份证明：见习神职 / 修女会侍从 / 朝圣公会徽章）'],
+    ['K29', '内务部办事编号（你或你的雇主在内务部某分部留过号码；可调档、申请许可证、走快速通道）'],
+    ['K30', '审判庭授权印鉴（一枚审判官签发的限期 / 限地令——在其辖内绕过几乎所有官僚阻力，但你也会被人盯）'],
   ],
   L: [
     ['L0', '无'], ['L1', '你持有伪造身份'], ['L2', '你忘记了一段关键记忆'], ['L3', '某个组织正在暗中标记你'], ['L4', '你曾见过不该见之物'],
@@ -179,10 +198,23 @@ const OPTIONS = {
     ['L13', '你有一件传承下来的古老武器'], ['L14', '你偶尔能感知到非人类的低语'], ['L15', '你发现了一个珍贵的异形遗物'], ['L16', '你曾被审判庭短暂拘押，经历了痛苦的审讯'],
     ['L17', '你曾参与过一次不该留下记录的清洗'], ['L18', '你曾被迫出卖自己肉体以换取生路'], ['L19', '你曾使用未授权标准建造模板片段'], ['L20', '你已被欧姆巴佩11号站秘密建档'],
     ['L21', '你加入过一个半异端学术协会'], ['L22', '你正在隐瞒一次未授权肉体改造'], ['L23', '你持有一份未提交火星的技术档案'], ['L24', '你被怀疑处于技术弊病第二阶'], ['L25', '你掌握一条通向第三阶路径的禁忌线索'],
+    // ─── 灵能相关秘密(L26-L31; L26/L30/L31 硬锁需 M1+ 灵能身份, L27/L28/L29 任何人可选) ───
+    ['L26', '你的灵能档案存在一处被涂改的痕迹（你不知道是谁改的，也不知道改了什么）'],
+    ['L27', '你在一次亚空间航行中失去了若干小时的记忆'],
+    ['L28', '你曾在黑舰外短暂接触过一名"被审定中"的灵能候选者'],
+    ['L29', '你身上有一处不该存在的微小腐化痕迹（隐藏在皮肤、骨骼或瞳孔深处）'],
+    ['L30', '你曾接收到一段来历不明的星语讯息（发送者无法追溯）'],
+    ['L31', '你的灵能"幻觉"曾应验过一次（旁人以为是巧合，你知道不是）'],
+    // ─── 非灵能扩展秘密(L32-L36, 任何人可选) ───
+    ['L32', '你认识一位"应该已死"的人'],
+    ['L33', '你曾在记录中看到过你自己另一份不该存在的档案'],
+    ['L34', '你拥有一笔来历不明的资金（每月按时到账，从无信息）'],
+    ['L35', '你曾在朝圣中加入过一个未注册的"次级教派"'],
+    ['L36', '你被某条预言指为"将要发生某事的人"（具体预言已遗忘）'],
   ],
   N: [
-    ['N0', '无'], ['N1', '家人仍在'],['N2', '有三位从小玩到大的玩伴'],['N3', '有一个志趣相投的旧友圈子'], ['N4', '有一位旧战友'], ['N5', '有一位国教引路人'], ['N6', '有一位债主 / 压迫者'], ['N7', '有一位黑市联系人'],
-    ['N8', '有一位正在监视你的上级'], ['N9', '有一位失踪的重要之人'], ['N10', '有一位机械神教联系人'], ['N11', '有一位审判庭线人'], ['N12', '有一位曾救过你的人'],
+    ['N0', '无'], ['N1', '家人仍在'],['N2', '有三位从小玩到大的玩伴'],['N3', '有一个志趣相投的旧友圈子'], ['N4', '有一位旧战友'], ['N5', '有一位国教引路人'], ['N6', '有一位债主 / 压迫者'], ['N7', '有一位地下渠道熟人'],
+    ['N8', '有一位正在监视你的上级'], ['N9', '有一位失踪的重要之人'], ['N10', '有一位红袍技师旧识'], ['N11', '有一位审判庭线人'], ['N12', '有一位曾救过你的人'],
     ['N13', '有一位行商浪人保护人'], ['N14', '有一位法务部旧识'], ['N15', '有一位行政部档案员朋友'], ['N16', '有一位海军军官联系人'], ['N17', '有一位异形或异端联系人'],
     ['N18', '有一位长期跟随你的男性机仆'], ['N19', '有一位长期跟随你的女性机仆'], ['N20', '有一位蔷薇修女会的旧识'], ['N21', '有一位研究亚空间的朋友'],
     ['N22', '有一位帝国骑士家族的熟人'], ['N23', '有一位底巢帮派中的内应'], ['N24', '有一位机械神教半异端导师庇护你'],['N25', '有一位帝国商船联系人'],
@@ -202,9 +234,20 @@ const OPTIONS = {
     ['S7', '军营（铺位、操练声、长官点名）'], ['S8', '舰内（引擎低吼，警报偶尔闪烁，金属壁回响）'], ['S9', '星港码头（起重机、检疫门、异乡口音、货柜封条）'],
     ['S10', '边境聚落（风沙、单一作物田、远处机器收割声）'], ['S11', '矿井（升降笼、粉尘肺，工伤不被记录）'], ['S12', '贵族宅邸（大理石、画像注视、低声谈判）'],
     ['S13', '修道院（走廊回声、祷告声，压抑的洁净）'], ['S14', '拘留所（铁栏、滴水声、隔壁牢房的咳嗽）'], ['S15', '焚毁现场（焦土、残骸，尚未冷透的金属）'],
-    ['S16', '异形遗迹（不可能的几何、低频共鸣，风从不该的方向吹来）'], ['S17', '小酒馆（烟雾弥漫，劣质 amasec 与邻桌的密谋）'], ['S18', '医院（漂白水气味，修女低声诵经，走廊上的呻吟）'],
+    ['S16', '异形遗迹（不可能的几何、低频共鸣，风从不该的方向吹来）'], ['S17', '小酒馆（烟雾弥漫，劣质酒水与邻桌的密谋）'], ['S18', '医院（漂白水气味，修女低声诵经，走廊上的呻吟）'],
     ['S19', '朝圣路（长队风尘仆仆，有人哭有人唱）'], ['S20', '角斗场（血腥沙地，上千狂热者的呼喝）'], ['S21', '档案馆（纸尘、霉味，堆到天花板的禁书与卷宗）'],
-    ['S22', '神甫居所（红蜡封条、机魂祷词、二进制爆鸣）'], ['S23', '自定义场景（手动输入）'],
+    ['S22', '神甫居所（红蜡封条、机魂祷词、二进制爆鸣）'],
+    ['S24', '战场前线（炮火节奏、血和泥、长官的吼声、对讲机的杂音）'],
+    ['S25', '亚空间航行中（盖勒力场低鸣、舷窗外的非欧几里得光景、船员的失眠）'],
+    ['S26', '朝圣船三等舱（挤满人、空气浑浊、贫困朝圣者的临时家）'],
+    ['S27', '贵族沙龙（水晶吊灯、低声八卦、丝绸与香水掩饰的猜忌）'],
+    ['S28', '学院沙龙（羊皮纸气味、激烈的学术争论、被禁书塞满的角落）'],
+    ['S29', '死亡守望要塞房间（冷光、铁桌、未拆封的卷宗、对讲机的等候）'],
+    ['S30', '巢都顶层套房（俯瞰巢都的全景窗、隔音地板、看不见底层的距离）'],
+    ['S31', '死亡世界营地（临时帐篷、毒虫鸣叫、不睡觉的哨兵）'],
+    ['S32', '私人医疗诊所（消毒水、低调的奢华、不问来路的医生）'],
+    ['S33', '异形商人据点（异形语言交易、过于精美的商品、不该出现的香料）'],
+    ['S23', '自定义场景（手动输入）'],
   ],
   U: [
     ['U1', '复仇（某段旧账无法翻篇，你活着就是为了那笔账）'], ['U2', '寻亲（失散的至亲下落不明，你不停打听不停找）'], ['U3', '求知（你被禁忌知识吸引，明知有代价仍要触碰）'],
@@ -216,6 +259,24 @@ const OPTIONS = {
   V: [
     ['V1', '慢热（细致环境与心理铺垫，不急着推进剧情）'], ['V2', '平衡（剧情推进与日常细节并重）'], ['V3', '紧凑（事件密集，转折频繁，少铺垫）'],
     ['V4', '日常（享受帝国压抑感的琐碎与窒息细节）'], ['V5', '主线（专注推进主线剧情，少 filler）'], ['V6', '自主（AI 等你主动行动，不催进度）'],
+  ],
+  // ─── TH 帝皇形象 / Theos(玩家心中帝皇的具体样貌,完全开放,不做硬/软互斥) ───
+  TH: [
+    ['TH1',  '金光老者'],
+    ['TH2',  '燃烧之父'],
+    ['TH3',  '慈祥母亲'],
+    ['TH4',  '沉睡少年'],
+    ['TH5',  '独眼战神'],
+    ['TH6',  '黄金少女'],
+    ['TH7',  '流泪圣婴'],
+    ['TH8',  '黑发铁血男'],
+    ['TH9',  '白发智者'],
+    ['TH10', '丰饶母皇'],
+    ['TH11', '金宫里腐朽中的肉身'],
+    ['TH12', '双面神（一面老人,一面少年）'],
+    ['TH13', '无面之光'],
+    ['TH14', '哥哥'],
+    ['TH15', '自定义（手动输入心中帝皇的具体形象）'],
   ],
   P: [
     ['P0', '无（没有特定的命运对象，剧情自由展开）'],
@@ -293,6 +354,7 @@ const OPTIONS = {
 
 const DEFAULT_STATE = {
   A: 'A1', B: 'B0', C: 'C1', D: 'D1', E: 'E1', F: 'F1', G: 'G1', H: 'H1', I: 'I1', P: 'P0', Q: 'Q1', S: 'S1', U: 'U12', V: 'V2', J: 'J1',
+  TH: 'TH1',  // 帝皇形象,默认金光老者(战锤最经典形象)
   K: [],  // 多选,空数组表示未选
   L: [],  // 多选,空数组表示未选
   N: [],  // 多选,空数组表示未选
@@ -300,17 +362,18 @@ const DEFAULT_STATE = {
   M: '',  // 灵能等级 M0-M6
   W: '',  // 主流派 W1-W8
   T: 'T0',  // 副流派 T0(无)~T7,M3 起开放
-  NAME: '', H_CUSTOM: '', S_CUSTOM: '', C_CUSTOM: '', EXTRA: '',
+  NAME: '', H_CUSTOM: '', S_CUSTOM: '', C_CUSTOM: '', TH_CUSTOM: '', EXTRA: '',
   E21_CHAPTER: '',  // 死亡守望母战团代码（仅 E21 时有意义）
 };
 
 // K 字段分类映射(同分类内互斥)
 const K_CATEGORIES = {
   K1:'finance', K2:'finance', K3:'finance', K4:'finance', K5:'finance',
-  K6:'housing', K7:'housing', K8:'housing', K9:'housing',
-  K10:'follower', K11:'follower',
-  K12:'gear', K13:'gear', K14:'gear', K15:'gear',
+  K6:'housing', K7:'housing', K8:'housing', K9:'housing', K19:'housing',
+  K10:'follower', K11:'follower', K20:'follower', K21:'follower', K22:'follower', K23:'follower',
+  K12:'gear', K13:'gear', K14:'gear', K15:'gear', K24:'gear', K25:'gear',
   K16:'ship', K17:'ship', K18:'ship',
+  K26:'id', K27:'id', K28:'id', K29:'id', K30:'id',
 };
 const K_MAX_PICKS = 2;
 const N_MAX_PICKS = 2;
@@ -327,10 +390,17 @@ let launcher = null;
 let initialized = false;
 
 const ASTARTES = ['E21', 'E22', 'E23', 'E24'];
-const IQ_PROFESSIONS = ['E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31'];
-const MECH_PROFESSIONS = ['E33', 'E34', 'E35', 'E36', 'E37', 'E38'];
-const PSYKER_PROFESSIONS = ['E26', 'E30', 'E31', 'E32'];
+const IQ_PROFESSIONS = ['E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E32'];
+const IQ_STANCES = ['D5', 'D6', 'D7', 'D8'];  // 审判庭立场集(K30 印鉴判定用)
+const MECH_PROFESSIONS = ['E34', 'E35', 'E36', 'E37', 'E38', 'E39'];
+const PSYKER_PROFESSIONS = ['E27', 'E31', 'E32', 'E33'];
 const SISTER_PROFESSIONS = ['E10', 'E11'];
+// K19 集体宿舍:仅限"有组织身份"的职业
+const ORG_HOUSING_OK = ['E1', 'E3', 'E9', 'E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E32', 'E34', 'E35', 'E36', 'E37', 'E38', 'E39'];
+// K21 学徒/见习:有"教学合理性"的职业
+const TUTOR_OK = ['E8', 'E9', 'E10', 'E11', 'E12', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E32', 'E34', 'E35', 'E36', 'E37', 'E38', 'E39'];
+// K27 黑户:与"必须官方注册"的职业不兼容
+const BLACK_MARKET_FORBIDDEN = ['E3', 'E4', 'E6', 'E9', 'E10', 'E11', 'E12', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E32', 'E34', 'E35', 'E36', 'E37', 'E38', 'E39', 'E21', 'E22', 'E23', 'E24'];
 const SISTER_RACES = ['C1', 'C2', 'C4'];  // 正常人类(战斗修女) + 不可接触者(沉默姐妹会) + 猫人(部分世界书允许)
 const NAVIGATOR_OK_BG = ['H4', 'H16', 'H19', 'H20'];
 const NOBLE_OK_BG = ['H2', 'H4', 'H5', 'H9', 'H18', 'H19', 'H22'];
@@ -356,30 +426,66 @@ const DEATHWATCH_CHAPTERS = [
 const SUB_CHAPTERS = ['DW2', 'DW10'];  // 深红之拳/黑色圣堂武士都是帝国之拳后裔
 const HEAVY_AUG = ['Q6', 'Q7', 'Q8'];
 const MEDIUM_HEAVY_AUG = ['Q7', 'Q8'];
-const SELF_OWNED_SHIP_OK = ['E2', 'E14', 'E16', 'E27', 'E28', 'E29', 'E42', 'E43'];
-const NO_BORROWED_SHIP = ['E7', 'E19', 'E39', 'E40', 'E44'];
-const ASSIGNED_TO_SHIP_OK = ['E3', 'E14', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E31', 'E34', 'E35'];
-const ORG_PROFESSIONS_FOR_U12 = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E33', 'E34', 'E35', 'E36', 'E37', 'E38'];
+const SELF_OWNED_SHIP_OK = ['E2', 'E14', 'E16', 'E28', 'E29', 'E30', 'E43', 'E44'];
+const NO_BORROWED_SHIP = ['E7', 'E19', 'E40', 'E41', 'E45'];
+const ASSIGNED_TO_SHIP_OK = ['E3', 'E14', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E32', 'E35', 'E36'];
+const ORG_PROFESSIONS_FOR_U12 = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E32', 'E34', 'E35', 'E36', 'E37', 'E38', 'E39'];
 
 const XENOS_FATE_PERSONS = ['P8', 'P10', 'P11', 'P17', 'P19', 'P26'];
+
+// [v4 真名内联·完全剧透版] payload 直接输出真名,不再有"玩家面板看不到具名"的翻译层。
+// 类型化 NPC (P5/P7/P10/P14/P18/P20/P29/P30/P31) 不列入,由 AI 即兴生成。
+const P_FATE_NAMES = {
+  P1:  '卢克蕾蒂娅-锈骨-IX',
+  P2:  '莉亚·科尔特斯',
+  P3:  '卡桑德拉-7-阿尼玛',
+  P4:  '伊莎贝拉•卡尔卡松',
+  P6:  '爱弥斯·莫斯塔克',
+  P8:  '艾莉娅·暗影舞者',
+  P9:  '奥利维亚·奥利赛',
+  P11: '塞莉娅·风暴星',
+  P12: '卡米拉·桑切斯',
+  P13: '奥米茄-7',
+  P15: '埃莉诺·范斯',
+  P16: '弗蕾娅·赫尔曼森',
+  P17: '伊莎莱娜·星光织者',
+  P19: '维斯帕·魅惑之影',
+  P21: '塞拉菲娜·薇儿丹',
+  P22: '塞莱涅·德·瓦洛',
+  P23: '阿波尼亚',
+  P24: '菲洛米娜',
+  P25: '卡米尔·阿什伯恩',
+  P26: "Aun'Kyne",
+  P27: '艾梅莎·德·奥利安',
+  P28: '伊雯涅丝',
+};
+
+// [v4] N 字段隐藏 NPC 真名映射 (玩家面板显示类型化描述,payload 输出真名)
+const N_HIDDEN_NAMES = {
+  N27: '贝法',
+};
 const XENOS_CONTACT_STANCES = ['D2', 'D4', 'D6', 'D8', 'D11'];
-const XENOS_CONTACT_PROFESSIONS = ['E14', 'E15', 'E16', 'E17', 'E25', 'E26', 'E27', 'E28', 'E29', 'E34', 'E36', 'E41', 'E42', 'E43'];
+const XENOS_CONTACT_PROFESSIONS = ['E14', 'E15', 'E16', 'E17', 'E26', 'E27', 'E28', 'E29', 'E30', 'E35', 'E37', 'E42', 'E43', 'E44'];
 const XENOS_CONTACT_ORIGINS = ['A13'];
 // 异形资源现在是 K16(自有船)/K17(借调)/K18(在大舰); K15(异形物)也算
 const XENOS_CONTACT_RESOURCES = ['K15', 'K16', 'K17', 'K18'];
 const XENOS_CONTACT_SECRETS = ['L14', 'L15'];
 const XENOS_CONTACT_BONDS = ['N15'];
 const XENOS_HARD_BAN_STANCES = ['D5', 'D9'];
-const XENOS_HARD_BAN_PROFESSIONS = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24'];
+const XENOS_HARD_BAN_PROFESSIONS = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25'];
 
 const ALLOWED_S_BY_PROFESSION = {
-  E1:['S1','S2','S7','S15','S17','S18'], E2:['S5','S8','S9','S17'], E3:['S7','S8','S9'], E4:['S5','S14','S17'], E5:['S15','S18'], E6:['S5','S21'], E7:['S2','S4','S11'], E8:['S5','S21'], E9:['S3','S13','S19'], E10:['S3','S13','S18','S19'], E11:['S3','S12','S13','S18'], E12:['S5','S9','S12','S17'], E13:['S7','S9','S12'], E14:['S5','S8','S9','S12','S17'], E15:['S2','S6','S9','S17'], E16:['S5','S8','S9','S15'], E17:['S1','S2','S6','S14','S17'], E18:['S10','S12','S15'], E19:['S1','S2','S14','S15','S19'], E20:['S2','S12','S17'],
-  E21:['S3','S7','S8','S9','S15','S16','S22'], E22:['S6','S7','S8','S9','S15','S16','S22'], E23:['S7','S8','S9','S10','S13','S15','S16'], E24:['S7','S8','S9','S15','S16'], E25:['S5','S8','S14','S21'], E26:['S5','S8','S16','S21'], E27:['S2','S5','S6','S8','S14','S17'], E28:['S5','S8','S14','S16','S21'], E29:['S1','S2','S8','S14','S17'], E30:['S3','S8','S13'], E31:['S5','S8','S13'], E32:['S1','S2','S6','S14','S19'], E33:['S4','S22'], E34:['S4','S8','S15','S16','S22'], E35:['S4','S15','S22'], E36:['S4','S18','S22'], E37:['S4','S16','S21','S22'], E38:['S4','S22'], E39:['S1','S2','S6','S14','S17'], E40:['S1','S2','S6','S17'], E41:['S1','S6','S9','S17'], E42:['S5','S6','S8','S9'], E43:['S6','S8','S9','S16'], E44:['S2','S4','S6','S11','S17'], E45:['S1','S2','S6','S15','S19'],
+  E1:['S1','S2','S7','S15','S17','S18','S24','S31'], E2:['S5','S8','S9','S17','S25'], E3:['S7','S8','S9','S25'], E4:['S5','S14','S17'], E5:['S15','S18','S24','S32'], E6:['S5','S21','S28'], E7:['S2','S4','S11'], E8:['S5','S21','S28'], E9:['S3','S13','S19','S26'], E10:['S3','S13','S18','S19','S26'], E11:['S3','S12','S13','S18','S27'], E12:['S5','S9','S12','S17','S27','S30'], E13:['S7','S9','S12','S27'], E14:['S5','S8','S9','S12','S17','S25','S27'], E15:['S2','S6','S9','S17','S25','S33'], E16:['S5','S8','S9','S15','S25'], E17:['S1','S2','S6','S14','S17'], E18:['S10','S12','S15','S31'], E19:['S1','S2','S14','S15','S19'], E20:['S2','S12','S17','S30'],
+  E21:['S3','S7','S8','S9','S15','S16','S22','S29','S31'], E22:['S6','S7','S8','S9','S15','S16','S22','S29','S33'], E23:['S7','S8','S9','S10','S13','S15','S16','S31'], E24:['S7','S8','S9','S15','S16','S29','S31'],
+  E25:['S7','S8','S9','S24','S29','S31'],
+  E26:['S5','S8','S14','S21'], E27:['S5','S8','S16','S21','S28'], E28:['S2','S5','S6','S8','S14','S17','S25','S33'], E29:['S5','S8','S14','S16','S21'], E30:['S1','S2','S8','S14','S17'], E31:['S3','S8','S13'], E32:['S5','S8','S13','S25'], E33:['S1','S2','S6','S14','S19','S32'], E34:['S4','S22'], E35:['S4','S8','S15','S16','S22','S25'], E36:['S4','S15','S22'], E37:['S4','S18','S22','S32'], E38:['S4','S16','S21','S22','S28'], E39:['S4','S22'], E40:['S1','S2','S6','S14','S17','S30'], E41:['S1','S2','S6','S17','S30'], E42:['S1','S6','S9','S17','S33'], E43:['S5','S6','S8','S9','S25','S33'], E44:['S6','S8','S9','S16','S25','S33'], E45:['S2','S4','S6','S11','S17'], E46:['S1','S2','S6','S15','S19','S32'],
 };
 
 function isRandomCode(code) { return /^[A-Z]0$/.test(code); }
 function isMechBackground(code) { return ['H12', 'H14'].includes(code); }
-function isMechSecret(code) { const m = /^L(\d+)$/.exec(code || ''); return !!m && Number(m[1]) >= 19; }
+function isMechSecret(code) { const m = /^L(\d+)$/.exec(code || ''); if (!m) return false; const n = Number(m[1]); return n >= 19 && n <= 25; }
+// 灵能相关秘密(部分硬锁,需 M1+ 灵能身份才能选)
+const PSYKER_REQUIRED_SECRETS = ['L26', 'L30', 'L31'];
 function professionTag(code) { if (IQ_PROFESSIONS.includes(code)) return 'iq'; if (MECH_PROFESSIONS.includes(code)) return 'mech'; return 'common'; }
 function stanceTag(code) { if (['D5','D6','D7','D8'].includes(code)) return 'iq'; if (['D9','D10','D11','D12','D13'].includes(code)) return 'mech'; return 'common'; }
 function getOptionLabel(field, code) { return OPTIONS[field]?.find(([k]) => k === code)?.[1] || code || ''; }
@@ -415,15 +521,15 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'C') return { ok: true };
 
   if (field === 'A') {
-    if (code === 'A19' && e && !['E25','E26',...MECH_PROFESSIONS].includes(e)) return { ok:false, reason:'欧姆巴佩11号仅对机械神教与审判庭高层开放' };
+    if (code === 'A19' && e && !['E26','E27',...MECH_PROFESSIONS].includes(e)) return { ok:false, reason:'欧姆巴佩11号仅对机械神教与审判庭高层开放' };
     if (code === 'A21' && e !== 'E21') return { ok:false, reason:'哥利亚要塞仅对死亡守望开放' };
   }
 
   if (field === 'D') {
     if (dTag === 'mech' && c !== 'C5') return { ok:false, reason:'神教立场需机械神教培育人(C5)' };
     if (dTag !== 'mech' && c === 'C5') return { ok:false, reason:'机械神教培育人(C5)需神教立场' };
-    if (e === 'E32' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
-    if (e === 'E44' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
+    if (e === 'E33' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
+    if (e === 'E45' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
   }
 
   if (field === 'E') {
@@ -432,8 +538,8 @@ function isOptionAllowed(field, code, s = state) {
     if (eTag === 'iq' && d && stanceTag(d) !== 'iq') return { ok:false, reason:'仅限审判庭立场' };
     if (dTag === 'iq' && eTag !== 'iq') return { ok:false, reason:'当前为审判庭立场，仅可选择审判庭体系职业' };
     if (dTag === 'mech' && eTag !== 'mech') return { ok:false, reason:'神教立场仅限神教职业' };
-    if (code === 'E32' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
-    if (code === 'E44' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
+    if (code === 'E33' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
+    if (code === 'E45' && dTag === 'mech') return { ok:false, reason:'黑工坊学徒与正统机械神教立场不可兼容' };
     if (ASTARTES.includes(code)) {
       // 不可接触者灵魂缺位,基因种子改造无法生效
       if (c === 'C2') return { ok:false, reason:'不可接触者灵魂缺位,无法接受基因种子的祝圣与改造' };
@@ -444,9 +550,14 @@ function isOptionAllowed(field, code, s = state) {
     if (code === 'E10') { if (g !== 'G2') return { ok:false, reason:'修女会仅限女性' }; if (!SISTER_RACES.includes(c)) return { ok:false, reason:'当前血统不可成为修女' }; }
     if (code === 'E12' && h !== 'H25' && !NOBLE_OK_BG.includes(h)) return { ok:false, reason:'贵族通常不出身底层' };
     if (code === 'E18' && (c === 'C4' || (h !== 'H25' && !KNIGHT_OK_BG.includes(h)))) return { ok:false, reason:'流浪骑士需贵族传承背景' };
+    if (code === 'E25') {
+      if (c === 'C2') return { ok:false, reason:'风暴忠嗣军不接受不可接触者(Schola Progenium体系会排斥)' };
+      if (c === 'C4') return { ok:false, reason:'风暴忠嗣军不接受亚人(猫人)' };
+      if (h && h !== 'H25' && !['H3','H15'].includes(h)) return { ok:false, reason:'风暴忠嗣军必须出身Schola Progenium(修道院孤儿H3或教会孤儿院H15)' };
+    }
     if (c === 'C4' && ['E18',...ASTARTES,...MECH_PROFESSIONS].includes(code)) return { ok:false, reason:'猫人不可担任此职业' };
     if (c === 'C2' && [...ASTARTES,...MECH_PROFESSIONS,...PSYKER_PROFESSIONS].includes(code)) return { ok:false, reason:'不可接触者不适合此职业' };
-    if (c === 'C3' && ['E1','E4','E7','E9','E10','E11',...ASTARTES,...IQ_PROFESSIONS,'E32',...MECH_PROFESSIONS,'E39','E40','E44'].includes(code)) return { ok:false, reason:'领航者不适合此职业' };
+    if (c === 'C3' && ['E1','E4','E7','E9','E10','E11','E25',...ASTARTES,...IQ_PROFESSIONS,'E33',...MECH_PROFESSIONS,'E40','E41','E45'].includes(code)) return { ok:false, reason:'领航者不适合此职业' };
   }
 
   if (field === 'G') { if (ASTARTES.includes(e) && code !== 'G1') return { ok:false, reason:'阿斯塔特仅限男性' }; if (e === 'E10' && code !== 'G2') return { ok:false, reason:'修女会仅限女性' }; }
@@ -457,6 +568,7 @@ function isOptionAllowed(field, code, s = state) {
     if (c === 'C3' && code !== 'H25' && !NAVIGATOR_OK_BG.includes(code)) return { ok:false, reason:'领航者必须出身领航者世系或贵族家族' };
     if (e === 'E12' && code !== 'H25' && !NOBLE_OK_BG.includes(code)) return { ok:false, reason:'贵族通常不出身底层' };
     if (e === 'E18' && code !== 'H25' && !KNIGHT_OK_BG.includes(code)) return { ok:false, reason:'流浪骑士需贵族传承背景' };
+    if (e === 'E25' && code !== 'H25' && !['H3','H15'].includes(code)) return { ok:false, reason:'风暴忠嗣军必须出身Schola Progenium(修道院孤儿H3或教会孤儿院H15)' };
     if (code === 'H25' && (c === 'C3' || c === 'C5' || ASTARTES.includes(e))) return { ok:false, reason:'当前路线不允许自定义出身' };
   }
 
@@ -502,6 +614,74 @@ function isOptionAllowed(field, code, s = state) {
       if (d === 'D9') return { ok:false, reason:'机械神教-火星正统派与异端嫌疑物势不两立' };
     }
 
+    // ─── 新增:居所 K19 集体宿舍 ───
+    if (code === 'K19' && e && !ORG_HOUSING_OK.includes(e)) {
+      return { ok:false, reason:'该职业不具备组织舱位/集体宿舍的分配资格' };
+    }
+
+    // ─── 新增:随从 K20 武装侍卫 ───
+    if (code === 'K20') {
+      if (ASTARTES.includes(e) || e === 'E25') return { ok:false, reason:'阿斯塔特/风暴忠嗣军 不雇凡人护卫(违和)' };
+      if (['E19','E40','E41'].includes(e)) return { ok:false, reason:'该职业地位太低,雇不起合法护卫' };
+    }
+    // ─── 新增:随从 K21 学徒/见习 ───
+    if (code === 'K21') {
+      if (ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特不收凡人学徒' };
+      if (['E19','E40','E41','E42','E43','E44','E45'].includes(e)) return { ok:false, reason:'该职业没有教学合理性' };
+      if (e && !TUTOR_OK.includes(e)) return { ok:false, reason:'该职业没有教学合理性' };
+    }
+    // ─── 新增:随从 K22 签约打手 ───
+    if (code === 'K22') {
+      if (SISTER_PROFESSIONS.includes(e)) return { ok:false, reason:'修女会教条不容雇佣打手' };
+      if (ASTARTES.includes(e) || e === 'E25') return { ok:false, reason:'阿斯塔特/风暴忠嗣军 不雇佣凡人打手' };
+    }
+    // ─── 新增:随从 K23 债奴 ───
+    if (code === 'K23') {
+      if (SISTER_PROFESSIONS.includes(e)) return { ok:false, reason:'修女会教条不容债务奴役' };
+      if (ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特身份不涉及债奴关系' };
+      if (d === 'D5') return { ok:false, reason:'审判庭-纯洁派教条不容此类关系' };
+      if (['E19','E20'].includes(e)) return { ok:false, reason:'该职业地位太低,不可能拥有债奴' };
+    }
+
+    // ─── 新增:装备 K24 工具套装 ───
+    if (code === 'K24' && ASTARTES.includes(e)) {
+      return { ok:false, reason:'阿斯塔特不使用凡人工具(自带战团装备)' };
+    }
+    // ─── 新增:装备 K25 个人防护装备 ───
+    if (code === 'K25') {
+      if (ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特已配动力甲,不需要凡人护甲' };
+      if (SISTER_PROFESSIONS.includes(e)) return { ok:false, reason:'修女会已配修女战甲,不需要凡人护甲' };
+      if (e === 'E25') return { ok:false, reason:'风暴忠嗣军已配制式护甲,不需要额外个人护甲' };
+      if (q === 'Q8') return { ok:false, reason:'重改身体本身即装甲,无需额外护甲' };
+    }
+
+    // ─── 新增:凭证 K27 黑户 ───
+    if (code === 'K27') {
+      if (kArr.includes('K5')) return { ok:false, reason:'富有者不可能完全黑户(若需"富有的伪造身份",请改用 L1)' };
+      if (e && BLACK_MARKET_FORBIDDEN.includes(e)) return { ok:false, reason:'该职业必须留有官方注册档案,与黑户身份矛盾' };
+    }
+    // K5 富有 vs K27 黑户(反方向校验)
+    if (code === 'K5' && kArr.includes('K27')) {
+      return { ok:false, reason:'已选黑户身份,无法同时为帝国登记在册的富人' };
+    }
+    // ─── 新增:凭证 K28 教会侍从凭证 ───
+    if (code === 'K28' && c === 'C5') {
+      return { ok:false, reason:'机械神教培育人不走 Ecclesiarchy 渠道' };
+    }
+    // ─── 新增:凭证 K29 行政部办事编号 ───
+    if (code === 'K29') {
+      if (ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特走军方渠道,不与 Administratum 直接对接' };
+      if (SISTER_PROFESSIONS.includes(e)) return { ok:false, reason:'修女会走教会渠道,不与 Administratum 直接对接' };
+    }
+    // ─── 新增:凭证 K30 审判庭授权印鉴 ───
+    if (code === 'K30') {
+      const isIQ = e && IQ_PROFESSIONS.includes(e);
+      const isIQStance = d && IQ_STANCES.includes(d);
+      if (!isIQ && !isIQStance) {
+        return { ok:false, reason:'审判庭授权印鉴需要审判庭体系职业(E26-E32)或审判庭立场(D5-D8)' };
+      }
+    }
+
     // 上限校验(非取消的添加才算)
     if (!kArr.includes(code) && kArr.length >= K_MAX_PICKS) {
       return { ok:false, reason:`资源最多选 ${K_MAX_PICKS} 项,请先取消已选项` };
@@ -544,6 +724,14 @@ function isOptionAllowed(field, code, s = state) {
       return { ok:false, reason:'神教秘密需机械神教培育人(C5)' };
     }
 
+    // 灵能秘密硬锁:L26/L30/L31 需 M1+ 灵能身份(M 未选或 M0 缪级均视为非灵能者)
+    if (PSYKER_REQUIRED_SECRETS.includes(code)) {
+      const mVal = s.M;
+      if (!mVal || isRandomCode(mVal)) {
+        return { ok:false, reason:'需 M1+ 灵能身份(请先在灵能档案选定等级)' };
+      }
+    }
+
     // 上限校验(非取消的添加才算)
     if (!lArr.includes(code) && lArr.length >= L_MAX_PICKS) {
       return { ok:false, reason:`秘密最多选 ${L_MAX_PICKS} 项,请先取消已选项` };
@@ -555,7 +743,7 @@ function isOptionAllowed(field, code, s = state) {
     if (c === 'C2' && HEAVY_AUG.includes(code)) return { ok:false, reason:'不可接触者无法被祝圣,机械教不会为其改造' };
     if (SISTER_PROFESSIONS.includes(e) && HEAVY_AUG.includes(code)) return { ok:false, reason:'修女会强调纯洁血肉,不接受义体' };
     if (ASTARTES.includes(e) && ['Q3','Q5'].includes(code)) return { ok:false, reason:'阿斯塔特不应存在慢病或药瘾' };
-    if (['E1','E7','E19','E39','E44'].includes(e) && code === 'Q8') return { ok:false, reason:'该职业不可能身体大部分机械化' };
+    if (['E1','E7','E19','E25','E40','E45'].includes(e) && code === 'Q8') return { ok:false, reason:'该职业不可能身体大部分机械化' };
     if (code === 'Q10' && d === 'D5') return { ok:false, reason:'纯洁派不容隐性改造' };
   }
 
@@ -578,12 +766,12 @@ function isOptionAllowed(field, code, s = state) {
       return { ok:false, reason:'导航术仅限领航者血统(C3)' };
     }
     // E31 星语者强制 W1 感应术
-    if (e === 'E31' && c !== 'C3' && code !== 'W1') {
+    if (e === 'E32' && c !== 'C3' && code !== 'W1') {
       return { ok:false, reason:'星语者主流派固定为感应术(W1)' };
     }
     // W6 神圣恶魔学:Q2=B,需 D5 纯洁派立场 或 E23 翡翠龙战团修士 或 E26 神秘学者
     if (code === 'W6') {
-      const allowed = d === 'D5' || ['E23','E26'].includes(e);
+      const allowed = d === 'D5' || ['E23','E27'].includes(e);
       if (!allowed) return { ok:false, reason:'神圣恶魔学需 D5 纯洁派授权,或 E23 翡翠龙修士 / E26 神秘学者身份' };
     }
     // W7 邪恶恶魔学:硬封禁规则
@@ -612,7 +800,7 @@ function isOptionAllowed(field, code, s = state) {
     }
     // T6 神圣恶魔学(副):同 W6 限制
     if (code === 'T6') {
-      const allowed = d === 'D5' || ['E23','E26'].includes(e);
+      const allowed = d === 'D5' || ['E23','E27'].includes(e);
       if (!allowed) return { ok:false, reason:'神圣恶魔学(副)需 D5 纯洁派授权,或 E23 / E26 职业' };
     }
     // T7 邪恶恶魔学(副):同 W7 限制
@@ -636,7 +824,7 @@ function isOptionAllowed(field, code, s = state) {
     if (code === 'U10' && nArr.length === 0) return { ok:false, reason:'"守护"必须有具体守护对象,请先选择羁绊' };
     if (code === 'U6' && (d === 'D1' || stanceTag(d) === 'iq' || stanceTag(d) === 'mech')) return { ok:false, reason:'"逃亡"与当前组织立场矛盾' };
     if (code === 'U12' && (ORG_PROFESSIONS_FOR_U12.includes(e) || c === 'C3' || c === 'C5')) return { ok:false, reason:'组织化身份不适合"漂泊"动机' };
-    if (code === 'U14' && (e === 'E10' || ASTARTES.includes(e))) return { ok:false, reason:'当前职业不适合"猎艳"动机' };
+    if (code === 'U14' && (e === 'E10' || e === 'E25' || ASTARTES.includes(e))) return { ok:false, reason:'当前职业不适合"猎艳"动机' };
     // [3] 无知者(C2)反灵能闭环:没有"灵性诅咒"可解
     if (code === 'U11' && c === 'C2') return { ok:false, reason:'无知者灵魂缺位,没有"灵性诅咒"可解' };
     // 阿斯塔特额外动机限制
@@ -735,11 +923,11 @@ function getWarnings() {
       }
     } else {
       const check = isOptionAllowed(f, state[f]);
-      if (!check.ok) warnings.push(`${f}${state[f]?.replace(/^[A-Z]/,'')}: ${check.reason}`);
+      if (!check.ok) warnings.push(`${state[f]}: ${check.reason}`);
     }
   }
   // 灵能档案字段(条件性):M / W / T 需在面板触发时校验
-  const isPsykerProf = ['E30','E31','E32'].includes(state.E);
+  const isPsykerProf = ['E31','E32','E33'].includes(state.E);
   const isNavigator = state.C === 'C3';
   if (isPsykerProf || isNavigator) {
     if (state.M) {
@@ -763,6 +951,7 @@ function getWarnings() {
   if (state.H === 'H25' && !state.H_CUSTOM.trim()) warnings.unshift('你选择了自定义出身,但还没有填写内容。');
   if (state.S === 'S23' && !state.S_CUSTOM.trim()) warnings.unshift('你选择了自定义场景,但还没有填写内容。');
   if (state.C === 'C6' && !state.C_CUSTOM.trim()) warnings.unshift('你选择了自定义种族,但还没有填写内容。');
+  if (state.TH === 'TH15' && !state.TH_CUSTOM.trim()) warnings.unshift('你选择了自定义帝皇形象,但还没有填写内容。');
   if ((state.E === 'E21' || state.E === 'E24') && !state.E21_CHAPTER) warnings.unshift('阿斯塔特修士需指定母战团/基因种子来源。');
   return warnings;
 }
@@ -779,6 +968,36 @@ function getLoreWarnings() {
   // [12] K15 持有本身即为定罪证据
   if (kArr.includes('K15')) {
     list.push({ level:'soft', message:'K15 异端嫌疑物 · 持有本身即可被审判庭定罪,请谨慎暴露。' });
+  }
+
+  // ─── 新增 K20/K22 现金流软提示(雇佣关系需稳定财务) ───
+  const hasCashflow = kArr.some(k => ['K3','K4','K5'].includes(k));
+  if ((kArr.includes('K20') || kArr.includes('K22')) && !hasCashflow) {
+    list.push({ level:'soft', message:'K20 武装侍卫 / K22 签约打手 · 长期雇佣需稳定现金流(无 K3+ 财务时,关系容易在剧情中破裂)。' });
+  }
+  // K23 债奴 flavor:40K 帝国背景说明
+  if (kArr.includes('K23')) {
+    list.push({ level:'flavor', message:'K23 债奴 · 40K 帝国债务奴役合法,但你的角色每天都得面对仇视的目光。' });
+  }
+  // K22 签约打手 + D5 纯洁派:风味提示
+  if (kArr.includes('K22') && state.D === 'D5') {
+    list.push({ level:'flavor', message:'K22 签约打手 + D5 纯洁派 · 纯洁派教条上理应亲手为之,雇佣打手会被同僚视为软弱。' });
+  }
+  // K27 黑户 + L1 伪造身份:风味
+  if (kArr.includes('K27') && asArray(state.L).includes('L1')) {
+    list.push({ level:'flavor', message:'K27 黑户 + L1 伪造身份 · 你完全无依据,所有的"你"都是你自己造的。' });
+  }
+  // K27 黑户 + N11 审判庭线人:风味
+  if (kArr.includes('K27') && asArray(state.N).includes('N11')) {
+    list.push({ level:'flavor', message:'K27 黑户 + N11 审判庭线人 · 黑户却为审判庭做事——他们用你正是因为你不存在。' });
+  }
+  // K30 印鉴 + K15 异端物:审查风险
+  if (kArr.includes('K30') && kArr.includes('K15')) {
+    list.push({ level:'soft', message:'K30 审判庭印鉴 + K15 异端嫌疑物 · 你被审判庭授权,又持禁物——任何内部审查都会要你的命。' });
+  }
+  // K30 印鉴 + K27 黑户:身份悖论
+  if (kArr.includes('K30') && kArr.includes('K27')) {
+    list.push({ level:'soft', message:'K30 审判庭印鉴 + K27 黑户 · 一份指向"你"的官方授权,但"你"在档案中不存在;任何核查都将引发严重风险。' });
   }
   // 高风险 L 项的隐性提示
   if (lArr.includes('L9')) {
@@ -797,8 +1016,57 @@ function getLoreWarnings() {
     list.push({ level:'soft', message:'L25 第三阶禁忌线索 · 极度危险,任何泄露都可能引来焚化处决。' });
   }
 
+  // ─── 新增灵能向秘密 L26-L31 ───
+  if (lArr.includes('L26')) {
+    list.push({ level:'soft', message:'L26 灵能档案涂改 · 涂改者与涂改内容均不可知,可能在剧情中被追溯。' });
+  }
+  if (lArr.includes('L27')) {
+    list.push({ level:'soft', message:'L27 亚空间记忆缺失 · 这段空白里可能发生了你不知道的事(感染/接触/契约)。' });
+  }
+  if (lArr.includes('L28')) {
+    list.push({ level:'soft', message:'L28 接触灵能候选者 · 黑舰流程不容旁观,该候选者去向与你的接触都可能被追查。' });
+  }
+  if (lArr.includes('L29')) {
+    list.push({ level:'soft', message:'L29 微小腐化痕迹 · 开局即设微染状态(腐化度 ~10),状态栏会逐步显化(瞳孔反光/骨骼异色等)。' });
+  }
+  if (lArr.includes('L30')) {
+    list.push({ level:'soft', message:'L30 来历不明的星语讯息 · 发送者身份不明,可能是诱饵、伪装或亚空间实体的召唤。' });
+  }
+  if (lArr.includes('L31')) {
+    list.push({ level:'soft', message:'L31 灵能幻觉应验 · 你的占视能力可能已自发觉醒,审判庭对此类案例长期建档。' });
+  }
+
+  // ─── 新增非灵能秘密 L32-L36 ───
+  if (lArr.includes('L32')) {
+    list.push({ level:'flavor', message:'L32 应该已死之人 · 此人可能是诈死者、克隆体、记忆改写产物,或异端复活实验幸存者。' });
+  }
+  if (lArr.includes('L33')) {
+    list.push({ level:'soft', message:'L33 重复档案 · 行政机关录入错误,或你被某机构秘密标记为多重身份。' });
+  }
+  if (lArr.includes('L34')) {
+    list.push({ level:'soft', message:'L34 来历不明的资金 · 每月按时到账,可能是有人在赎你、买你,或等你应承一笔旧账。' });
+  }
+  if (lArr.includes('L35')) {
+    list.push({ level:'soft', message:'L35 未注册次级教派 · 帝国教会未必视其为异端,但被发现仍是麻烦。' });
+  }
+  if (lArr.includes('L36')) {
+    list.push({ level:'flavor', message:'L36 预言指向之人 · 你不知道预言内容,但有人知道,并在等你应验。' });
+  }
+
+  // ─── 重叠组合(软提示,不互斥) ───
+  if (lArr.includes('L9') && (lArr.includes('L26') || lArr.includes('L29'))) {
+    list.push({ level:'soft', message:'L9 潜伏异常 + L26/L29 · 多重未知异常叠加,角色背景张力极高,堕落剧情风险显著。' });
+  }
+  if (lArr.includes('L14') && lArr.includes('L31')) {
+    list.push({ level:'soft', message:'L14 非人低语 + L31 幻觉应验 · 灵能/混沌嫌疑强烈凝聚,适合资深灵能玩家。' });
+  }
+  // L29 + 已有灵能身份:腐化在状态栏已被追踪,L29 此时表达"额外的不可见痕迹"
+  if (lArr.includes('L29') && state.M && !isRandomCode(state.M)) {
+    list.push({ level:'flavor', message:'L29 + 灵能身份 · 灵能者本就在状态栏跟踪腐化,此项解读为"额外的隐性痕迹",含义有重叠。' });
+  }
+
   // 风味提示(flavor):仅在路线高度凝聚时触发,用于鼓励
-  if (state.C === 'C5' && state.E === 'E33') {
+  if (state.C === 'C5' && state.E === 'E34') {
     list.push({ level:'flavor', message:'机械神教培育人 + 初级神甫 · 火星教条路线纯度极高。' });
   }
   if ((state.E === 'E21' || state.E === 'E24') && state.E21_CHAPTER) {
@@ -817,7 +1085,7 @@ function getLoreWarnings() {
   if (state.M === 'M6') {
     list.push({ level:'soft', message:'M6 阿尔法级 · 此等级灵能者会被审判庭终生追踪,亚空间反弹与恶魔注视风险极高。' });
   }
-  if (state.E === 'E32' && state.W === 'W7') {
+  if (state.E === 'E33' && state.W === 'W7') {
     list.push({ level:'soft', message:'未登记灵能者 + 邪恶恶魔学 · 双重通缉,任何接触审判庭体系都将立即定罪。' });
   }
   if (asArray(state.L).includes('L14') && (state.W === 'W7' || state.T === 'T7')) {
@@ -828,10 +1096,10 @@ function getLoreWarnings() {
   if (state.C === 'C3' && state.W === 'W8') {
     list.push({ level:'flavor', message:'领航者血统 + 导航术 · 标准世系路线,可在亚空间航行中扮演核心角色。' });
   }
-  if (state.E === 'E31' && state.W === 'W1' && state.M) {
+  if (state.E === 'E32' && state.W === 'W1' && state.M) {
     list.push({ level:'flavor', message:`星语者 + 感应术 + ${state.M} · 跨星通讯专长,适合作为剧情信息节点。` });
   }
-  if ((state.E === 'E23' || state.E === 'E26') && state.W === 'W6') {
+  if ((state.E === 'E23' || state.E === 'E27') && state.W === 'W6') {
     list.push({ level:'flavor', message:'神圣恶魔学持有者 · 罕见的合法驱魔者,审判庭/灰骑士体系核心战力。' });
   }
 
@@ -839,30 +1107,49 @@ function getLoreWarnings() {
 }
 
 function buildPayload() {
-  // K/L/N 是数组,其他单值
+  // [v3 内联标签格式] 让 payload 自带"code·label"翻译,世界书不再需要映射表。
+  // 内部工具:为每个 code 拼接 label,过滤掉"（手动输入...）"这种纯 UI 文案。
+  const cleanLabel = (label) => String(label || '').replace(/（手动输入[^）]*）/g, '').trim();
+  const tagged = (field, code) => {
+    if (!code) return '';
+    // [v4] P 字段:有具名真名则直接输出真名(完全剧透,无翻译层)
+    if (field === 'P' && P_FATE_NAMES[code]) {
+      return `${code}·${P_FATE_NAMES[code]}`;
+    }
+    // [v4] N 字段:有隐藏真名则直接输出真名替代类型化标签
+    if (field === 'N' && N_HIDDEN_NAMES[code]) {
+      return `${code}·${N_HIDDEN_NAMES[code]}`;
+    }
+    const label = cleanLabel(getOptionLabel(field, code));
+    return (label && label !== code) ? `${code}·${label}` : code;
+  };
+
   const codes = PANEL_ORDER.map((field) => {
     if (field === 'K' || field === 'N' || field === 'L') {
       const arr = asArray(state[field]);
-      return arr.length ? arr.join(' ') : `${field}0`;  // 空数组用 K0/L0/N0 代表"无"
+      if (!arr.length) return `${field}0·无`;  // 空数组用 K0/L0/N0·无
+      return arr.map(c => tagged(field, c)).join(' ');
     }
-    return state[field];
+    return tagged(field, state[field]);
   }).join(' ');
+
   const extra = [];
   if (state.B === 'B1' && state.NAME.trim()) extra.push(`名字:${state.NAME.trim()}`);
   if (state.C === 'C6' && state.C_CUSTOM.trim()) extra.push(`自定义种族:${state.C_CUSTOM.trim()}`);
   if (state.H === 'H25' && state.H_CUSTOM.trim()) extra.push(`自定义出身:${state.H_CUSTOM.trim()}`);
   if (state.S === 'S23' && state.S_CUSTOM.trim()) extra.push(`自定义开场地点:${state.S_CUSTOM.trim()}`);
+  if (state.TH === 'TH15' && state.TH_CUSTOM.trim()) extra.push(`自定义帝皇形象:${state.TH_CUSTOM.trim()}`);
   if ((state.E === 'E21' || state.E === 'E24') && state.E21_CHAPTER) {
     const chapterLabel = DEATHWATCH_CHAPTERS.find(([c]) => c === state.E21_CHAPTER)?.[1] || state.E21_CHAPTER;
     const tag = state.E === 'E21' ? '母战团' : '基因种子来源';
-    extra.push(`${tag}:${state.E21_CHAPTER} · ${chapterLabel}`);
+    extra.push(`${tag}:${state.E21_CHAPTER}·${chapterLabel}`);
   }
   // 灵能档案:只在 M 已声明时输出
   if (state.M) {
     const mLabel = getOptionLabel('M', state.M);
     const wLabel = state.W ? getOptionLabel('W', state.W) : '(未声明主流派)';
     const tLabel = (state.T && state.T !== 'T0') ? getOptionLabel('T', state.T) : '(无副流派)';
-    extra.push(`灵能档案:${state.M}·${mLabel.split(' / ')[0]} · ${state.W || 'W-'}·${wLabel.split(' / ')[0]} · ${state.T || 'T0'}·${tLabel.split('（')[0].trim()}`);
+    extra.push(`灵能档案:${state.M}·${mLabel.split(' / ')[0]} · ${state.W || 'W-'}·${wLabel.split('（')[0]} · ${state.T || 'T0'}·${tLabel.split('（')[0].trim()}`);
   }
   if (state.EXTRA.trim()) extra.push(`额外补充:${state.EXTRA.trim()}`);
   return extra.length ? `${codes}\n${extra.join('\n')}` : codes;
@@ -883,6 +1170,7 @@ function summaryValue(field) {
   if (field === 'C' && state.C === 'C6') return `C6 · ${state.C_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'H' && state.H === 'H25') return `H25 · ${state.H_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'S' && state.S === 'S23') return `S23 · ${state.S_CUSTOM.trim() || '(未填写)'}`;
+  if (field === 'TH' && state.TH === 'TH15') return `TH15 · ${state.TH_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'E' && (state.E === 'E21' || state.E === 'E24')) {
     const chapterCode = state.E21_CHAPTER;
     const tag = state.E === 'E21' ? '母战团' : '基因种子';
@@ -892,7 +1180,7 @@ function summaryValue(field) {
   return `${state[field]} · ${label}`;
 }
 function buildSummaryRows() {
-  const rows = [['名字', summaryValue('B')], ['血统', summaryValue('C')], ['年龄', summaryValue('F')], ['性别', summaryValue('G')], ['外貌', summaryValue('I')], ['身体', summaryValue('Q')], ['星界', summaryValue('A')], ['背景', summaryValue('H')], ['立场', summaryValue('D')], ['职业', summaryValue('E')], ['资源', summaryValue('K')], ['秘密', summaryValue('L')], ['羁绊', summaryValue('N')], ['命运将至之人', summaryValue('P')], ['开场', summaryValue('S')], ['动机', summaryValue('U')], ['节奏', summaryValue('V')], ['主线', summaryValue('J')]];
+  const rows = [['名字', summaryValue('B')], ['血统', summaryValue('C')], ['年龄', summaryValue('F')], ['性别', summaryValue('G')], ['外貌', summaryValue('I')], ['身体', summaryValue('Q')], ['星界', summaryValue('A')], ['背景', summaryValue('H')], ['立场', summaryValue('D')], ['职业', summaryValue('E')], ['资源', summaryValue('K')], ['秘密', summaryValue('L')], ['羁绊', summaryValue('N')], ['命运将至之人', summaryValue('P')], ['开场', summaryValue('S')], ['动机', summaryValue('U')], ['节奏', summaryValue('V')], ['帝皇形象', summaryValue('TH')], ['主线', summaryValue('J')]];
   // 灵能档案行(仅触发时)
   if (state.M) {
     const mLabel = getOptionLabel('M', state.M);
@@ -925,7 +1213,7 @@ function getRouteHintRows() {
     if (state.T && state.T !== 'T0') {
       rows.push(['副流派', `${state.T} · ${getOptionLabel('T', state.T).split('（')[0].trim()}`]);
     }
-    rows.push(['监察', state.E === 'E32' ? '未登记,极高风险' : (state.C === 'C3' ? '领航者世系自治' : '受帝国黑舰祝圣')]);
+    rows.push(['监察', state.E === 'E33' ? '未登记,极高风险' : (state.C === 'C3' ? '领航者世系自治' : '受帝国黑舰祝圣')]);
     return rows;
   }
   if (stanceTag(state.D) === 'iq' || IQ_PROFESSIONS.includes(state.E)) return [['路线','审判庭相关'], ['立场', getOptionLabel('D', state.D)], ['职务', getOptionLabel('E', state.E)], ['风险','需服从审判庭档案与保密层级']];
@@ -939,10 +1227,11 @@ function canProceedFromPage(page) {
   if (fields.includes('C') && state.C === 'C6' && !state.C_CUSTOM.trim()) return { ok:false, message:'请填写自定义种族,或选择固定血统。' };
   if (fields.includes('H') && state.H === 'H25' && !state.H_CUSTOM.trim()) return { ok:false, message:'请填写自定义出身,或选择固定出身。' };
   if (fields.includes('S') && state.S === 'S23' && !state.S_CUSTOM.trim()) return { ok:false, message:'请填写自定义开场地点,或选择固定开场地点。' };
+  if (fields.includes('TH') && state.TH === 'TH15' && !state.TH_CUSTOM.trim()) return { ok:false, message:'请填写自定义帝皇形象,或选择固定形象。' };
   if (fields.includes('E') && (state.E === 'E21' || state.E === 'E24') && !state.E21_CHAPTER) return { ok:false, message:'请为阿斯塔特修士选择母战团/基因种子来源,或改选其他职业。' };
   // 灵能档案必填(Page 3 触发):E30/E31/E32 灵能职业,或 C3 领航者
   if (fields.includes('E')) {
-    const needsPsyker = ['E30','E31','E32'].includes(state.E) || state.C === 'C3';
+    const needsPsyker = ['E31','E32','E33'].includes(state.E) || state.C === 'C3';
 // 注意:E26神秘学者**可选**填灵能,不强制
     if (needsPsyker) {
       if (!state.M) return { ok:false, message:'灵能档案未声明等级(M),请在加密档案面板中选择。' };
@@ -1383,7 +1672,7 @@ btn.addEventListener('click', () => {
   return btn;
 }
 function makeCustomBox(field) {
-  const map = { C:['C6','C_CUSTOM','自定义种族(描述外观、特征、能力倾向等,AI 会按你的描述演绎)'], H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'] };
+  const map = { C:['C6','C_CUSTOM','自定义种族(描述外观、特征、能力倾向等,AI 会按你的描述演绎)'], H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'], TH:['TH15','TH_CUSTOM','自定义帝皇形象(描述你心中至高的具体样貌:面容、年龄、神情、姿态、光感……AI 会按你描述演绎祈祷与默想场景)'] };
   const cfg = map[field]; if(!cfg) return null; const [code,key,title]=cfg;
   const box = document.createElement('div'); box.className = `wh40k-custom-box ${state[field]===code?'show':''}`; box.innerHTML = `<textarea rows="4" placeholder="${title}" >${escapeHtml(state[key]||'')}</textarea>`;
   box.querySelector('textarea').addEventListener('input', e => { state[key]=e.target.value; saveDraftState(); renderFooterWarnings(); }); return box;
@@ -1462,8 +1751,8 @@ function makeFieldSection(field) {
 // 触发条件:E ∈ {E30,E31,E32} 或 C === 'C3'(领航者)
 // 硬封锁:C === 'C2'(无知者,面板永不显示)
 function makePsykerPanel() {
-  const isPsykerProf = ['E30','E31','E32'].includes(state.E);
-  const isMystic = state.E === 'E26';  // 神秘学者可选触发
+  const isPsykerProf = ['E31','E32','E33'].includes(state.E);
+  const isMystic = state.E === 'E27';  // 神秘学者可选触发
   const isNavigator = state.C === 'C3';
   const shouldShow = isPsykerProf || isMystic || isNavigator;
   const hardBlock = state.C === 'C2';
@@ -1479,7 +1768,7 @@ function makePsykerPanel() {
 
   // 自动修正:E31 星语者强制 W1,C3 领航者强制 W8(以 C3 优先)
   if (isNavigator && state.W && state.W !== 'W8') { state.W = 'W8'; saveDraftState(); }
-  if (state.E === 'E31' && !isNavigator && state.W && state.W !== 'W1') { state.W = 'W1'; saveDraftState(); }
+  if (state.E === 'E32' && !isNavigator && state.W && state.W !== 'W1') { state.W = 'W1'; saveDraftState(); }
 
   // 自动修正:T 重复了 W 或 M 不够,清空 T
   const mIdx = parseInt((state.M || 'M0').replace('M','')) || 0;
@@ -1538,7 +1827,7 @@ function makePsykerPanel() {
   const wPicked = state.W ? `已选 ${state.W}` : '未声明';
   let wHint = '';
   if (isNavigator) wHint = ' · 领航者血统强制 W8 导航术';
-  else if (state.E === 'E31') wHint = ' · 星语者强制 W1 感应术';
+  else if (state.E === 'E32') wHint = ' · 星语者强制 W1 感应术';
   wWrap.innerHTML = `<div style="font-size:12px;color:#ff8a7a;margin-bottom:6px;font-weight:700;">▸ W 主流派 / Primary Discipline [${escapeHtml(wPicked)}]${escapeHtml(wHint)}</div>`;
   const wGrid = document.createElement('div'); wGrid.className = 'wh40k-options';
   OPTIONS.W.forEach(([code, label]) => {
