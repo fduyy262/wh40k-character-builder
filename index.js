@@ -433,8 +433,8 @@ const ORG_PROFESSIONS_FOR_U12 = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25'
 
 const XENOS_FATE_PERSONS = ['P8', 'P10', 'P11', 'P17', 'P19', 'P26'];
 
-// [v4 真名内联·完全剧透版] payload 直接输出真名,不再有"玩家面板看不到具名"的翻译层。
-// 类型化 NPC (P5/P7/P10/P14/P18/P20/P29/P30/P31) 不列入,由 AI 即兴生成。
+// [v5 真名+类型化备注] payload 直接输出"真名（类型化备注）",让 AI 一眼读懂身份与剧本定位。
+// 类型化 NPC (P5/P7/P10/P14/P18/P20/P29/P30/P31) 不列入,走 fallback 只出类型标签,由 AI 即兴生成。
 const P_FATE_NAMES = {
   P1:  '卢克蕾蒂娅-锈骨-IX',
   P2:  '莉亚·科尔特斯',
@@ -1112,7 +1112,7 @@ function buildPayload() {
   const cleanLabel = (label) => String(label || '').replace(/（手动输入[^）]*）/g, '').trim();
   const tagged = (field, code) => {
     if (!code) return '';
-    // [v4] P 字段:有具名真名则直接输出真名(完全剧透,无翻译层)
+    // [v4] P 字段:有具名真名则直接输出真名(payload 干净,避免类型词触发递归)
     if (field === 'P' && P_FATE_NAMES[code]) {
       return `${code}·${P_FATE_NAMES[code]}`;
     }
@@ -1176,6 +1176,10 @@ function summaryValue(field) {
     const tag = state.E === 'E21' ? '母战团' : '基因种子';
     const chapterLabel = chapterCode ? (DEATHWATCH_CHAPTERS.find(([c]) => c === chapterCode)?.[1] || chapterCode) : `(未指定${tag})`;
     return `${state.E} · ${label} / ${tag}:${chapterLabel}`;
+  }
+  // [v5] P 字段总览:具名 NPC 显示"真名（类型化备注）",与 UI 选项按钮保持一致
+  if (field === 'P' && P_FATE_NAMES[state.P]) {
+    return `${state.P} · ${P_FATE_NAMES[state.P]}（${label}）`;
   }
   return `${state[field]} · ${label}`;
 }
@@ -1692,7 +1696,17 @@ function makeFieldSection(field) {
     multiHint = `<div style="font-size:11px;color:#ffb84d;margin-bottom:6px;">[ 多选 · 已选 ${picked} / ${L_MAX_PICKS} 项 · 再次点击可取消 ]</div>`;
   }
   wrap.innerHTML = `<h3>&gt; ${escapeHtml(FIELD_TITLES[field])}</h3><div style="font-size:12px;color:#a89072;line-height:1.6;margin-bottom:10px;">${escapeHtml(FIELD_DESCRIPTIONS[field]||'')}</div>${multiHint}`;
-  const options = document.createElement('div'); options.className='wh40k-options'; OPTIONS[field].forEach(([c,l])=>options.appendChild(makeOptionButton(field,c,l))); wrap.appendChild(options);
+  const options = document.createElement('div'); options.className='wh40k-options';
+  // [v5] P 字段:UI 按钮显示"真名（类型化备注）",让玩家挑选时一目了然;
+  //      payload 输出由 tagged() 函数控制,只出真名,不受此影响
+  OPTIONS[field].forEach(([c,l])=>{
+    let displayLabel = l;
+    if (field === 'P' && P_FATE_NAMES[c]) {
+      displayLabel = `${P_FATE_NAMES[c]}（${l}）`;
+    }
+    options.appendChild(makeOptionButton(field,c,displayLabel));
+  });
+  wrap.appendChild(options);
   if(field==='B'){ const box=document.createElement('div'); box.className=`wh40k-name-box ${state.B==='B1'?'show':''}`; box.innerHTML=`<input type="text" placeholder="输入角色名字" value="${escapeHtml(state.NAME)}">`; box.querySelector('input').addEventListener('input',e=>{ state.NAME=e.target.value; saveDraftState(); renderFooterWarnings(); }); wrap.appendChild(box); }
 
   // [2] E21 死亡守望 + E24 初创子团:必须选择母战团/基因种子来源
