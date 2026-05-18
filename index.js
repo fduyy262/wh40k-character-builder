@@ -116,9 +116,10 @@ const OPTIONS = {
     ['A21', '哥利亚太空要塞（卡利亚星区-死亡守望要塞）'],
     ['A22', '新福吉斯（莫斯塔克扩区-锻造世界）'],
     ['A23', '瀛洲-21（卡利亚星区外围-翡翠龙战团母星·东亚隐修封建社会）'],
+    ['A24', '天鹰要塞（位置坐标已删除-禁军秘密据点·仅限 C6）'],
   ],
   B: [['B0', '默认（{{user}}）'], ['B1', '自定义名字']],
-  C: [['C1', '正常人类'], ['C2', '不可接触者'], ['C3', '领航者'], ['C4', '猫人'], ['C5', '机械神教培育人'], ['C6', '自定义种族（手动输入）']],
+  C: [['C1', '正常人类'], ['C2', '不可接触者'], ['C3', '领航者'], ['C4', '猫人'], ['C5', '机械神教培育人'], ['C6', '退役禁军（大叛乱后世代）'], ['C7', '自定义种族（手动输入）']],
   D: [
     ['D1', '人类帝国忠诚者'], ['D2', '边缘独立者 / 灰色地带'], ['D3', '潜在混沌信徒'], ['D4', '秘密的异形同情者'],
     ['D5', '审判庭-纯洁派'], ['D6', '审判庭-激进派'], ['D7', '审判庭-占视者派'], ['D8', '审判庭-妄尊异形派'],
@@ -134,8 +135,9 @@ const OPTIONS = {
     ['E26', '审判庭侍从'], ['E27', '审判庭神秘学者'], ['E28', '审判庭调查员'], ['E29', '审判官助理'], ['E30', '审判庭刺客契约人'], ['E31', '受批准灵能者'], ['E32', '星语者'], ['E33', '未登记灵能者'],
     ['E34', '机械神教初级神甫'], ['E35', '机械神教探索队正式成员'], ['E36', '护教军游侠'], ['E37', '遗传学探索者'], ['E38', '高阶考古学僧'], ['E39', '技术监工'],
     ['E40', '巢都帮派成员'], ['E41', '锯齿小子初级成员'], ['E42', '黑市情报贩子'], ['E43', '走私者'], ['E44', '冷交易走私人'], ['E45', '黑工坊学徒'], ['E46', '变体收容者'],
+    ['E47', '黑袍游荡监视者（仅限退役禁军 C6）'],
   ],
-  F: [['F1', '青年'], ['F2', '壮年'], ['F3', '中年'], ['F4', '年长']],
+  F: [['F1', '青年'], ['F2', '壮年'], ['F3', '中年'], ['F4', '年长'], ['F5', '永生（生物学不衰老，反应力随岁月微衰；仅限 C6 退役禁军）']],
   G: [['G1', '男'], ['G2', '女'], ['G3', '模糊/不明']],
   H: [
     ['H1', '正常家庭'], ['H2', '军队世家'], ['H3', '修道院孤儿'], ['H4', '上层家族'], ['H5', '文官出身'], ['H6', '新移民'],
@@ -227,6 +229,7 @@ const OPTIONS = {
     ['Q1', '健康（身体无明显问题，行动自如）'], ['Q2', '旧伤（身上有未完全愈合的伤，剧烈动作时会牵动疼痛）'], ['Q3', '慢病（长期疾病缠身，靠药维持，体力低于常人）'],
     ['Q4', '战伤（神经迟钝、步态异常或部分听力视力丧失）'], ['Q5', '药瘾（长期依赖镇痛剂、战地激素或廉价兴奋剂）'], ['Q6', '轻改（义眼或义肢，已被机械教祝圣，外观可见）'],
     ['Q7', '中改（多部位机械替换，机械结构占身体三分之一）'], ['Q8', '重改（身体大部分已机械化，机械神教高阶常态）'], ['Q9', '心创（战争创伤后遗症，特定刺激下会失控或解离）'], ['Q10', '隐改（身上藏着不能被发现的非人改造或异常基因）'],
+    ['Q11', '神圣残躯（古老禁军级义体；金色光泽残留，非机械神教祝圣体系；仅限 C6）'],
   ],
   S: [
     ['S1', '巢都街头（人挤人的下层街道，烟尘弥漫，叫卖声盖过祷词）'], ['S2', '廉价旅店（隔板薄、邻居不熟，随时有人敲门）'], ['S3', '圣堂内（香雾、圣像、低声诵念的祷词）'],
@@ -247,6 +250,8 @@ const OPTIONS = {
     ['S31', '死亡世界营地（临时帐篷、毒虫鸣叫、不睡觉的哨兵）'],
     ['S32', '私人医疗诊所（消毒水、低调的奢华、不问来路的医生）'],
     ['S33', '异形商人据点（异形语言交易、过于精美的商品、不该出现的香料）'],
+    ['S34', '残巢内部（黑曜石低台、墙上褪色的金色织物、低沉的金属回响；仅限 C6 + A24）'],
+    ['S35', '默祈室（金光涂层、绝对的寂静、只有自己呼吸的回响；仅限 C6）'],
     ['S23', '自定义场景（手动输入）'],
   ],
   U: [
@@ -431,6 +436,18 @@ const NO_BORROWED_SHIP = ['E7', 'E19', 'E40', 'E41', 'E45'];
 const ASSIGNED_TO_SHIP_OK = ['E3', 'E14', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E32', 'E35', 'E36'];
 const ORG_PROFESSIONS_FOR_U12 = ['E10', 'E11', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E32', 'E34', 'E35', 'E36', 'E37', 'E38', 'E39'];
 
+// ─── 帝皇之眼 / 退役禁军(C6)路线常量 ───
+// 允许的职业:E47 专属 + 6 个掩护身份(虚空类/审判庭非灵能类)
+const EYES_OF_EMPEROR_OK_E = ['E47', 'E15', 'E16', 'E17'];
+// 允许的出身:仅泰拉高门(军队世家/上层家族/没落古老家族) + 穿越者(罕见,但保留作为叙事钩子)
+const EYES_OF_EMPEROR_OK_H = ['H2', 'H4', 'H9', 'H13'];
+// 硬禁出生星界:A19 机械神教秘密区 + A21 死亡守望要塞
+const EYES_OF_EMPEROR_BAN_A = ['A19', 'A21'];
+// 硬锁身体状态:Q1健康/Q3慢病/Q5药瘾/Q7中改/Q8重改/Q10隐改
+const EYES_OF_EMPEROR_BAN_Q = ['Q1', 'Q3', 'Q5', 'Q7', 'Q8', 'Q10'];
+// 硬禁动机
+const EYES_OF_EMPEROR_BAN_U = ['U2', 'U4', 'U9', 'U12', 'U13', 'U14'];
+
 const XENOS_FATE_PERSONS = ['P8', 'P10', 'P11', 'P17', 'P19', 'P26'];
 
 // [v5 真名+类型化备注] payload 直接输出"真名（类型化备注）",让 AI 一眼读懂身份与剧本定位。
@@ -479,6 +496,7 @@ const ALLOWED_S_BY_PROFESSION = {
   E21:['S3','S7','S8','S9','S15','S16','S22','S29','S31'], E22:['S6','S7','S8','S9','S15','S16','S22','S29','S33'], E23:['S7','S8','S9','S10','S13','S15','S16','S31'], E24:['S7','S8','S9','S15','S16','S29','S31'],
   E25:['S7','S8','S9','S24','S29','S31'],
   E26:['S5','S8','S14','S21'], E27:['S5','S8','S16','S21','S28'], E28:['S2','S5','S6','S8','S14','S17','S25','S33'], E29:['S5','S8','S14','S16','S21'], E30:['S1','S2','S8','S14','S17'], E31:['S3','S8','S13'], E32:['S5','S8','S13','S25'], E33:['S1','S2','S6','S14','S19','S32'], E34:['S4','S22'], E35:['S4','S8','S15','S16','S22','S25'], E36:['S4','S15','S22'], E37:['S4','S18','S22','S32'], E38:['S4','S16','S21','S22','S28'], E39:['S4','S22'], E40:['S1','S2','S6','S14','S17','S30'], E41:['S1','S2','S6','S17','S30'], E42:['S1','S6','S9','S17','S33'], E43:['S5','S6','S8','S9','S25','S33'], E44:['S6','S8','S9','S16','S25','S33'], E45:['S2','S4','S6','S11','S17'], E46:['S1','S2','S6','S15','S19','S32'],
+  E47:['S1','S2','S6','S8','S9','S14','S17','S25','S34','S35'],
 };
 
 function isRandomCode(code) { return /^[A-Z]0$/.test(code); }
@@ -521,11 +539,18 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'C') return { ok: true };
 
   if (field === 'A') {
+    if (c === 'C6' && EYES_OF_EMPEROR_BAN_A.includes(code)) {
+      if (code === 'A19') return { ok:false, reason:'欧姆巴佩11号为机械神教秘密区,禁军未获授权进入' };
+      if (code === 'A21') return { ok:false, reason:'哥利亚要塞为死亡守望禁地,禁军与星际战士传统上互不顺眼' };
+    }
     if (code === 'A19' && e && !['E26','E27',...MECH_PROFESSIONS].includes(e)) return { ok:false, reason:'欧姆巴佩11号仅对机械神教与审判庭高层开放' };
     if (code === 'A21' && e !== 'E21') return { ok:false, reason:'哥利亚要塞仅对死亡守望开放' };
+    // A24 天鹰要塞:禁军秘密据点,仅 C6 知其存在
+    if (code === 'A24' && c !== 'C6') return { ok:false, reason:'天鹰要塞为禁军秘密据点,非禁军血统不知其存在' };
   }
 
   if (field === 'D') {
+    if (c === 'C6' && code !== 'D1') return { ok:false, reason:'退役禁军绝对忠于帝皇,仅允许 D1 帝国忠诚者立场' };
     if (dTag === 'mech' && c !== 'C5') return { ok:false, reason:'神教立场需机械神教培育人(C5)' };
     if (dTag !== 'mech' && c === 'C5') return { ok:false, reason:'机械神教培育人(C5)需神教立场' };
     if (e === 'E33' && dTag === 'iq') return { ok:false, reason:'审判庭立场会处决未登记灵能者' };
@@ -533,6 +558,19 @@ function isOptionAllowed(field, code, s = state) {
   }
 
   if (field === 'E') {
+    // ─── 帝皇之眼(C6)路线:白名单 + 早返回。覆盖常规 IQ/职业体系检查。 ───
+    // C6 只允许 E47(专属) 或 E15/E16/E17 作为掩护身份(虚空灰色身份;审判庭体系不在内,退役禁军不会反过来给审判庭跑腿)。
+    // 早返回设计:C6 + 其允许的职业凌驾于常规职业-立场配对规则。
+    if (c === 'C6') {
+      if (!EYES_OF_EMPEROR_OK_E.includes(code)) {
+        return { ok:false, reason:'退役禁军身份只允许 E47 专属或少数掩护身份(E15/E16/E17;审判庭体系不在内)' };
+      }
+      return { ok:true };
+    }
+    // E47 反向互斥:非 C6 不可选黑袍游荡监视者
+    if (code === 'E47') {
+      return { ok:false, reason:'黑袍游荡监视者仅限退役禁军(C6)' };
+    }
     if (eTag === 'mech' && c !== 'C5') return { ok:false, reason:'神教职业需机械神教培育人(C5)' };
     if (eTag !== 'mech' && c === 'C5') return { ok:false, reason:'机械神教培育人(C5)需神教职业' };
     if (eTag === 'iq' && d && stanceTag(d) !== 'iq') return { ok:false, reason:'仅限审判庭立场' };
@@ -561,7 +599,12 @@ function isOptionAllowed(field, code, s = state) {
   }
 
   if (field === 'G') { if (ASTARTES.includes(e) && code !== 'G1') return { ok:false, reason:'阿斯塔特仅限男性' }; if (e === 'E10' && code !== 'G2') return { ok:false, reason:'修女会仅限女性' }; }
+  if (field === 'F') {
+    if (c === 'C6' && code !== 'F5') return { ok:false, reason:'退役禁军生物学不衰老,年龄必为 F5 永生' };
+    if (code === 'F5' && c !== 'C6') return { ok:false, reason:'永生(生物学不衰老)仅限退役禁军(C6)' };
+  }
   if (field === 'H') {
+    if (c === 'C6' && code !== 'H25' && !EYES_OF_EMPEROR_OK_H.includes(code)) return { ok:false, reason:'退役禁军必须出身泰拉高门(军队世家 H2 / 上层家族 H4 / 没落的古老家族 H9) 或穿越者 (H13)' };
     if (c === 'C5' && !isMechBackground(code)) return { ok:false, reason:'机械神教培育人(C5)需神教背景' };
     if (c && c !== 'C5' && isMechBackground(code)) return { ok:false, reason:'神教背景需机械神教培育人(C5)' };
     if (code === 'H13' && ASTARTES.includes(e)) return { ok:false, reason:'阿斯塔特无法是穿越者' };
@@ -569,7 +612,7 @@ function isOptionAllowed(field, code, s = state) {
     if (e === 'E12' && code !== 'H25' && !NOBLE_OK_BG.includes(code)) return { ok:false, reason:'贵族通常不出身底层' };
     if (e === 'E18' && code !== 'H25' && !KNIGHT_OK_BG.includes(code)) return { ok:false, reason:'流浪骑士需贵族传承背景' };
     if (e === 'E25' && code !== 'H25' && !['H3','H15'].includes(code)) return { ok:false, reason:'风暴忠嗣军必须出身Schola Progenium(修道院孤儿H3或教会孤儿院H15)' };
-    if (code === 'H25' && (c === 'C3' || c === 'C5' || ASTARTES.includes(e))) return { ok:false, reason:'当前路线不允许自定义出身' };
+    if (code === 'H25' && (c === 'C3' || c === 'C5' || c === 'C6' || ASTARTES.includes(e))) return { ok:false, reason:'当前路线不允许自定义出身' };
   }
 
   // ─── K 字段(多选): 分类内互斥 + 财务联动 + 职业联动 ───
@@ -578,6 +621,15 @@ function isOptionAllowed(field, code, s = state) {
     // 分类内已有其他选项
     const conflictInCat = kArr.find(k => k !== code && K_CATEGORIES[k] === cat);
     if (conflictInCat) return { ok:false, reason:`同分类已选 ${conflictInCat},同类只能选一个` };
+
+    // ─── 帝皇之眼(C6)路线禁选 ───
+    if (c === 'C6') {
+      if (code === 'K9')  return { ok:false, reason:'退役禁军已脱离泰拉本家,无法回到家族房产' };
+      if (code === 'K15') return { ok:false, reason:'退役禁军绝对忠诚,不持异端嫌疑物' };
+      if (code === 'K16') return { ok:false, reason:'金色装备已上交军械大厅,退役禁军不会自有舰船' };
+      if (code === 'K18') return { ok:false, reason:'退役禁军已脱离一切舰队编制,不在大舰常驻服役' };
+      if (code === 'K20') return { ok:false, reason:'退役禁军超凡战力远超凡俗护卫,不雇佣武装侍卫' };
+    }
 
     // 财务 vs 居所/装备/飞船 互斥
     if (code === 'K1') {
@@ -703,6 +755,11 @@ function isOptionAllowed(field, code, s = state) {
       return { ok:false, reason:'无知者是灵能死区,不会被亚空间异常感染或感知' };
     }
 
+    // 退役禁军(C6)凌驾审判庭:不可能被审判庭审讯拘押
+    if (c === 'C6' && code === 'L16') {
+      return { ok:false, reason:'退役禁军凌驾审判庭权限,审判庭不可能拘押审讯禁军' };
+    }
+
     // [10] 修女会纯洁血肉:不容异端嫌疑(混沌嫌疑 + 异形遗物)
     if (SISTER_PROFESSIONS.includes(e) && ['L9','L14','L15'].includes(code)) {
       return { ok:false, reason:'修女会教条不容此类异端嫌疑' };
@@ -739,6 +796,14 @@ function isOptionAllowed(field, code, s = state) {
   }
 
   if (field === 'Q') {
+    // ─── 帝皇之眼(C6)路线 ───
+    if (c === 'C6' && EYES_OF_EMPEROR_BAN_Q.includes(code)) {
+      return { ok:false, reason:'此身体状态与退役禁军身份不符(健康/慢病/药瘾/中改/重改/隐改均不允许)' };
+    }
+    // Q11 神圣残躯反向互斥:非 C6 不可选
+    if (code === 'Q11' && c !== 'C6') {
+      return { ok:false, reason:'神圣残躯仅限退役禁军(C6)' };
+    }
     if (c === 'C3' && MEDIUM_HEAVY_AUG.includes(code)) return { ok:false, reason:'领航者身体脆弱,无法叠加重度改造' };
     if (c === 'C2' && HEAVY_AUG.includes(code)) return { ok:false, reason:'不可接触者无法被祝圣,机械教不会为其改造' };
     if (SISTER_PROFESSIONS.includes(e) && HEAVY_AUG.includes(code)) return { ok:false, reason:'修女会强调纯洁血肉,不接受义体' };
@@ -751,12 +816,14 @@ function isOptionAllowed(field, code, s = state) {
   if (field === 'M') {
     // 唯一硬封禁:不可接触者灵魂缺位,不可能有灵能等级(世界观底层规则,非强度限制)
     if (c === 'C2') return { ok:false, reason:'无知者灵魂缺位,无灵能等级' };
+    if (c === 'C6') return { ok:false, reason:'退役禁军不属于灵能者体系' };
     // 其他职业/血统的强度限制全部开放:玩家自行选择,AI 按设定演绎后果
   }
 
   // ─── W 字段:主流派(条件性) ───
   if (field === 'W') {
     if (c === 'C2') return { ok:false, reason:'无知者灵魂缺位,无灵能流派' };
+    if (c === 'C6') return { ok:false, reason:'退役禁军不属于灵能者体系' };
     // C3 领航者强制 W8 导航术
     if (c === 'C3' && code !== 'W8') {
       return { ok:false, reason:'领航者主流派固定为导航术(W8)' };
@@ -786,6 +853,7 @@ function isOptionAllowed(field, code, s = state) {
   // ─── T 字段:副流派(M3 起开放,条件性) ───
   if (field === 'T') {
     if (c === 'C2') return { ok:false, reason:'无知者灵魂缺位,无副流派' };
+    if (c === 'C6') return { ok:false, reason:'退役禁军不属于灵能者体系' };
     // T0 = 不选副流派,任何时候可点
     if (code === 'T0') return { ok:true };
     // M < M3 时禁选
@@ -816,10 +884,27 @@ function isOptionAllowed(field, code, s = state) {
     if (code === 'S23') return { ok:true };
     if (a === 'A19' && !['S8','S22','S23'].includes(code)) return { ok:false, reason:'欧姆巴佩11号只允许舰内或神甫居所开场' };
     if (a === 'A21' && !['S3','S8','S22','S23'].includes(code)) return { ok:false, reason:'哥利亚要塞只允许圣堂/舰内/神甫居所开场' };
+    // A24 天鹰要塞:残巢内部(S34)/默祈室(S35)/缄默之翼号舰内(S8)/亚空间航行中(S25,即缄默之翼号执行任务)/自定义(S23)
+    if (a === 'A24' && !['S8','S23','S25','S34','S35'].includes(code)) return { ok:false, reason:'天鹰要塞起源只允许残巢内部(S34)/默祈室(S35)/舰内(S8)/亚空间航行中(S25)/自定义(S23)开场' };
+    // S34/S35 反向互斥:S34 严格绑定 A24 + C6,S35 仅要求 C6
+    if (code === 'S34' && (c !== 'C6' || a !== 'A24')) return { ok:false, reason:'残巢内部仅限 C6 退役禁军 + A24 天鹰要塞起源' };
+    if (code === 'S35' && c !== 'C6') return { ok:false, reason:'默祈室为禁军级冥想空间,仅限 C6 退役禁军' };
     if (e && ALLOWED_S_BY_PROFESSION[e] && !ALLOWED_S_BY_PROFESSION[e].includes(code)) return { ok:false, reason:'该开场地点与当前职业不合' };
   }
 
   if (field === 'U') {
+    // ─── 帝皇之眼(C6)路线动机禁选 ───
+    if (c === 'C6' && EYES_OF_EMPEROR_BAN_U.includes(code)) {
+      const c7Reasons = {
+        U2: '禁军入会即斩断家庭联系,不存在"寻亲"',
+        U4: '退役禁军不为财富所动',
+        U9: '退役禁军无个人野心',
+        U12: '使命未尽,退役禁军不可能漂泊',
+        U13: '退役禁军不会选择安分度日',
+        U14: '退役禁军超越凡俗情欲'
+      };
+      return { ok:false, reason: c7Reasons[code] };
+    }
     if (code === 'U2' && nArr.includes('N1')) return { ok:false, reason:'"寻亲"与"家人仍在"逻辑矛盾' };
     if (code === 'U10' && nArr.length === 0) return { ok:false, reason:'"守护"必须有具体守护对象,请先选择羁绊' };
     if (code === 'U6' && (d === 'D1' || stanceTag(d) === 'iq' || stanceTag(d) === 'mech')) return { ok:false, reason:'"逃亡"与当前组织立场矛盾' };
@@ -884,10 +969,15 @@ if (field === 'N') {
     const selectedD = field === 'D' ? code : d;
     const selectedE = field === 'E' ? code : e;
     const selectedA = field === 'A' ? code : a;
+    const selectedC = field === 'C' ? code : c;
     const selectedK = field === 'K' ? [...kArr, code].filter((v,i,arr)=>arr.indexOf(v)===i) : kArr;
     const selectedL = field === 'L' ? [...lArr, code].filter((v,i,arr)=>arr.indexOf(v)===i) : lArr;
     const selectedN = field === 'N' ? [...nArr, code].filter((v,i,arr)=>arr.indexOf(v)===i) : nArr;
 
+    // 退役禁军(C6):异形命运之人与禁军绝对忠诚冲突
+    if (selectedC === 'C6') {
+      return { ok:false, reason:'退役禁军绝对忠于帝皇,不会与异形结成命运羁绊' };
+    }
     if (XENOS_HARD_BAN_STANCES.includes(selectedD)) {
       return { ok:false, reason:'当前立场不会容忍异形命运之人' };
     }
@@ -950,7 +1040,7 @@ function getWarnings() {
   if (state.B === 'B1' && !state.NAME.trim()) warnings.unshift('你选择了自定义名字,但还没有填写名字。');
   if (state.H === 'H25' && !state.H_CUSTOM.trim()) warnings.unshift('你选择了自定义出身,但还没有填写内容。');
   if (state.S === 'S23' && !state.S_CUSTOM.trim()) warnings.unshift('你选择了自定义场景,但还没有填写内容。');
-  if (state.C === 'C6' && !state.C_CUSTOM.trim()) warnings.unshift('你选择了自定义种族,但还没有填写内容。');
+  if (state.C === 'C7' && !state.C_CUSTOM.trim()) warnings.unshift('你选择了自定义种族,但还没有填写内容。');
   if (state.TH === 'TH15' && !state.TH_CUSTOM.trim()) warnings.unshift('你选择了自定义帝皇形象,但还没有填写内容。');
   if ((state.E === 'E21' || state.E === 'E24') && !state.E21_CHAPTER) warnings.unshift('阿斯塔特修士需指定母战团/基因种子来源。');
   return warnings;
@@ -1103,6 +1193,50 @@ function getLoreWarnings() {
     list.push({ level:'flavor', message:'神圣恶魔学持有者 · 罕见的合法驱魔者,审判庭/灰骑士体系核心战力。' });
   }
 
+  // ─── 帝皇之眼(C6)路线 flavor / soft 提示 ───
+  if (state.C === 'C6') {
+    if (state.E === 'E47') {
+      list.push({ level:'flavor', message:'C6 + E47 · 标准黑袍监视者路线,孤独而清晰。你只是一双眼睛。' });
+    }
+    if (['E15','E16','E17'].includes(state.E)) {
+      list.push({ level:'flavor', message:`C6 + ${state.E} · 虚空游荡的掩护身份,适合在星港与边缘世界保持低调。` });
+    }
+    if (state.Q === 'Q11') {
+      list.push({ level:'flavor', message:'Q11 神圣残躯 · 金色残骸持续提醒你曾经的辉煌与失败。每次拆解维护,都是私密的告解。' });
+    }
+    if (state.Q === 'Q9') {
+      list.push({ level:'flavor', message:'Q9 心创 · 未尽守护已化为不眠之愧,夜里总会想起那一刻。' });
+    }
+    if (state.Q === 'Q4') {
+      list.push({ level:'flavor', message:'Q4 战伤 · 你确切知道是哪一击让你不再适合守在金宫的门前。' });
+    }
+    if (state.U === 'U5' || state.U === 'U7' || state.U === 'U10') {
+      list.push({ level:'flavor', message:`C6 + ${state.U} · 使命/救赎/守护——与退役禁军的存在意义高度吻合。` });
+    }
+    // F5 永生 flavor:体现生物学不衰老 + 反应力衰减的核心矛盾
+    if (state.F === 'F5') {
+      list.push({ level:'flavor', message:'F5 永生 · 你生物学上不会衰老,镜中容貌停在盛年——但你的反应力比起金宫值勤时已慢了千分之几秒,而这就足以让你认为自己不再配守护帝皇。' });
+    }
+    // A24 天鹰要塞 flavor:秘密据点标注
+    if (state.A === 'A24') {
+      list.push({ level:'flavor', message:'A24 天鹰要塞 · 你的起源坐标在所有公开档案中已被涂黑,只有禁军内部还知道你曾从这扇门走出。剧情中如何描述这里,由你与 AI 共同填补。' });
+    }
+    // S34 残巢内部 flavor:议事场景
+    if (state.S === 'S34') {
+      list.push({ level:'flavor', message:'S34 残巢内部 · 开场置于残翼厅:黑曜石低台、未涂装的金属座椅、空气里有金属、机油与隔壁义体工坊飘来的消毒水气味。此刻可能正在与同袍交换情报,或独自一人等待任务派遣。' });
+    }
+    // S35 默祈室 flavor:独处冥想
+    if (state.S === 'S35') {
+      list.push({ level:'flavor', message:'S35 默祈室 · 开场置于禁军级冥想空间:墙面微弱的金光涂层、绝对的寂静、只能听见自己呼吸。此刻你或许正在尝试接收来自金宫的梦境讯息——但讯息从未在你期望的时候到来。' });
+    }
+    // H13 穿越者 + C6 flavor:极罕见组合
+    if (state.H === 'H13') {
+      list.push({ level:'soft', message:'H13 穿越者 + 退役禁军 · 极罕见组合。来自异世界的灵魂,却被选为帝皇最贴身的卫士——你的存在本身就是禁军内部最高级别机密之一。AI 应当谨慎处理此身世,避免轻易让其他 NPC 察觉。' });
+    }
+    // M41.846 时代标注:大裂隙尚未到来,Eyes Unblinded 形态尚未出现
+    list.push({ level:'flavor', message:'C6 时代标注 · 现 M41.846,距大裂隙仍有时日,你仍以独行监视者身份秘密行动,尚未被迫直接下场。' });
+  }
+
   return list;
 }
 
@@ -1135,7 +1269,7 @@ function buildPayload() {
 
   const extra = [];
   if (state.B === 'B1' && state.NAME.trim()) extra.push(`名字:${state.NAME.trim()}`);
-  if (state.C === 'C6' && state.C_CUSTOM.trim()) extra.push(`自定义种族:${state.C_CUSTOM.trim()}`);
+  if (state.C === 'C7' && state.C_CUSTOM.trim()) extra.push(`自定义种族:${state.C_CUSTOM.trim()}`);
   if (state.H === 'H25' && state.H_CUSTOM.trim()) extra.push(`自定义出身:${state.H_CUSTOM.trim()}`);
   if (state.S === 'S23' && state.S_CUSTOM.trim()) extra.push(`自定义开场地点:${state.S_CUSTOM.trim()}`);
   if (state.TH === 'TH15' && state.TH_CUSTOM.trim()) extra.push(`自定义帝皇形象:${state.TH_CUSTOM.trim()}`);
@@ -1167,7 +1301,7 @@ function summaryValue(field) {
   }
   const label = getOptionLabel(field, state[field]);
   if (field === 'B') return state.B === 'B1' ? `B1 · ${state.NAME.trim() || '(未填写)'}` : 'B0 · 默认({{user}})';
-  if (field === 'C' && state.C === 'C6') return `C6 · ${state.C_CUSTOM.trim() || '(未填写)'}`;
+  if (field === 'C' && state.C === 'C7') return `C7 · ${state.C_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'H' && state.H === 'H25') return `H25 · ${state.H_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'S' && state.S === 'S23') return `S23 · ${state.S_CUSTOM.trim() || '(未填写)'}`;
   if (field === 'TH' && state.TH === 'TH15') return `TH15 · ${state.TH_CUSTOM.trim() || '(未填写)'}`;
@@ -1198,6 +1332,26 @@ function buildSummaryRows() {
 }
 
 function getRouteHintRows() {
+  // 帝皇之眼路线优先级最高:C6 一旦选定,凌驾于所有其他路线判定。
+  if (state.C === 'C6') {
+    const eLabel = getOptionLabel('E', state.E);
+    const qLabel = getOptionLabel('Q', state.Q);
+    const aLabel = getOptionLabel('A', state.A);
+    const rows = [
+      ['路线', '帝皇之眼路线 / 退役监视者'],
+      ['身份', '退役禁军（大叛乱后世代 · M41.846）'],
+      ['年龄', state.F === 'F5' ? 'F5 · 永生（生物学不衰老）' : `${state.F} · 待修正`],
+      ['现行掩护', `${state.E} · ${(eLabel || '').split('（')[0].trim()}`],
+      ['残躯',     `${state.Q} · ${(qLabel || '').split('（')[0].trim()}`],
+      ['起源',     state.A === 'A24' ? 'A24 · 天鹰要塞 (禁军秘密据点)' : `${state.A} · ${(aLabel || '').split('（')[0].trim()}`],
+      ['联络',     '经秘密渠道向禁军通报威胁'],
+      ['立场',     '不隶属任何帝国机构 · 仅忠于帝皇']
+    ];
+    if (state.H === 'H13') {
+      rows.push(['特殊', 'H13 穿越者出身 · 异世界灵魂被选为禁军候补 (机密)']);
+    }
+    return rows;
+  }
   if (state.C === 'C5') {
     const mechSecret = asArray(state.L).find(isMechSecret);
     return [['路线','机械神教路线'], ['神学立场', getOptionLabel('D', state.D)], ['职务序列', getOptionLabel('E', state.E)], ['技术风险', mechSecret ? getOptionLabel('L', mechSecret) : '未显性建档']];
@@ -1228,7 +1382,7 @@ function getRouteHintRows() {
 function canProceedFromPage(page) {
   const fields = PAGE_FIELDS[page] || [];
   if (fields.includes('B') && state.B === 'B1' && !state.NAME.trim()) return { ok:false, message:'请先填写自定义名字,或改回默认名字。' };
-  if (fields.includes('C') && state.C === 'C6' && !state.C_CUSTOM.trim()) return { ok:false, message:'请填写自定义种族,或选择固定血统。' };
+  if (fields.includes('C') && state.C === 'C7' && !state.C_CUSTOM.trim()) return { ok:false, message:'请填写自定义种族,或选择固定血统。' };
   if (fields.includes('H') && state.H === 'H25' && !state.H_CUSTOM.trim()) return { ok:false, message:'请填写自定义出身,或选择固定出身。' };
   if (fields.includes('S') && state.S === 'S23' && !state.S_CUSTOM.trim()) return { ok:false, message:'请填写自定义开场地点,或选择固定开场地点。' };
   if (fields.includes('TH') && state.TH === 'TH15' && !state.TH_CUSTOM.trim()) return { ok:false, message:'请填写自定义帝皇形象,或选择固定形象。' };
@@ -1281,6 +1435,14 @@ function loadDraftState() {
     if (state.I === 'I3' && saved && !saved.I) state.I = 'I1';
     // 旧的 P32 自定义如果残留,降级为 P0
     if (state.P === 'P32') state.P = 'P0';
+    // ─── C6/C7 顺延迁移(本次版本调整) ───
+    // 旧版 C6 = 自定义、interim C7 = 退役禁军;新版 C6 = 退役禁军、C7 = 自定义。
+    // 用 E47/Q11 作为强信号识别 interim 版本的退役禁军档案。
+    if (state.C === 'C7' && (state.E === 'E47' || state.Q === 'Q11')) {
+      state.C = 'C6';  // interim 版退役禁军 → 新版 C6
+    } else if (state.C === 'C6' && state.C_CUSTOM && state.C_CUSTOM.trim()) {
+      state.C = 'C7';  // 旧版自定义种族(有内容) → 新版 C7
+    }
     currentPage = typeof page === 'number' ? page : 0;
   } catch (_) {
     state = { ...DEFAULT_STATE };
@@ -1676,7 +1838,7 @@ btn.addEventListener('click', () => {
   return btn;
 }
 function makeCustomBox(field) {
-  const map = { C:['C6','C_CUSTOM','自定义种族(描述外观、特征、能力倾向等,AI 会按你的描述演绎)'], H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'], TH:['TH15','TH_CUSTOM','自定义帝皇形象(描述你心中至高的具体样貌:面容、年龄、神情、姿态、光感……AI 会按你描述演绎祈祷与默想场景)'] };
+  const map = { C:['C7','C_CUSTOM','自定义种族(描述外观、特征、能力倾向等,AI 会按你的描述演绎)'], H:['H25','H_CUSTOM','自定义出身'], S:['S23','S_CUSTOM','自定义开场地点'], TH:['TH15','TH_CUSTOM','自定义帝皇形象(描述你心中至高的具体样貌:面容、年龄、神情、姿态、光感……AI 会按你描述演绎祈祷与默想场景)'] };
   const cfg = map[field]; if(!cfg) return null; const [code,key,title]=cfg;
   const box = document.createElement('div'); box.className = `wh40k-custom-box ${state[field]===code?'show':''}`; box.innerHTML = `<textarea rows="4" placeholder="${title}" >${escapeHtml(state[key]||'')}</textarea>`;
   box.querySelector('textarea').addEventListener('input', e => { state[key]=e.target.value; saveDraftState(); renderFooterWarnings(); }); return box;
@@ -1769,7 +1931,7 @@ function makePsykerPanel() {
   const isMystic = state.E === 'E27';  // 神秘学者可选触发
   const isNavigator = state.C === 'C3';
   const shouldShow = isPsykerProf || isMystic || isNavigator;
-  const hardBlock = state.C === 'C2';
+  const hardBlock = state.C === 'C2' || state.C === 'C6';  // C2 无知者/C6 退役禁军均不属于灵能者体系
 
   // 自动清理:不该有灵能数据时,清空 M/W/T
   if (!shouldShow || hardBlock) {
@@ -1949,7 +2111,78 @@ function renderFooterWarnings(){
   }
 }
 function renderFooterButtons(){ const back=overlay.querySelector('[data-action="back"]'); const next=overlay.querySelector('[data-action="next"]'); back.disabled=currentPage===0; if(currentPage===FINAL_PAGE){ next.style.display='none'; } else { next.style.display=''; next.textContent=currentPage===0?'进入登记':'下一步 >'; } }
-function render(){ renderProgress(); renderPageContent(); renderFooterWarnings(); renderFooterButtons(); }
+
+// ─── 帝皇之眼(C6)路线自动归一化 ───
+// 默认状态 (F1/H1/Q1/U12 等) 在选 C6 时会全部失效。
+// 这里把它们一次性推到合法档位,避免玩家走到提交页时还带着"健康/正常家庭/青年"。
+// 仅在玩家"已选 C6"且对应字段当前不合法时触发;不会反复覆盖玩家的合法选择。
+function normalizeC6State() {
+  if (state.C !== 'C6') return false;
+  let changed = false;
+
+  // E: 限制到 EYES_OF_EMPEROR_OK_E,默认 E47
+  if (!EYES_OF_EMPEROR_OK_E.includes(state.E)) {
+    state.E = 'E47';
+    changed = true;
+  }
+  // F: 强锁 F5 永生(生物学不衰老)
+  if (state.F !== 'F5') {
+    state.F = 'F5';
+    changed = true;
+  }
+  // H: 限制到泰拉高门,默认 H4 上层家族
+  if (!EYES_OF_EMPEROR_OK_H.includes(state.H)) {
+    state.H = 'H4';
+    changed = true;
+  }
+  // D: 强锁 D1 忠诚者
+  if (state.D !== 'D1') {
+    state.D = 'D1';
+    changed = true;
+  }
+  // Q: 移出禁选列表,默认 Q11 神圣残躯(签名特征)
+  if (EYES_OF_EMPEROR_BAN_Q.includes(state.Q)) {
+    state.Q = 'Q11';
+    changed = true;
+  }
+  // A: 禁选 A19/A21,默认 A1 卡西亚
+  if (EYES_OF_EMPEROR_BAN_A.includes(state.A)) {
+    state.A = 'A1';
+    changed = true;
+  }
+  // U: 移出禁选列表,默认 U5 使命
+  if (EYES_OF_EMPEROR_BAN_U.includes(state.U)) {
+    state.U = 'U5';
+    changed = true;
+  }
+  // S: 若当前开场地点不合法,优先匹配起源(A24 -> S34 残巢内部),否则推到该 E 的首个合法场景
+  const allowedS = ALLOWED_S_BY_PROFESSION[state.E];
+  if (allowedS && state.S !== 'S23' && !allowedS.includes(state.S)) {
+    state.S = (state.A === 'A24') ? 'S34' : allowedS[0];
+    changed = true;
+  }
+  // 边界:S34 必须搭配 A24 起源,A 不是 A24 时把 S34 推走
+  if (state.S === 'S34' && state.A !== 'A24') {
+    state.S = (allowedS && allowedS[0]) || 'S23';
+    changed = true;
+  }
+  // K: 剔除禁选项 (K9 家族房产 / K15 异端物 / K16 自有船 / K20 武装侍卫)
+  const kArr = asArray(state.K);
+  const filteredK = kArr.filter(k => !['K9','K15','K16','K20'].includes(k));
+  if (filteredK.length !== kArr.length) {
+    state.K = filteredK;
+    changed = true;
+  }
+  // M/W/T 灵能档案由 makePsykerPanel hardBlock 自动清理,这里不再重复处理
+
+  return changed;
+}
+
+function render(){
+  // 进入 C6 路线后,把非法默认值一次性归一化;避免酒馆 LLM 接到 F1/H1/Q1 等错误组合
+  if (normalizeC6State()) saveDraftState();
+  renderProgress(); renderPageContent(); renderFooterWarnings(); renderFooterButtons();
+}
 
 // 切换页面时,把所有可滚动面板复位到顶部,防止玩家漏看新页面顶部的选项
 // 只在"切换页面"时调用,不在"选项更改"时调用
